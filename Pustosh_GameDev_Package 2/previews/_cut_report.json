@@ -1,0 +1,122 @@
+{
+ "s00_icons_first.png": {
+  "folder": "icons/base",
+  "count": 16,
+  "issues": []
+ },
+ "s01_icons_tools.png": {
+  "folder": "icons/tools",
+  "count": 25,
+  "issues": []
+ },
+ "s02_icons_weapons.png": {
+  "folder": "icons/weapons",
+  "count": 25,
+  "issues": []
+ },
+ "s03_icons_resources.png": {
+  "folder": "icons/resources",
+  "count": 25,
+  "issues": []
+ },
+ "s04_icons_food_medicine.png": {
+  "folder": "icons/food_medicine",
+  "count": 25,
+  "issues": []
+ },
+ "s05_icons_clothing_mods.png": {
+  "folder": "icons/clothing_mods",
+  "count": 25,
+  "issues": []
+ },
+ "s09_replacements.png": {
+  "folder": "replacements",
+  "count": 23,
+  "issues": []
+ },
+ "s07_walls.png": {
+  "folder": "building/walls",
+  "count": 50,
+  "issues": []
+ },
+ "s08_interior.png": {
+  "folder": "world/interior",
+  "count": 50,
+  "issues": []
+ },
+ "s10_defense.png": {
+  "folder": "world/defense",
+  "count": 25,
+  "issues": []
+ },
+ "s11_biome1_suburb.png": {
+  "folder": "world/biome1_suburb",
+  "count": 25,
+  "issues": []
+ },
+ "s12_biome2_swamp.png": {
+  "folder": "world/biome2_swamp",
+  "count": 25,
+  "issues": []
+ },
+ "s13_biome3_city.png": {
+  "folder": "world/biome3_city",
+  "count": 25,
+  "issues": []
+ },
+ "s14_biome4_desert.png": {
+  "folder": "world/biome4_desert",
+  "count": 25,
+  "issues": []
+ },
+ "s15_biome5_tundra.png": {
+  "folder": "world/biome5_tundra",
+  "count": 25,
+  "issues": []
+ },
+ "s16_biome6_epicenter.png": {
+  "folder": "world/biome6_epicenter",
+  "count": 25,
+  "issues": []
+ },
+ "s17_hero.png": {
+  "folder": "characters/hero",
+  "count": 16,
+  "issues": []
+ },
+ "s18_enemies.png": {
+  "folder": "characters/enemies",
+  "count": 63,
+  "issues": []
+ },
+ "s19_animals.png": {
+  "folder": "characters/animals",
+  "count": 72,
+  "issues": []
+ },
+ "s20_bosses.png": {
+  "folder": "characters/bosses",
+  "count": 49,
+  "issues": []
+ },
+ "s21_transport.png": {
+  "folder": "vehicles",
+  "count": 16,
+  "issues": []
+ },
+ "s22_effects.png": {
+  "folder": "effects",
+  "count": 27,
+  "issues": []
+ },
+ "s23_ui.png": {
+  "folder": "ui",
+  "count": 25,
+  "issues": []
+ },
+ "s06_tiles.png": {
+  "folder": "tiles",
+  "count": 16,
+  "issues": []
+ }
+}

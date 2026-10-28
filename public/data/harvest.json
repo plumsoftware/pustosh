@@ -1,0 +1,20 @@
+{
+ "_note": "Добыча и взаимодействие (шаг 5). Создан агентом по TZ/STEP_05 и GDD §6. Радиус подбора и подсветки — balance.json → player; восстановление ресурсов — balance.json → world.resourceRespawnGameDays.",
+ "targetRadiusTiles": 1.2,
+ "targetSectorDeg": 90,
+ "interactRadiusTiles": 1.6,
+ "wrongToolProgressMul": 0.25,
+ "wrongToolWearMul": 2,
+ "brokenEfficiency": 0.5,
+ "wearPerHit": 1,
+ "handsStaminaPerUse": 1,
+ "bushRegrowGameDays": 2,
+ "regrowKinds": ["bush"],
+ "storageSlots": { "chest_wood": 24, "chest_metal": 36 },
+ "repair": { "stations": ["workbench_1", "workbench_2", "workbench_3"], "radiusTiles": 2.5 },
+ "particles": {
+  "tree": "wood", "bush": "plant", "grass": "plant", "fence": "wood", "deposit": "stone", "rock": "stone",
+  "scrap": "metal", "vehicle_wreck": "metal", "hazard": "metal", "decor": "wood", "furniture": "wood", "loot": "metal"
+ },
+ "noteObjects": ["specimen_tank", "science_desk"]
+}

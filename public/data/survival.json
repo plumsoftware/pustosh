@@ -1,0 +1,50 @@
+{
+  "_note": "Выживание и движение героя (шаг 4). Создан агентом по TZ/STEP_04 и GDD §4; скорости голода/жажды и урон холода — в balance.json → survival.<площадка>, параметры игрока — balance.json → player.",
+  "movement": {
+    "sprintStaminaPerSec": 10,
+    "minStaminaToSprint": 5,
+    "staminaRegenPerSec": 15,
+    "staminaRegenDelaySec": 1,
+    "dodgeDistanceTiles": 1.5,
+    "dodgeDurationSec": 0.35,
+    "terrainSpeedMul": { "water_shallow": 0.6, "swamp_mud": 0.6, "snow": 0.85 },
+    "hurtKnockbackTiles": 0.2
+  },
+  "needs": {
+    "max": 100,
+    "zeroHpLossPerSec": 1,
+    "desertBiome": 4,
+    "desertDayThirstMul": 1.5,
+    "lowFrac": 0.2
+  },
+  "temperature": {
+    "comfort": [-2, 2],
+    "approachPerSec": 0.5,
+    "biomes": {
+      "1": { "day": 0, "night": 0 },
+      "2": { "day": 0, "night": 0 },
+      "3": { "day": 0, "night": 0 },
+      "4": { "day": 3, "night": -1 },
+      "5": { "day": -4, "night": -6 },
+      "6": { "day": 0, "night": 0 }
+    },
+    "campfireBonus": 4,
+    "campfireRadiusTiles": 3,
+    "outOfRangeSpeedMul": 0.85
+  },
+  "radiation": {
+    "max": 100,
+    "zonePerSecByBiome": { "6": 2 }
+  },
+  "conditions": {
+    "bleeding": { "hpPerSec": 1 },
+    "poison": { "hpPerSec": 2, "durationSec": 10 },
+    "infection": { "regenMul": 0.5 },
+    "fracture": { "speedMul": 0.7 }
+  },
+  "death": {
+    "respawnHpMul": 0.7,
+    "rewardedPlacement": "revive_with_backpack",
+    "interstitialPlacement": "death"
+  }
+}

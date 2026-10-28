@@ -1,0 +1,7 @@
+{
+  "id": "gate",
+  "kind": "gate",
+  "sprite": "assets/replacements/concrete_barrier.png",
+  "spanExtraTiles": 2,
+  "clearRadiusTiles": 3
+}

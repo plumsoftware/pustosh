@@ -1,0 +1,164 @@
+{
+ "id": "hero",
+ "skeleton": "humanoid",
+ "height": 96,
+ "bones": {
+  "pelvis": {
+   "pivot": [
+    0.5,
+    0.35
+   ],
+   "attach": [
+    0,
+    -0.5
+   ],
+   "scale": 1,
+   "rest": 0
+  },
+  "torso": {
+   "pivot": [
+    0.5,
+    0.95
+   ],
+   "attach": [
+    0,
+    -0.03
+   ],
+   "scale": 1,
+   "rest": 0
+  },
+  "head": {
+   "pivot": [
+    0.42,
+    0.88
+   ],
+   "attach": [
+    0.06,
+    -0.3
+   ],
+   "scale": 0.92,
+   "rest": 0
+  },
+  "arm_far_upper": {
+   "pivot": [
+    0.4,
+    0.08
+   ],
+   "attach": [
+    -0.03,
+    -0.255
+   ],
+   "scale": 1,
+   "rest": 4
+  },
+  "arm_far_lower": {
+   "pivot": [
+    0.15,
+    0.12
+   ],
+   "attach": [
+    0.01,
+    0.19
+   ],
+   "scale": 1,
+   "rest": 12
+  },
+  "leg_far_upper": {
+   "pivot": [
+    0.5,
+    0.08
+   ],
+   "attach": [
+    -0.02,
+    0.02
+   ],
+   "scale": 1,
+   "rest": 4
+  },
+  "leg_far_lower": {
+   "pivot": [
+    0.45,
+    0.06
+   ],
+   "attach": [
+    0,
+    0.22
+   ],
+   "scale": 1,
+   "rest": -3
+  },
+  "leg_near_upper": {
+   "pivot": [
+    0.5,
+    0.08
+   ],
+   "attach": [
+    0.03,
+    0.02
+   ],
+   "scale": 1,
+   "rest": -4
+  },
+  "leg_near_lower": {
+   "pivot": [
+    0.45,
+    0.06
+   ],
+   "attach": [
+    0,
+    0.22
+   ],
+   "scale": 1,
+   "rest": 3
+  },
+  "backpack": {
+   "pivot": [
+    0.7,
+    0.5
+   ],
+   "attach": [
+    -0.1,
+    -0.17
+   ],
+   "scale": 1,
+   "rest": 0,
+   "z": 0.5
+  },
+  "arm_near_upper": {
+   "pivot": [
+    0.4,
+    0.08
+   ],
+   "attach": [
+    0.055,
+    -0.255
+   ],
+   "scale": 1,
+   "rest": 6
+  },
+  "arm_near_lower": {
+   "pivot": [
+    0.15,
+    0.12
+   ],
+   "attach": [
+    0.01,
+    0.19
+   ],
+   "scale": 1,
+   "rest": 12
+  },
+  "held_item": {
+   "pivot": [
+    0.25,
+    0.75
+   ],
+   "attach": [
+    0.2,
+    0
+   ],
+   "scale": 1,
+   "rest": 0
+  }
+ }
+}

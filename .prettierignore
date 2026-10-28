@@ -1,0 +1,8 @@
+node_modules
+dist*
+android
+public
+art
+Pustosh_GameDev_Package*
+_legacy_korge
+*.md

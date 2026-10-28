@@ -1,0 +1,2334 @@
+{
+ "biomes": [
+  {
+   "id": 1,
+   "name_ru": "Заросший пригород",
+   "ring": "внешнее кольцо",
+   "levels": [
+    1,
+    6
+   ],
+   "tiles": [
+    "grass",
+    "grass_flowers",
+    "dirt",
+    "dirt_road_h"
+   ],
+   "enemies": [
+    "walker",
+    "crawler",
+    "dog",
+    "deer",
+    "boar",
+    "hare"
+   ],
+   "boss": "butcher",
+   "gate": "шлагбаум у трассы → открывает trophy_key",
+   "objects": [
+    {
+     "id": "pine",
+     "sprite": "assets/world/biome1_suburb/pine.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        4,
+        6
+       ],
+       "sticks": [
+        1,
+        2
+       ]
+      },
+      "hits": 5
+     },
+     "afterHarvest": "assets/world/biome1_suburb/pine_stump.png"
+    },
+    {
+     "id": "birch",
+     "sprite": "assets/world/biome1_suburb/birch.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        3,
+        5
+       ],
+       "sticks": [
+        1,
+        2
+       ]
+      },
+      "hits": 4
+     },
+     "afterHarvest": "assets/world/biome1_suburb/birch_stump.png"
+    },
+    {
+     "id": "oak",
+     "sprite": "assets/world/biome1_suburb/oak.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        6,
+        9
+       ]
+      },
+      "hits": 7
+     },
+     "afterHarvest": "assets/world/biome1_suburb/pine_stump.png"
+    },
+    {
+     "id": "dead_tree",
+     "sprite": "assets/world/biome1_suburb/dead_tree.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        2,
+        3
+       ],
+       "sticks": [
+        2,
+        3
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "bush_berries",
+     "sprite": "assets/world/biome1_suburb/bush_berries.png",
+     "kind": "bush",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "berries": [
+        2,
+        4
+       ],
+       "sticks": [
+        0,
+        1
+       ]
+      },
+      "hits": 1
+     },
+     "afterHarvest": "assets/world/biome1_suburb/bush_picked.png",
+     "note": "отрастает за 2 игровых дня"
+    },
+    {
+     "id": "tall_grass",
+     "sprite": "assets/world/biome1_suburb/tall_grass.png",
+     "kind": "grass",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "fiber": [
+        1,
+        3
+       ]
+      },
+      "hits": 1
+     },
+     "note": "укрытие для ползунов"
+    },
+    {
+     "id": "log_fallen",
+     "sprite": "assets/world/biome1_suburb/log_fallen.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        3,
+        5
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "boulder",
+     "sprite": "assets/world/biome1_suburb/boulder.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 1,
+      "drops": {
+       "stone": [
+        4,
+        7
+       ]
+      },
+      "hits": 6
+     },
+     "afterHarvest": "assets/world/biome1_suburb/boulder_mined.png"
+    },
+    {
+     "id": "rock_remains",
+     "sprite": "assets/world/biome1_suburb/rock_remains.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "stone": [
+        1,
+        2
+       ]
+      },
+      "hits": 1
+     }
+    },
+    {
+     "id": "scrap_pile",
+     "sprite": "assets/world/biome1_suburb/scrap_pile.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        2,
+        4
+       ],
+       "nails_bolts": [
+        0,
+        2
+       ]
+      },
+      "hits": 4
+     }
+    },
+    {
+     "id": "car_hatchback",
+     "sprite": "assets/world/biome1_suburb/car_hatchback.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        5,
+        8
+       ],
+       "rubber": [
+        1,
+        2
+       ],
+       "battery": [
+        0,
+        1
+       ]
+      },
+      "hits": 8
+     },
+     "afterHarvest": "assets/world/biome1_suburb/car_frame.png"
+    },
+    {
+     "id": "tractor",
+     "sprite": "assets/world/biome1_suburb/tractor.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        8,
+        12
+       ],
+       "rubber": [
+        2,
+        3
+       ]
+      },
+      "hits": 10
+     }
+    },
+    {
+     "id": "fence_picket",
+     "sprite": "assets/world/biome1_suburb/fence_picket.png",
+     "kind": "fence",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "planks": [
+        1,
+        2
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "scarecrow",
+     "sprite": "assets/world/biome1_suburb/scarecrow.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "rags": [
+        1,
+        2
+       ],
+       "sticks": [
+        1,
+        2
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "greenhouse",
+     "sprite": "assets/world/biome1_suburb/greenhouse.png",
+     "kind": "loot",
+     "note": "контейнер: семена/овощи (garden)"
+    },
+    {
+     "id": "power_pole",
+     "sprite": "assets/world/biome1_suburb/power_pole.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "copper_wire": [
+        1,
+        2
+       ],
+       "wood": [
+        1,
+        2
+       ]
+      },
+      "hits": 4
+     }
+    },
+    {
+     "id": "road_sign",
+     "sprite": "assets/world/biome1_suburb/road_sign.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        1,
+        1
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "bus_stop",
+     "sprite": "assets/replacements/bus_stop.png",
+     "kind": "building_poi"
+    },
+    {
+     "id": "well",
+     "sprite": "assets/replacements/well.png",
+     "kind": "water_source"
+    },
+    {
+     "id": "outhouse",
+     "sprite": "assets/replacements/outhouse.png",
+     "kind": "loot"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name_ru": "Болото у трассы",
+   "ring": "2-е кольцо",
+   "levels": [
+    6,
+    11
+   ],
+   "tiles": [
+    "swamp_mud",
+    "water_shallow",
+    "grass",
+    "asphalt_cracked",
+    "asphalt_line_h"
+   ],
+   "enemies": [
+    "walker",
+    "crawler",
+    "spitter",
+    "toad",
+    "dog",
+    "boar"
+   ],
+   "boss": "queen",
+   "gate": "река: мост открывается trophy_jar",
+   "hazards": [
+    "вязкая вода: скорость x0.6 без квадроцикла",
+    "ядовитые бочки: отравление в радиусе 1.5 тайла"
+   ],
+   "objects": [
+    {
+     "id": "willow",
+     "sprite": "assets/world/biome2_swamp/willow.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        4,
+        6
+       ]
+      },
+      "hits": 5
+     }
+    },
+    {
+     "id": "swamp_tree_dead",
+     "sprite": "assets/world/biome2_swamp/swamp_tree_dead.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        2,
+        4
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "cattails",
+     "sprite": "assets/world/biome2_swamp/cattails.png",
+     "kind": "grass",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "fiber": [
+        2,
+        3
+       ]
+      },
+      "hits": 1
+     }
+    },
+    {
+     "id": "lily_pads",
+     "sprite": "assets/world/biome2_swamp/lily_pads.png",
+     "kind": "decor"
+    },
+    {
+     "id": "peat_mound",
+     "sprite": "assets/world/biome2_swamp/peat_mound.png",
+     "kind": "deposit",
+     "harvest": {
+      "tool": "shovel",
+      "minTier": 1,
+      "drops": {
+       "peat": [
+        3,
+        5
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "clay_deposit",
+     "sprite": "assets/world/biome2_swamp/clay_deposit.png",
+     "kind": "deposit",
+     "harvest": {
+      "tool": "shovel",
+      "minTier": 1,
+      "drops": {
+       "clay": [
+        3,
+        5
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "copper_rock",
+     "sprite": "assets/world/biome2_swamp/copper_rock.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 2,
+      "drops": {
+       "copper_ore": [
+        3,
+        5
+       ],
+       "stone": [
+        1,
+        2
+       ]
+      },
+      "hits": 6
+     },
+     "afterHarvest": "assets/world/biome2_swamp/copper_rock_mined.png"
+    },
+    {
+     "id": "boulder_mossy",
+     "sprite": "assets/world/biome2_swamp/boulder_mossy.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 1,
+      "drops": {
+       "stone": [
+        4,
+        6
+       ]
+      },
+      "hits": 5
+     }
+    },
+    {
+     "id": "mushrooms_glow",
+     "sprite": "assets/world/biome2_swamp/mushrooms_glow.png",
+     "kind": "bush",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "mushrooms": [
+        1,
+        3
+       ]
+      },
+      "hits": 1
+     },
+     "note": "светятся ночью (кодом)"
+    },
+    {
+     "id": "fuel_pump",
+     "sprite": "assets/world/biome2_swamp/fuel_pump.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        3,
+        5
+       ],
+       "crude_oil": [
+        0,
+        1
+       ]
+      },
+      "hits": 5
+     }
+    },
+    {
+     "id": "trailer",
+     "sprite": "assets/world/biome2_swamp/trailer.png",
+     "kind": "loot",
+     "note": "большой контейнер лута"
+    },
+    {
+     "id": "truck_cab",
+     "sprite": "assets/world/biome2_swamp/truck_cab.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        6,
+        9
+       ],
+       "battery": [
+        0,
+        1
+       ],
+       "rubber": [
+        1,
+        2
+       ]
+      },
+      "hits": 8
+     }
+    },
+    {
+     "id": "tires_pile",
+     "sprite": "assets/world/biome2_swamp/tires_pile.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "rubber": [
+        2,
+        3
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "toxic_barrels",
+     "sprite": "assets/world/biome2_swamp/toxic_barrels.png",
+     "kind": "hazard",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        2,
+        3
+       ],
+       "crude_oil": [
+        0,
+        1
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "rowboat",
+     "sprite": "assets/world/biome2_swamp/rowboat.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "planks": [
+        2,
+        4
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "drain_pipe",
+     "sprite": "assets/world/biome2_swamp/drain_pipe.png",
+     "kind": "decor"
+    },
+    {
+     "id": "animal_skeleton",
+     "sprite": "assets/world/biome2_swamp/animal_skeleton.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "bones": [
+        2,
+        3
+       ]
+      },
+      "hits": 1
+     }
+    },
+    {
+     "id": "motel_sign",
+     "sprite": "assets/world/biome2_swamp/motel_sign.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        2,
+        3
+       ],
+       "copper_wire": [
+        0,
+        1
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "fallen_tree_water",
+     "sprite": "assets/world/biome2_swamp/fallen_tree_water.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        3,
+        4
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "gas_kiosk",
+     "sprite": "assets/replacements/gas_kiosk.png",
+     "kind": "building_poi"
+    },
+    {
+     "id": "fishing_hut",
+     "sprite": "assets/replacements/fishing_hut.png",
+     "kind": "building_poi"
+    },
+    {
+     "id": "guardrail",
+     "sprite": "assets/replacements/guardrail.png",
+     "kind": "road_edge_tileable"
+    },
+    {
+     "id": "concrete_barrier",
+     "sprite": "assets/replacements/concrete_barrier.png",
+     "kind": "road_edge_tileable"
+    },
+    {
+     "id": "boardwalk",
+     "sprite": "assets/replacements/boardwalk.png",
+     "kind": "walkable_bridge_tileable"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name_ru": "Мёртвый город",
+   "ring": "3-е кольцо",
+   "levels": [
+    11,
+    19
+   ],
+   "tiles": [
+    "asphalt_cracked",
+    "asphalt_line_h",
+    "concrete",
+    "ceramic_floor",
+    "gravel"
+   ],
+   "enemies": [
+    "walker",
+    "sprinter",
+    "bloated",
+    "raptor",
+    "dog",
+    "hare"
+   ],
+   "boss": "tyrant",
+   "gate": "КПП промзоны → trophy_fang",
+   "objects": [
+    {
+     "id": "tree_planter",
+     "sprite": "assets/world/biome3_city/tree_planter.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        2,
+        3
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "hedge",
+     "sprite": "assets/world/biome3_city/hedge.png",
+     "kind": "bush",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "sticks": [
+        2,
+        4
+       ],
+       "fiber": [
+        1,
+        2
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "street_lamp",
+     "sprite": "assets/world/biome3_city/street_lamp.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        2,
+        3
+       ],
+       "copper_wire": [
+        1,
+        1
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "traffic_light_fallen",
+     "sprite": "assets/world/biome3_city/traffic_light_fallen.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        2,
+        3
+       ],
+       "circuit_board": [
+        0,
+        1
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "car_burnt",
+     "sprite": "assets/world/biome3_city/car_burnt.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        5,
+        8
+       ]
+      },
+      "hits": 7
+     }
+    },
+    {
+     "id": "patrol_car",
+     "sprite": "assets/world/biome3_city/patrol_car.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        5,
+        7
+       ],
+       "battery": [
+        0,
+        1
+       ],
+       "ammo_pistol": [
+        0,
+        6
+       ]
+      },
+      "hits": 8
+     }
+    },
+    {
+     "id": "bus",
+     "sprite": "assets/world/biome3_city/bus.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        10,
+        14
+       ],
+       "rubber": [
+        2,
+        4
+       ],
+       "plastic": [
+        2,
+        4
+       ]
+      },
+      "hits": 12
+     }
+    },
+    {
+     "id": "ambulance",
+     "sprite": "assets/world/biome3_city/ambulance.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        6,
+        8
+       ],
+       "bandage": [
+        1,
+        3
+       ],
+       "antibiotics": [
+        0,
+        1
+       ]
+      },
+      "hits": 8
+     }
+    },
+    {
+     "id": "rubble",
+     "sprite": "assets/world/biome3_city/rubble.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 1,
+      "drops": {
+       "stone": [
+        3,
+        5
+       ],
+       "scrap_metal": [
+        0,
+        2
+       ]
+      },
+      "hits": 4
+     }
+    },
+    {
+     "id": "building_collapsed",
+     "sprite": "assets/world/biome3_city/building_collapsed.png",
+     "kind": "building_poi",
+     "note": "крупный ориентир, вход лута"
+    },
+    {
+     "id": "apartment_entrance",
+     "sprite": "assets/world/biome3_city/apartment_entrance.png",
+     "kind": "building_poi",
+     "note": "вход в многоэтажку (интерьер — комната из стен concrete)"
+    },
+    {
+     "id": "shop_front",
+     "sprite": "assets/world/biome3_city/shop_front.png",
+     "kind": "building_poi",
+     "note": "магазин: еда, вода"
+    },
+    {
+     "id": "kiosk",
+     "sprite": "assets/world/biome3_city/kiosk.png",
+     "kind": "loot"
+    },
+    {
+     "id": "vending_machine",
+     "sprite": "assets/world/biome3_city/vending_machine.png",
+     "kind": "loot",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "soda": [
+        1,
+        2
+       ],
+       "scrap_metal": [
+        2,
+        3
+       ]
+      },
+      "hits": 4
+     }
+    },
+    {
+     "id": "phone_booth",
+     "sprite": "assets/world/biome3_city/phone_booth.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        2,
+        3
+       ],
+       "plastic": [
+        1,
+        2
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "dumpster",
+     "sprite": "assets/world/biome3_city/dumpster.png",
+     "kind": "loot"
+    },
+    {
+     "id": "bench",
+     "sprite": "assets/world/biome3_city/bench.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "planks": [
+        2,
+        3
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "road_barriers",
+     "sprite": "assets/world/biome3_city/road_barriers.png",
+     "kind": "road_edge_tileable",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "plastic": [
+        1,
+        2
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "checkpoint_tent",
+     "sprite": "assets/world/biome3_city/checkpoint_tent.png",
+     "kind": "loot",
+     "note": "военный лут: патроны, паёк"
+    },
+    {
+     "id": "shopping_cart",
+     "sprite": "assets/world/biome3_city/shopping_cart.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        1,
+        2
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "billboard",
+     "sprite": "assets/world/biome3_city/billboard.png",
+     "kind": "decor"
+    },
+    {
+     "id": "garbage_bags",
+     "sprite": "assets/world/biome3_city/garbage_bags.png",
+     "kind": "loot"
+    },
+    {
+     "id": "scrap_pile",
+     "sprite": "assets/world/biome3_city/scrap_pile.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "scrap_metal": [
+        3,
+        5
+       ],
+       "copper_wire": [
+        0,
+        1
+       ]
+      },
+      "hits": 4
+     }
+    },
+    {
+     "id": "hydrant",
+     "sprite": "assets/replacements/hydrant.png",
+     "kind": "water_source"
+    },
+    {
+     "id": "manhole",
+     "sprite": "assets/replacements/manhole.png",
+     "kind": "decor"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name_ru": "Пустыня-карьер",
+   "ring": "4-е кольцо",
+   "levels": [
+    19,
+    26
+   ],
+   "tiles": [
+    "sand",
+    "clay_cracked",
+    "gravel"
+   ],
+   "enemies": [
+    "scorpion",
+    "armored_lizard",
+    "raptor",
+    "sprinter",
+    "bloated"
+   ],
+   "boss": "devourer",
+   "gate": "проход в лабораторию → trophy_heart",
+   "hazards": [
+    "жара днём: нужен heatRes или вода",
+    "песчаная буря: видимость 4 тайла (кодом, оверлей)"
+   ],
+   "objects": [
+    {
+     "id": "dry_bush",
+     "sprite": "assets/world/biome4_desert/dry_bush.png",
+     "kind": "bush",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "sticks": [
+        2,
+        3
+       ]
+      },
+      "hits": 1
+     }
+    },
+    {
+     "id": "cactus",
+     "sprite": "assets/world/biome4_desert/cactus.png",
+     "kind": "bush",
+     "harvest": {
+      "tool": "knife",
+      "minTier": 1,
+      "drops": {
+       "water_dirty": [
+        1,
+        1
+       ],
+       "fiber": [
+        1,
+        2
+       ]
+      },
+      "hits": 2
+     }
+    },
+    {
+     "id": "sandstone",
+     "sprite": "assets/world/biome4_desert/sandstone.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 1,
+      "drops": {
+       "stone": [
+        3,
+        5
+       ],
+       "sand": [
+        1,
+        2
+       ]
+      },
+      "hits": 5
+     }
+    },
+    {
+     "id": "sulfur_rock",
+     "sprite": "assets/world/biome4_desert/sulfur_rock.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 3,
+      "drops": {
+       "sulfur": [
+        3,
+        5
+       ]
+      },
+      "hits": 6
+     },
+     "afterHarvest": "assets/world/biome4_desert/sulfur_rock_mined.png"
+    },
+    {
+     "id": "coal_rock",
+     "sprite": "assets/world/biome4_desert/coal_rock.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 2,
+      "drops": {
+       "coal": [
+        3,
+        5
+       ]
+      },
+      "hits": 6
+     },
+     "afterHarvest": "assets/world/biome4_desert/coal_rock_mined.png"
+    },
+    {
+     "id": "oil_seep",
+     "sprite": "assets/world/biome4_desert/oil_seep.png",
+     "kind": "deposit",
+     "harvest": {
+      "tool": "bucket",
+      "minTier": 1,
+      "drops": {
+       "crude_oil": [
+        1,
+        2
+       ]
+      },
+      "hits": 1
+     },
+     "note": "ресурс восстанавливается раз в день"
+    },
+    {
+     "id": "pumpjack",
+     "sprite": "assets/world/biome4_desert/pumpjack.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "steel_plates": [
+        1,
+        2
+       ],
+       "scrap_metal": [
+        6,
+        9
+       ]
+      },
+      "hits": 10
+     }
+    },
+    {
+     "id": "drill_rig",
+     "sprite": "assets/world/biome4_desert/drill_rig.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "scrap_metal": [
+        6,
+        8
+       ],
+       "steel_plates": [
+        1,
+        1
+       ]
+      },
+      "hits": 10
+     }
+    },
+    {
+     "id": "excavator",
+     "sprite": "assets/world/biome4_desert/excavator.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "steel_plates": [
+        2,
+        3
+       ],
+       "scrap_metal": [
+        8,
+        12
+       ]
+      },
+      "hits": 14
+     }
+    },
+    {
+     "id": "dump_truck",
+     "sprite": "assets/world/biome4_desert/dump_truck.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "steel_plates": [
+        2,
+        3
+       ],
+       "rubber": [
+        3,
+        5
+       ]
+      },
+      "hits": 14
+     }
+    },
+    {
+     "id": "conveyor",
+     "sprite": "assets/world/biome4_desert/conveyor.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "rubber": [
+        2,
+        3
+       ],
+       "scrap_metal": [
+        3,
+        4
+       ]
+      },
+      "hits": 5
+     }
+    },
+    {
+     "id": "mine_cart",
+     "sprite": "assets/world/biome4_desert/mine_cart.png",
+     "kind": "loot",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "coal": [
+        2,
+        4
+       ],
+       "scrap_metal": [
+        2,
+        3
+       ]
+      },
+      "hits": 4
+     }
+    },
+    {
+     "id": "mine_entrance",
+     "sprite": "assets/world/biome4_desert/mine_entrance.png",
+     "kind": "building_poi",
+     "note": "вход в шахту (лут: уголь, сера, взрывчатка)"
+    },
+    {
+     "id": "power_tower",
+     "sprite": "assets/world/biome4_desert/power_tower.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "copper_wire": [
+        2,
+        4
+       ],
+       "scrap_metal": [
+        4,
+        6
+       ]
+      },
+      "hits": 8
+     }
+    },
+    {
+     "id": "water_tower",
+     "sprite": "assets/world/biome4_desert/water_tower.png",
+     "kind": "water_source"
+    },
+    {
+     "id": "animal_skull",
+     "sprite": "assets/world/biome4_desert/animal_skull.png",
+     "kind": "decor",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "bones": [
+        2,
+        3
+       ]
+      },
+      "hits": 1
+     }
+    },
+    {
+     "id": "dune",
+     "sprite": "assets/world/biome4_desert/dune.png",
+     "kind": "deposit",
+     "harvest": {
+      "tool": "shovel",
+      "minTier": 1,
+      "drops": {
+       "sand": [
+        3,
+        5
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "container",
+     "sprite": "assets/world/biome4_desert/container.png",
+     "kind": "loot"
+    },
+    {
+     "id": "tent",
+     "sprite": "assets/world/biome4_desert/tent.png",
+     "kind": "loot"
+    },
+    {
+     "id": "plane_wreck",
+     "sprite": "assets/world/biome4_desert/plane_wreck.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "scrap_metal": [
+        8,
+        12
+       ],
+       "circuit_board": [
+        1,
+        2
+       ]
+      },
+      "hits": 12
+     }
+    },
+    {
+     "id": "tumbleweed",
+     "sprite": "assets/world/biome4_desert/tumbleweed.png",
+     "kind": "decor",
+     "note": "катится по ветру (кодом)"
+    },
+    {
+     "id": "explosives_crate",
+     "sprite": "assets/world/biome4_desert/explosives_crate.png",
+     "kind": "loot",
+     "note": "гранаты, сера"
+    },
+    {
+     "id": "windmill",
+     "sprite": "assets/world/biome4_desert/windmill.png",
+     "kind": "decor",
+     "note": "лопасти вращаются (кодом)"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name_ru": "Ледяная тундра",
+   "ring": "5-е кольцо",
+   "levels": [
+    26,
+    33
+   ],
+   "tiles": [
+    "snow",
+    "ice",
+    "gravel"
+   ],
+   "enemies": [
+    "snow_wolf",
+    "armored_lizard",
+    "soldier",
+    "raptor",
+    "deer",
+    "hare"
+   ],
+   "boss": "frost",
+   "gate": "вход в эпицентр → trophy_core",
+   "hazards": [
+    "холод: нужен coldRes или костёр",
+    "ночью волки невидимы без света"
+   ],
+   "objects": [
+    {
+     "id": "spruce",
+     "sprite": "assets/world/biome5_tundra/spruce.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        4,
+        6
+       ]
+      },
+      "hits": 5
+     },
+     "afterHarvest": "assets/world/biome5_tundra/spruce_stump.png"
+    },
+    {
+     "id": "frozen_tree",
+     "sprite": "assets/world/biome5_tundra/frozen_tree.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 1,
+      "drops": {
+       "wood": [
+        2,
+        3
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "boulder",
+     "sprite": "assets/world/biome5_tundra/boulder.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 1,
+      "drops": {
+       "stone": [
+        4,
+        6
+       ]
+      },
+      "hits": 6
+     },
+     "afterHarvest": "assets/world/biome5_tundra/boulder_mined.png"
+    },
+    {
+     "id": "titanium_rock",
+     "sprite": "assets/world/biome5_tundra/titanium_rock.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 4,
+      "drops": {
+       "titanium_ore": [
+        2,
+        4
+       ]
+      },
+      "hits": 8
+     },
+     "afterHarvest": "assets/world/biome5_tundra/titanium_rock_mined.png"
+    },
+    {
+     "id": "bush_berries",
+     "sprite": "assets/world/biome5_tundra/bush_berries.png",
+     "kind": "bush",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "berries": [
+        2,
+        3
+       ]
+      },
+      "hits": 1
+     },
+     "afterHarvest": "assets/world/biome5_tundra/bush_picked.png"
+    },
+    {
+     "id": "ice_shards",
+     "sprite": "assets/world/biome5_tundra/ice_shards.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 1,
+      "drops": {
+       "water_dirty": [
+        1,
+        2
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "snowdrift",
+     "sprite": "assets/world/biome5_tundra/snowdrift.png",
+     "kind": "decor"
+    },
+    {
+     "id": "tent_military",
+     "sprite": "assets/world/biome5_tundra/tent_military.png",
+     "kind": "loot"
+    },
+    {
+     "id": "truck_wreck",
+     "sprite": "assets/world/biome5_tundra/truck_wreck.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "steel_plates": [
+        1,
+        2
+       ],
+       "scrap_metal": [
+        6,
+        8
+       ]
+      },
+      "hits": 10
+     }
+    },
+    {
+     "id": "apc_wreck",
+     "sprite": "assets/world/biome5_tundra/apc_wreck.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 4,
+      "drops": {
+       "steel_plates": [
+        3,
+        4
+       ],
+       "ammo_rifle": [
+        5,
+        15
+       ]
+      },
+      "hits": 14
+     }
+    },
+    {
+     "id": "radar_dish",
+     "sprite": "assets/world/biome5_tundra/radar_dish.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "circuit_board": [
+        2,
+        3
+       ],
+       "scrap_metal": [
+        4,
+        6
+       ]
+      },
+      "hits": 8
+     }
+    },
+    {
+     "id": "weather_mast",
+     "sprite": "assets/world/biome5_tundra/weather_mast.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "copper_wire": [
+        1,
+        2
+       ],
+       "circuit_board": [
+        0,
+        1
+       ]
+      },
+      "hits": 4
+     }
+    },
+    {
+     "id": "bunker_entrance",
+     "sprite": "assets/world/biome5_tundra/bunker_entrance.png",
+     "kind": "building_poi"
+    },
+    {
+     "id": "lab_door",
+     "sprite": "assets/world/biome5_tundra/lab_door.png",
+     "kind": "building_poi",
+     "note": "ворота биома 6"
+    },
+    {
+     "id": "fuel_barrels",
+     "sprite": "assets/world/biome5_tundra/fuel_barrels.png",
+     "kind": "loot",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 2,
+      "drops": {
+       "crude_oil": [
+        1,
+        3
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "snowmobile",
+     "sprite": "assets/world/biome5_tundra/snowmobile.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "scrap_metal": [
+        4,
+        6
+       ],
+       "battery": [
+        0,
+        1
+       ]
+      },
+      "hits": 6
+     }
+    },
+    {
+     "id": "barbed_fence",
+     "sprite": "assets/world/biome5_tundra/barbed_fence.png",
+     "kind": "fence"
+    },
+    {
+     "id": "watchtower",
+     "sprite": "assets/world/biome5_tundra/watchtower.png",
+     "kind": "decor"
+    },
+    {
+     "id": "cabin",
+     "sprite": "assets/world/biome5_tundra/cabin.png",
+     "kind": "building_poi"
+    },
+    {
+     "id": "icicles",
+     "sprite": "assets/world/biome5_tundra/icicles.png",
+     "kind": "decor"
+    },
+    {
+     "id": "specimen_tank",
+     "sprite": "assets/world/biome5_tundra/specimen_tank.png",
+     "kind": "loot",
+     "note": "записка о «Вспышке»"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "name_ru": "Эпицентр",
+   "ring": "центр",
+   "levels": [
+    33,
+    40
+   ],
+   "tiles": [
+    "scorched_rad",
+    "concrete",
+    "gravel"
+   ],
+   "enemies": [
+    "glowing",
+    "soldier",
+    "sprinter",
+    "bloated"
+   ],
+   "boss": "zero",
+   "gate": "финал",
+   "hazards": [
+    "радиация везде: +2 rad/s без radRes",
+    "радиоактивные зоны (кодом, effects/rad_aura)"
+   ],
+   "objects": [
+    {
+     "id": "mutant_tree",
+     "sprite": "assets/world/biome6_epicenter/mutant_tree.png",
+     "kind": "tree",
+     "harvest": {
+      "tool": "axe",
+      "minTier": 3,
+      "drops": {
+       "wood": [
+        3,
+        5
+       ],
+       "uranium": [
+        0,
+        1
+       ]
+      },
+      "hits": 6
+     },
+     "afterHarvest": "assets/world/biome6_epicenter/mutant_stump.png"
+    },
+    {
+     "id": "crystals",
+     "sprite": "assets/world/biome6_epicenter/crystals.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 5,
+      "drops": {
+       "uranium": [
+        2,
+        3
+       ]
+      },
+      "hits": 8
+     },
+     "afterHarvest": "assets/world/biome6_epicenter/crystals_harvested.png"
+    },
+    {
+     "id": "uranium_rock",
+     "sprite": "assets/world/biome6_epicenter/uranium_rock.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 5,
+      "drops": {
+       "uranium": [
+        2,
+        4
+       ]
+      },
+      "hits": 10
+     },
+     "afterHarvest": "assets/world/biome6_epicenter/uranium_rock_mined.png"
+    },
+    {
+     "id": "molten_rock",
+     "sprite": "assets/world/biome6_epicenter/molten_rock.png",
+     "kind": "rock",
+     "harvest": {
+      "tool": "pickaxe",
+      "minTier": 3,
+      "drops": {
+       "stone": [
+        3,
+        5
+       ]
+      },
+      "hits": 6
+     }
+    },
+    {
+     "id": "cooling_tower",
+     "sprite": "assets/world/biome6_epicenter/cooling_tower.png",
+     "kind": "building_poi"
+    },
+    {
+     "id": "pipes",
+     "sprite": "assets/world/biome6_epicenter/pipes.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 4,
+      "drops": {
+       "steel_plates": [
+        2,
+        3
+       ]
+      },
+      "hits": 8
+     }
+    },
+    {
+     "id": "lab_module",
+     "sprite": "assets/world/biome6_epicenter/lab_module.png",
+     "kind": "building_poi"
+    },
+    {
+     "id": "containment_tank",
+     "sprite": "assets/world/biome6_epicenter/containment_tank.png",
+     "kind": "loot"
+    },
+    {
+     "id": "robot_arm",
+     "sprite": "assets/world/biome6_epicenter/robot_arm.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 4,
+      "drops": {
+       "circuit_board": [
+        2,
+        4
+       ],
+       "steel_ingot": [
+        1,
+        2
+       ]
+      },
+      "hits": 10
+     }
+    },
+    {
+     "id": "server_rack",
+     "sprite": "assets/world/biome6_epicenter/server_rack.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "circuit_board": [
+        3,
+        5
+       ]
+      },
+      "hits": 6
+     }
+    },
+    {
+     "id": "science_desk",
+     "sprite": "assets/world/biome6_epicenter/science_desk.png",
+     "kind": "loot",
+     "note": "записки, чертежи"
+    },
+    {
+     "id": "decon_shower",
+     "sprite": "assets/world/biome6_epicenter/decon_shower.png",
+     "kind": "heal_station",
+     "note": "снимает 50 rad раз в 5 минут"
+    },
+    {
+     "id": "rad_sign",
+     "sprite": "assets/world/biome6_epicenter/rad_sign.png",
+     "kind": "decor"
+    },
+    {
+     "id": "hazmat_locker",
+     "sprite": "assets/world/biome6_epicenter/hazmat_locker.png",
+     "kind": "loot",
+     "note": "hazmat_suit, antirad"
+    },
+    {
+     "id": "car_melted",
+     "sprite": "assets/world/biome6_epicenter/car_melted.png",
+     "kind": "vehicle_wreck",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "scrap_metal": [
+        4,
+        6
+       ]
+      },
+      "hits": 6
+     }
+    },
+    {
+     "id": "monorail",
+     "sprite": "assets/world/biome6_epicenter/monorail.png",
+     "kind": "decor"
+    },
+    {
+     "id": "statue",
+     "sprite": "assets/world/biome6_epicenter/statue.png",
+     "kind": "decor"
+    },
+    {
+     "id": "transformer",
+     "sprite": "assets/world/biome6_epicenter/transformer.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 4,
+      "drops": {
+       "copper_wire": [
+        4,
+        6
+       ]
+      },
+      "hits": 8
+     }
+    },
+    {
+     "id": "satellite_dish",
+     "sprite": "assets/world/biome6_epicenter/satellite_dish.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "wrench",
+      "minTier": 3,
+      "drops": {
+       "circuit_board": [
+        1,
+        2
+       ],
+       "scrap_metal": [
+        4,
+        6
+       ]
+      },
+      "hits": 6
+     }
+    },
+    {
+     "id": "cables",
+     "sprite": "assets/world/biome6_epicenter/cables.png",
+     "kind": "scrap",
+     "harvest": {
+      "tool": "knife",
+      "minTier": 2,
+      "drops": {
+       "copper_wire": [
+        2,
+        4
+       ]
+      },
+      "hits": 3
+     }
+    },
+    {
+     "id": "glow_fungus",
+     "sprite": "assets/world/biome6_epicenter/glow_fungus.png",
+     "kind": "bush",
+     "harvest": {
+      "tool": "hands",
+      "minTier": 0,
+      "drops": {
+       "mushrooms": [
+        1,
+        2
+       ]
+      },
+      "hits": 1
+     }
+    },
+    {
+     "id": "vault_door",
+     "sprite": "assets/world/biome6_epicenter/vault_door.png",
+     "kind": "building_poi",
+     "note": "вход на арену Пациента Ноль"
+    }
+   ]
+  }
+ ],
+ "common": {
+  "interior": [
+   "hands",
+   "campfire",
+   "cooking_station",
+   "workbench_1",
+   "workbench_2",
+   "workbench_3",
+   "forge",
+   "smelter",
+   "sewing_table",
+   "chem_table",
+   "gun_bench",
+   "generator",
+   "electric_bench",
+   "repair_pit",
+   "garden",
+   "rain_barrel",
+   "water_purifier",
+   "chest_wood",
+   "chest_metal",
+   "bed_pallets",
+   "sleeping_bag",
+   "base_core",
+   "outpost_beacon"
+  ],
+  "loot_containers": [
+   {
+    "id": "crate_wood_closed",
+    "sprite": "assets/world/interior/crate_wood_closed.png",
+    "openedSprite": "assets/world/interior/crate_wood_open.png",
+    "slots": 6,
+    "table": "general"
+   },
+   {
+    "id": "crate_military_closed",
+    "sprite": "assets/world/interior/crate_military_closed.png",
+    "openedSprite": "assets/world/interior/crate_military_open.png",
+    "slots": 6,
+    "table": "military"
+   },
+   {
+    "id": "locker",
+    "sprite": "assets/world/interior/locker.png",
+    "openedSprite": null,
+    "slots": 6,
+    "table": "tools_clothes"
+   },
+   {
+    "id": "wardrobe",
+    "sprite": "assets/world/interior/wardrobe.png",
+    "openedSprite": null,
+    "slots": 8,
+    "table": "clothes"
+   },
+   {
+    "id": "drawers",
+    "sprite": "assets/world/interior/drawers.png",
+    "openedSprite": null,
+    "slots": 6,
+    "table": "general"
+   },
+   {
+    "id": "fridge",
+    "sprite": "assets/world/interior/fridge.png",
+    "openedSprite": null,
+    "slots": 6,
+    "table": "food"
+   },
+   {
+    "id": "safe",
+    "sprite": "assets/world/interior/safe.png",
+    "openedSprite": null,
+    "slots": 4,
+    "table": "rare"
+   },
+   {
+    "id": "dead_backpack",
+    "sprite": "assets/world/interior/dead_backpack.png",
+    "openedSprite": null,
+    "slots": 8,
+    "table": "survivor"
+   },
+   {
+    "id": "medical_cabinet",
+    "sprite": "assets/world/interior/medical_cabinet.png",
+    "openedSprite": null,
+    "slots": 6,
+    "table": "medicine"
+   },
+   {
+    "id": "trash_can",
+    "sprite": "assets/world/interior/trash_can.png",
+    "openedSprite": null,
+    "slots": 4,
+    "table": "junk"
+   },
+   {
+    "id": "cardboard_boxes",
+    "sprite": "assets/world/interior/cardboard_boxes.png",
+    "openedSprite": null,
+    "slots": 6,
+    "table": "junk"
+   }
+  ],
+  "furniture_salvage": [
+   {
+    "id": "stove",
+    "sprite": "assets/world/interior/stove.png",
+    "harvest": {
+     "tool": "wrench",
+     "minTier": 1,
+     "drops": {
+      "scrap_metal": [
+       3,
+       4
+      ]
+     },
+     "hits": 4
+    }
+   },
+   {
+    "id": "kitchen_sink",
+    "sprite": "assets/world/interior/kitchen_sink.png",
+    "harvest": {
+     "tool": "wrench",
+     "minTier": 1,
+     "drops": {
+      "scrap_metal": [
+       2,
+       3
+      ]
+     },
+     "hits": 3
+    }
+   },
+   {
+    "id": "table",
+    "sprite": "assets/world/interior/table.png",
+    "harvest": {
+     "tool": "hammer",
+     "minTier": 1,
+     "drops": {
+      "planks": [
+       2,
+       4
+      ]
+     },
+     "hits": 3
+    }
+   },
+   {
+    "id": "chair_broken",
+    "sprite": "assets/world/interior/chair_broken.png",
+    "harvest": {
+     "tool": "hammer",
+     "minTier": 1,
+     "drops": {
+      "planks": [
+       1,
+       2
+      ]
+     },
+     "hits": 2
+    }
+   },
+   {
+    "id": "sofa",
+    "sprite": "assets/world/interior/sofa.png",
+    "harvest": {
+     "tool": "knife",
+     "minTier": 1,
+     "drops": {
+      "rags": [
+       2,
+       4
+      ]
+     },
+     "hits": 3
+    }
+   },
+   {
+    "id": "bed",
+    "sprite": "assets/world/interior/bed.png",
+    "harvest": {
+     "tool": "hammer",
+     "minTier": 1,
+     "drops": {
+      "planks": [
+       2,
+       3
+      ],
+      "rags": [
+       1,
+       2
+      ]
+     },
+     "hits": 3
+    }
+   },
+   {
+    "id": "bookshelf",
+    "sprite": "assets/world/interior/bookshelf.png",
+    "harvest": {
+     "tool": "hammer",
+     "minTier": 1,
+     "drops": {
+      "planks": [
+       2,
+       3
+      ]
+     },
+     "hits": 3
+    }
+   },
+   {
+    "id": "tv",
+    "sprite": "assets/world/interior/tv.png",
+    "harvest": {
+     "tool": "wrench",
+     "minTier": 1,
+     "drops": {
+      "circuit_board": [
+       0,
+       1
+      ],
+      "plastic": [
+       1,
+       2
+      ]
+     },
+     "hits": 3
+    }
+   },
+   {
+    "id": "office_desk",
+    "sprite": "assets/world/interior/office_desk.png",
+    "harvest": {
+     "tool": "wrench",
+     "minTier": 1,
+     "drops": {
+      "circuit_board": [
+       0,
+       1
+      ],
+      "planks": [
+       1,
+       2
+      ]
+     },
+     "hits": 3
+    }
+   },
+   {
+    "id": "bathtub",
+    "sprite": "assets/world/interior/bathtub.png",
+    "harvest": {
+     "tool": "wrench",
+     "minTier": 1,
+     "drops": {
+      "scrap_metal": [
+       3,
+       5
+      ]
+     },
+     "hits": 4
+    }
+   },
+   {
+    "id": "toilet",
+    "sprite": "assets/world/interior/toilet.png",
+    "harvest": {
+     "tool": "pickaxe",
+     "minTier": 1,
+     "drops": {
+      "stone": [
+       1,
+       2
+      ]
+     },
+     "hits": 2
+    }
+   },
+   {
+    "id": "tires",
+    "sprite": "assets/world/interior/tires.png",
+    "harvest": {
+     "tool": "hands",
+     "minTier": 1,
+     "drops": {
+      "rubber": [
+       2,
+       3
+      ]
+     },
+     "hits": 2
+    }
+   }
+  ]
+ }
+}

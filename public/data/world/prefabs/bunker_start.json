@@ -1,0 +1,21 @@
+{
+  "id": "bunker_start",
+  "kind": "bunker",
+  "material": "concrete",
+  "anchor": [3, 6],
+  "plan": [
+    "#######",
+    "#.....#",
+    "#.....#",
+    "#.....#",
+    "###D###",
+    ",,,,,,,",
+    ",,,,,,,"
+  ],
+  "objects": [
+    { "at": [1.6, 2.4], "station": "bed_pallets" },
+    { "at": [5.3, 2.2], "container": "crate_wood_closed" },
+    { "at": [4.6, 3.8], "station": "chest_wood" },
+    { "at": [1.5, 6.6], "station": "campfire", "state": "on" }
+  ]
+}

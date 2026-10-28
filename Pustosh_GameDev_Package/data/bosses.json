@@ -1,0 +1,227 @@
+[
+ {
+  "id": "butcher",
+  "name_ru": "Мясник Дачного",
+  "biome": 1,
+  "hp": 600,
+  "targetHeightPx": 288,
+  "sprites": {
+   "idle": "assets/characters/bosses/butcher_idle.png",
+   "phase2": "assets/characters/bosses/butcher_phase2.png",
+   "head": "assets/characters/bosses/butcher_head.png",
+   "torso": "assets/characters/bosses/butcher_torso.png",
+   "arm": "assets/characters/bosses/butcher_arm.png",
+   "leg": "assets/characters/bosses/butcher_leg.png",
+   "hook_chain": "assets/characters/bosses/butcher_hook_chain.png",
+   "trophy_key": "assets/characters/bosses/butcher_trophy_key.png"
+  },
+  "phases": [
+   "100–50%: крюк и удары",
+   "50–0%: phase2 спрайт, зовёт 4 бродяг, скорость x1.3"
+  ],
+  "attacks": [
+   "hook_pull: бросок крюка на 6 тайлов, притягивает игрока (цепь = повтор сегмента)",
+   "slam: удар по площади 2 тайла",
+   "swing: широкий удар перед собой"
+  ],
+  "trophy": {
+   "item": "trophy_butcher",
+   "icon": "assets/characters/bosses/butcher_trophy_key.png"
+  },
+  "unlocks": [
+   "ворота к трассе (биом 2)",
+   "рецепт workbench_2",
+   "мопед"
+  ],
+  "arena": "круг радиусом 9 тайлов, костёр-чекпоинт у входа, вход закрывается до победы/смерти",
+  "telegraph": "каждая сильная атака: красная зона на земле за 0.8–1.2 c"
+ },
+ {
+  "id": "queen",
+  "name_ru": "Королева Трясины",
+  "biome": 2,
+  "hp": 1100,
+  "targetHeightPx": 260,
+  "sprites": {
+   "idle": "assets/characters/bosses/queen_idle.png",
+   "phase2": "assets/characters/bosses/queen_phase2.png",
+   "head": "assets/characters/bosses/queen_head.png",
+   "body": "assets/characters/bosses/queen_body.png",
+   "front_leg": "assets/characters/bosses/queen_front_leg.png",
+   "back_leg": "assets/characters/bosses/queen_back_leg.png",
+   "egg_sacs": "assets/characters/bosses/queen_egg_sacs.png",
+   "trophy_jar": "assets/characters/bosses/queen_trophy_jar.png"
+  },
+  "phases": [
+   "100–50%: ныряет в воду, выпрыгивает",
+   "50–0%: яйца лопаются → головастики (используют spitter-проджектайлы)"
+  ],
+  "attacks": [
+   "tongue: притягивание (используй язык из animals/toad_tongue_and_sac)",
+   "leap_slam: прыжок, ударная волна",
+   "poison_pools: 3 ядовитые лужи (эффект slime + тонированный круг)"
+  ],
+  "trophy": {
+   "item": "trophy_queen",
+   "icon": "assets/characters/bosses/queen_trophy_jar.png"
+  },
+  "unlocks": [
+   "мост через реку (биом 3)",
+   "рецепт gas_mask и respirator",
+   "квадроцикл"
+  ],
+  "arena": "круг радиусом 9 тайлов, костёр-чекпоинт у входа, вход закрывается до победы/смерти",
+  "telegraph": "каждая сильная атака: красная зона на земле за 0.8–1.2 c"
+ },
+ {
+  "id": "tyrant",
+  "name_ru": "Тиран",
+  "biome": 3,
+  "hp": 2000,
+  "targetHeightPx": 380,
+  "sprites": {
+   "idle": "assets/characters/bosses/tyrant_idle.png",
+   "phase2": "assets/characters/bosses/tyrant_phase2.png",
+   "head": "assets/characters/bosses/tyrant_head.png",
+   "leg": "assets/characters/bosses/tyrant_leg.png",
+   "arm": "assets/characters/bosses/tyrant_arm.png",
+   "tail": "assets/characters/bosses/tyrant_tail.png",
+   "trophy_fang": "assets/characters/bosses/tyrant_trophy_fang.png"
+  },
+  "phases": [
+   "100–60%: таран и укусы",
+   "60–25%: phase2 спрайт, рёв зовёт 2 рапторов",
+   "25–0%: разрушает постройки на пути, скорость x1.4"
+  ],
+  "attacks": [
+   "charge: таран по прямой 10 тайлов, ломает стены",
+   "bite: укус перед собой",
+   "tail_sweep: удар хвостом сзади",
+   "roar: оглушение 1 c в радиусе 4"
+  ],
+  "trophy": {
+   "item": "trophy_tyrant",
+   "icon": "assets/characters/bosses/tyrant_trophy_fang.png"
+  },
+  "unlocks": [
+   "пропуск в промзону (биом 4)",
+   "мотоцикл с коляской",
+   "рецепт gun_bench"
+  ],
+  "arena": "круг радиусом 9 тайлов, костёр-чекпоинт у входа, вход закрывается до победы/смерти",
+  "telegraph": "каждая сильная атака: красная зона на земле за 0.8–1.2 c"
+ },
+ {
+  "id": "devourer",
+  "name_ru": "Пожиратель Карьера",
+  "biome": 4,
+  "hp": 3200,
+  "targetHeightPx": 360,
+  "sprites": {
+   "idle": "assets/characters/bosses/devourer_idle.png",
+   "phase2": "assets/characters/bosses/devourer_phase2.png",
+   "head_mouth": "assets/characters/bosses/devourer_head_mouth.png",
+   "segment": "assets/characters/bosses/devourer_segment.png",
+   "teeth_ring": "assets/characters/bosses/devourer_teeth_ring.png",
+   "mouth_alt": "assets/characters/bosses/devourer_mouth_alt.png",
+   "tail_segment": "assets/characters/bosses/devourer_tail_segment.png",
+   "armor_plate": "assets/characters/bosses/devourer_armor_plate.png",
+   "trophy_heart": "assets/characters/bosses/devourer_trophy_heart.png"
+  },
+  "phases": [
+   "100–50%: выныривает по кругу, уязвим 2 c после выхода",
+   "50–0%: plates отпадают (armor_plate как частица), выныривает чаще"
+  ],
+  "attacks": [
+   "emerge: выход из-под земли под игроком (тень-предупреждение)",
+   "rock_spit: плевок камнем",
+   "sweep: удар телом по дуге"
+  ],
+  "trophy": {
+   "item": "trophy_devourer",
+   "icon": "assets/characters/bosses/devourer_trophy_heart.png"
+  },
+  "unlocks": [
+   "ключ-карта лаборатории (биом 5)",
+   "багги",
+   "рецепт grenade"
+  ],
+  "arena": "круг радиусом 9 тайлов, костёр-чекпоинт у входа, вход закрывается до победы/смерти",
+  "telegraph": "каждая сильная атака: красная зона на земле за 0.8–1.2 c"
+ },
+ {
+  "id": "frost",
+  "name_ru": "Объект «Мороз»",
+  "biome": 5,
+  "hp": 4500,
+  "targetHeightPx": 330,
+  "sprites": {
+   "idle": "assets/characters/bosses/frost_idle.png",
+   "phase2": "assets/characters/bosses/frost_phase2.png",
+   "head": "assets/characters/bosses/frost_head.png",
+   "body": "assets/characters/bosses/frost_body.png",
+   "front_leg": "assets/characters/bosses/frost_front_leg.png",
+   "back_leg": "assets/characters/bosses/frost_back_leg.png",
+   "tail": "assets/characters/bosses/frost_tail.png",
+   "trophy_core": "assets/characters/bosses/frost_trophy_core.png",
+   "ice_shard": "assets/characters/bosses/frost_ice_shard.png"
+  },
+  "phases": [
+   "100–50%: щит на ядре, снимается только электрическим оружием/модом",
+   "50–0%: ядро открыто, урон x2, атаки чаще"
+  ],
+  "attacks": [
+   "ice_breath: конус холода 5 тайлов (замедление, холод)",
+   "ice_shards: веер из 5 ice_shard",
+   "stomp: ударная волна"
+  ],
+  "trophy": {
+   "item": "trophy_frost",
+   "icon": "assets/characters/bosses/frost_trophy_core.png"
+  },
+  "unlocks": [
+   "доступ в эпицентр (биом 6)",
+   "снегоход",
+   "рецепт electric_bench"
+  ],
+  "arena": "круг радиусом 9 тайлов, костёр-чекпоинт у входа, вход закрывается до победы/смерти",
+  "telegraph": "каждая сильная атака: красная зона на земле за 0.8–1.2 c"
+ },
+ {
+  "id": "zero",
+  "name_ru": "Пациент Ноль",
+  "biome": 6,
+  "hp": 7000,
+  "targetHeightPx": 340,
+  "sprites": {
+   "idle": "assets/characters/bosses/zero_idle.png",
+   "phase2": "assets/characters/bosses/zero_phase2.png",
+   "head": "assets/characters/bosses/zero_head.png",
+   "torso": "assets/characters/bosses/zero_torso.png",
+   "arm": "assets/characters/bosses/zero_arm.png",
+   "tentacle": "assets/characters/bosses/zero_tentacle.png",
+   "lower_body": "assets/characters/bosses/zero_lower_body.png",
+   "trophy_medallion": "assets/characters/bosses/zero_trophy_medallion.png"
+  },
+  "phases": [
+   "100–66%: щупальца из труб",
+   "66–33%: арена заливается радиацией по секторам",
+   "33–0%: phase2 спрайт, всё быстрее, призывает светящихся"
+  ],
+  "attacks": [
+   "tentacle_lash: щупальце (повтор сегмента tentacle)",
+   "rad_orb: сфера (effects/rad_aura)",
+   "rad_zone: сектор арены облучается"
+  ],
+  "trophy": {
+   "item": "trophy_zero",
+   "icon": "assets/characters/bosses/zero_trophy_medallion.png"
+  },
+  "unlocks": [
+   "концовка",
+   "бесконечный режим"
+  ],
+  "arena": "круг радиусом 9 тайлов, костёр-чекпоинт у входа, вход закрывается до победы/смерти",
+  "telegraph": "каждая сильная атака: красная зона на земле за 0.8–1.2 c"
+ }
+]

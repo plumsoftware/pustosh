@@ -1,0 +1,49 @@
+ЛИСТ 09 — ЭФФЕКТЫ И ПОГОДА (ЧЁРНЫЙ ФОН)
+Файл листа: s32_effects_extra.png      Папка нарезки: effects/
+Зачем: погода (дождь, снег, песчаная буря, радиационная дымка) не сделана — нет частиц;
+электро-искры между столбами, струя огнемёта, пила, огненная ловушка, ударные волны боссов
+упрощены. Эти кадры рисуются в игре сложением цветов (ADD), поэтому фон чёрный.
+Приложить: source_sheets/s22_effects.png.
+
+===== PROMPT =====
+ONE ATTACHED IMAGE: the effects sheet of this game. Match its painting style, brightness and soft edges exactly.
+
+ART STYLE: hand-painted game effect sprites, bright saturated core, soft painted falloff, readable at small size. They will be drawn with additive blending, so dark parts become transparent.
+
+BACKGROUND — critical: perfectly flat solid BLACK #000000. Nothing else on the background.
+
+FORBIDDEN: text, letters, numbers, logos, watermark, grid lines, labels, frames, any non-black background.
+
+SHEET FORMAT: one square image, invisible grid of 5 columns and 5 rows of equal cells, one effect per cell, centered, at least 12% empty margin, effects never touch. Fill left to right, top to bottom:
+1. a single rain streak, thin slanted light-blue line, longer than wide
+2. a small rain splash ring with tiny droplets
+3. a snowflake, soft white, simple six-pointed
+4. a soft white snow puff (small cloud of snow)
+5. a horizontal gust of sand and dust, warm beige, wider than tall
+6. a drifting toxic haze blob, faint green
+7. a falling autumn leaf, orange-brown
+8. dark red droplets falling (bleeding indicator, stylized, not gore)
+9. electric arc frame 1: a jagged blue-white lightning bolt, horizontal, wider than tall
+10. electric arc frame 2: a different jagged blue-white bolt, horizontal
+11. electric arc frame 3: a thinner flickering bolt, horizontal
+12. flamethrower jet frame 1: a horizontal cone of orange fire, narrow at the left, wide at the right
+13. flamethrower jet frame 2: the same jet, different flame shape
+14. a fire trap burst: a vertical column of fire shooting upward
+15. a spinning saw blade motion blur: a circular silver blur with sparks
+16. a shockwave ring, wide flat ellipse, dusty orange
+17. a cold breath cone, horizontal, icy blue mist made of painted particles
+18. a burst of ice shards flying outward, blue-white
+19. a green healing plus sign made of soft light with small sparkles
+20. a golden level-up burst: rays radiating from the center
+21. rising green poison bubbles
+22. a white muzzle-smoke-like tracer streak, long and thin, horizontal
+23. a small brown dust puff from a footstep
+24. a water ripple ring on the surface, light blue ellipse
+25. three "Z" shaped sleep curls (painted swirls, NOT letters): soft white
+
+CELL NAMES (порядок нарезки):
+rain_streak rain_splash snowflake snow_puff sand_gust
+toxic_haze leaf bleed_drops arc_1 arc_2
+arc_3 flame_jet_1 flame_jet_2 fire_trap_burst saw_blur
+shockwave cold_breath ice_burst heal_plus levelup_burst
+poison_bubbles tracer_streak step_dust ripple sleep_curls

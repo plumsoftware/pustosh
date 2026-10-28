@@ -1,0 +1,176 @@
+{
+ "maxLevel": 40,
+ "pointsPerLevel": 1,
+ "xpCurve": "xpToNext(level) = 60 * level^1.45 (округлять до 5)",
+ "branches": [
+  {
+   "id": "fighter",
+   "name_ru": "Боец",
+   "skills": [
+    {
+     "id": "fighter_1",
+     "name_ru": "Сила удара",
+     "levels": 3,
+     "perLevel": "+10% урона ближнего боя"
+    },
+    {
+     "id": "fighter_2",
+     "name_ru": "Стрелок",
+     "levels": 3,
+     "perLevel": "+10% урона огнестрела"
+    },
+    {
+     "id": "fighter_3",
+     "name_ru": "Ловкость",
+     "levels": 3,
+     "perLevel": "-15% выносливости на перекат"
+    },
+    {
+     "id": "fighter_4",
+     "name_ru": "Удар в спину",
+     "levels": 3,
+     "perLevel": "+25% крит сзади"
+    },
+    {
+     "id": "fighter_5",
+     "name_ru": "Добивание",
+     "levels": 3,
+     "perLevel": "оглушённые получают x2 урона"
+    },
+    {
+     "id": "fighter_6",
+     "name_ru": "Живучесть",
+     "levels": 3,
+     "perLevel": "+10 к максимуму здоровья"
+    }
+   ]
+  },
+  {
+   "id": "gatherer",
+   "name_ru": "Добытчик",
+   "skills": [
+    {
+     "id": "gatherer_1",
+     "name_ru": "Жадность",
+     "levels": 3,
+     "perLevel": "+1 ресурс с добычи (шанс 20/35/50%)"
+    },
+    {
+     "id": "gatherer_2",
+     "name_ru": "Мародёр",
+     "levels": 3,
+     "perLevel": "+15% шанс двойного лута в контейнерах"
+    },
+    {
+     "id": "gatherer_3",
+     "name_ru": "Бережливость",
+     "levels": 3,
+     "perLevel": "-15% износа инструментов"
+    },
+    {
+     "id": "gatherer_4",
+     "name_ru": "Чутьё",
+     "levels": 3,
+     "perLevel": "+2 тайла радиус подсветки лута"
+    },
+    {
+     "id": "gatherer_5",
+     "name_ru": "Свежевание",
+     "levels": 3,
+     "perLevel": "+1 шкура/мех"
+    },
+    {
+     "id": "gatherer_6",
+     "name_ru": "Рыбак",
+     "levels": 3,
+     "perLevel": "+25% скорость рыбалки"
+    }
+   ]
+  },
+  {
+   "id": "engineer",
+   "name_ru": "Инженер",
+   "skills": [
+    {
+     "id": "engineer_1",
+     "name_ru": "Экономия",
+     "levels": 3,
+     "perLevel": "-10% стоимость построек"
+    },
+    {
+     "id": "engineer_2",
+     "name_ru": "Оружейник",
+     "levels": 3,
+     "perLevel": "открывает оружейный стол (ур.2); +10% урон турелей"
+    },
+    {
+     "id": "engineer_3",
+     "name_ru": "Конвейер",
+     "levels": 3,
+     "perLevel": "+20% скорость станков"
+    },
+    {
+     "id": "engineer_4",
+     "name_ru": "Мастер",
+     "levels": 3,
+     "perLevel": "починка без ремкомплекта (ур.3)"
+    },
+    {
+     "id": "engineer_5",
+     "name_ru": "Механик",
+     "levels": 3,
+     "perLevel": "-15% расход топлива"
+    },
+    {
+     "id": "engineer_6",
+     "name_ru": "Укрепление",
+     "levels": 3,
+     "perLevel": "+10% HP построек"
+    }
+   ]
+  },
+  {
+   "id": "survivor",
+   "name_ru": "Выживальщик",
+   "skills": [
+    {
+     "id": "survivor_1",
+     "name_ru": "Выносливый желудок",
+     "levels": 3,
+     "perLevel": "-10% скорость голода и жажды"
+    },
+    {
+     "id": "survivor_2",
+     "name_ru": "Закалка",
+     "levels": 3,
+     "perLevel": "+3 к холоду и жаре"
+    },
+    {
+     "id": "survivor_3",
+     "name_ru": "Носильщик",
+     "levels": 3,
+     "perLevel": "+4 слота инвентаря"
+    },
+    {
+     "id": "survivor_4",
+     "name_ru": "Лекарь",
+     "levels": 3,
+     "perLevel": "+20% к лечению"
+    },
+    {
+     "id": "survivor_5",
+     "name_ru": "Иммунитет",
+     "levels": 3,
+     "perLevel": "-15% радиации и яда"
+    },
+    {
+     "id": "survivor_6",
+     "name_ru": "Сон",
+     "levels": 3,
+     "perLevel": "сон восстанавливает +20% здоровья"
+    }
+   ]
+  }
+ ],
+ "note": "requiresSkill в рецептах ссылается на ветку_уровень, например engineer_2 = 2 очка в ветке Инженер"
+}

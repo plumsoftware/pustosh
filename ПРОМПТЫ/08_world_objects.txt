@@ -1,0 +1,46 @@
+ЛИСТ 08 — ОБЪЕКТЫ МИРА: АРЕНЫ БОССОВ, БАЗА, ЗАДАНИЯ
+Файл листа: s31_world_extra.png      Папка нарезки: world/common/ и world/interior/
+Зачем: выход Пожирателя из-под земли, яйца Королевы, ледяные шипы Мороза, щупальце
+Пациента Ноль сейчас показаны эффектами-заменителями; тотем 2 и 3 уровня выглядит как
+тотем 1; записки, доска заданий и место смерти не имеют своих спрайтов.
+Приложить: 1) source_sheets/s08_interior.png (стиль предметов базы), 2) tools/angle_reference.png,
+3) source_sheets/s20_bosses.png (для пунктов 1–8: цвета боссов).
+
+===== PROMPT =====
+THREE ATTACHED IMAGES: image 1 = the style reference (base furniture and stations of this game), image 2 = the camera angle reference: copy ONLY its LEFT side, image 3 = the bosses of this game (use their colors and materials for cells 1–8).
+
+ART STYLE — follow strictly. 2D world sprites for a mobile post-apocalyptic open-world survival game. Painted semi-realistic look, slightly chunky friendly proportions, rust, moss, chipped paint, worn wood, dirt. Warm muted palette. Soft light from the top-left, crisp readable silhouettes.
+
+CAMERA: classic front-facing top-down RPG view — every object stands square to the camera, we look down from about 45 degrees, ONLY the top and the front are visible. Never diagonal, never isometric.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. NO ground patch, NO shadow. Hard, clean, fully opaque edges. Ice and glass painted opaque. Thin parts solid.
+
+FORBIDDEN: smoke, steam, fire, water spray, mist, glow halos, blood, text, letters, numbers, logos, real brands, watermark, grid lines, labels.
+
+SHEET FORMAT: one square image, invisible grid of 5 columns and 4 rows of equal cells, one object per cell, centered, at least 12% empty margin, objects never touch. Fill left to right, top to bottom:
+1. a ring of broken rock chunks pushed up around a dark round hole (where a giant worm bursts out of the ground)
+2. a long low mound of loose rubble and rocks (a worm moving underground), wider than tall
+3. a single slimy greenish-brown egg sac the size of a dog, veins on it
+4. the same egg sac torn open and empty
+5. a cluster of sharp opaque blue-white ice spikes bursting upward, taller than wide
+6. a tall single opaque ice crystal pillar with frost at its base
+7. a thick mutated tentacle rising from a pile of concrete rubble, curled at the tip
+8. a rusty meat-hook rack: a wooden post with chains and big hooks (arena decoration)
+9. the camp totem upgraded, LEVEL 2: an olive military crate with a taller welded antenna mast, a red beacon light painted on top, sandbags around its base
+10. the camp totem, LEVEL 3: a reinforced steel crate with armor plates, a tall lattice radio mast with a small dish, two painted red beacon lights
+11. a paper note pinned under a small stone (lying on nothing)
+12. a quest notice board: a wooden board on two posts with pinned papers and photos (no readable writing)
+13. a grave marker: two sticks tied into a cross with a hanging old backpack strap
+14. a wooden road signpost with three blank arrow boards
+15. a trophy shelf: a wooden shelf with an empty stand for a trophy, metal brackets
+16. a rusty fuel barrel with a hand pump on top
+17. a scrap-metal lamp post with a caged bulb (bulb painted warm yellow, no glow)
+18. a field map table: a crate with a spread paper map and a compass on it
+19. a campfire with a cooking spit and a pot (unlit, no fire)
+20. a broken satellite dish lying on its side
+
+CELL NAMES (порядок нарезки):
+devourer_hole devourer_mound queen_egg queen_egg_open frost_spikes
+frost_crystal zero_tentacle_rubble arena_hook_rack base_core_2 base_core_3
+note_world quest_board grave_marker signpost trophy_shelf
+fuel_barrel lamp_post map_table campfire_spit sat_dish_broken

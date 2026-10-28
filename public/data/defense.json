@@ -1,0 +1,339 @@
+[
+ {
+  "id": "stakes",
+  "name_ru": "Колья",
+  "sprite": "assets/world/defense/stakes.png",
+  "hp": 200,
+  "effect": {
+   "contactDamage": 8
+  },
+  "cost": {
+   "sticks": 6
+  },
+  "station": "hands",
+  "destroyedSprite": null
+ },
+ {
+  "id": "spike_barricade",
+  "name_ru": "Ёж из кольев",
+  "sprite": "assets/world/defense/spike_barricade.png",
+  "hp": 400,
+  "effect": {
+   "contactDamage": 12,
+   "slowMul": 0.6
+  },
+  "cost": {
+   "wood": 6,
+   "nails_bolts": 2
+  },
+  "station": "workbench_1",
+  "destroyedSprite": null
+ },
+ {
+  "id": "floor_spikes",
+  "name_ru": "Шипы",
+  "sprite": "assets/world/defense/floor_spikes.png",
+  "hp": 300,
+  "effect": {
+   "contactDamage": 15
+  },
+  "cost": {
+   "scrap_metal": 4
+  },
+  "station": "workbench_2",
+  "destroyedSprite": null
+ },
+ {
+  "id": "barbed_wire",
+  "name_ru": "Колючая проволока",
+  "sprite": "assets/world/defense/barbed_wire.png",
+  "hp": 250,
+  "effect": {
+   "contactDamage": 5,
+   "slowMul": 0.4,
+   "bleed": true
+  },
+  "cost": {
+   "scrap_metal": 3,
+   "copper_wire": 1
+  },
+  "station": "workbench_2",
+  "destroyedSprite": null
+ },
+ {
+  "id": "bear_trap",
+  "name_ru": "Капкан",
+  "sprite": "assets/world/defense/bear_trap_open.png",
+  "hp": 150,
+  "effect": {
+   "rootSec": 4,
+   "damage": 30,
+   "closedSprite": "assets/replacements/bear_trap_closed.png"
+  },
+  "cost": {
+   "scrap_metal": 4
+  },
+  "station": "workbench_2",
+  "destroyedSprite": null
+ },
+ {
+  "id": "tripwire",
+  "name_ru": "Растяжка с банками",
+  "sprite": "assets/world/defense/tripwire.png",
+  "hp": 50,
+  "effect": {
+   "alertRadiusTiles": 10
+  },
+  "cost": {
+   "fiber": 4,
+   "scrap_metal": 1
+  },
+  "station": "hands",
+  "destroyedSprite": null
+ },
+ {
+  "id": "barrel_explosive",
+  "name_ru": "Взрывная бочка",
+  "sprite": "assets/world/defense/barrel_explosive.png",
+  "hp": 40,
+  "effect": {
+   "explosionDamage": 120,
+   "radiusTiles": 2.5
+  },
+  "cost": {
+   "crude_oil": 2,
+   "scrap_metal": 3
+  },
+  "station": "chem_table",
+  "destroyedSprite": null
+ },
+ {
+  "id": "electric_fence",
+  "name_ru": "Электрозабор",
+  "sprite": "assets/world/defense/electric_fence.png",
+  "hp": 600,
+  "effect": {
+   "contactDamage": 20,
+   "stun": true,
+   "needsPower": true,
+   "postSprite": "assets/world/defense/electric_post.png"
+  },
+  "cost": {
+   "copper_wire": 4,
+   "steel_ingot": 1
+  },
+  "station": "electric_bench",
+  "destroyedSprite": null
+ },
+ {
+  "id": "sandbags",
+  "name_ru": "Мешки с песком",
+  "sprite": "assets/world/defense/sandbags.png",
+  "hp": 900,
+  "effect": {
+   "blocksBullets": true
+  },
+  "cost": {
+   "sand": 6,
+   "rags": 3
+  },
+  "station": "workbench_1",
+  "destroyedSprite": null
+ },
+ {
+  "id": "barricade_doors",
+  "name_ru": "Баррикада",
+  "sprite": "assets/world/defense/barricade_doors.png",
+  "hp": 1200,
+  "effect": {},
+  "cost": {
+   "scrap_metal": 8
+  },
+  "station": "workbench_2",
+  "destroyedSprite": null
+ },
+ {
+  "id": "watchtower",
+  "name_ru": "Вышка",
+  "sprite": "assets/world/defense/watchtower.png",
+  "hp": 800,
+  "effect": {
+   "visionBonusTiles": 6
+  },
+  "cost": {
+   "wood": 12,
+   "planks": 6
+  },
+  "station": "workbench_2",
+  "destroyedSprite": null
+ },
+ {
+  "id": "searchlight",
+  "name_ru": "Прожектор",
+  "sprite": "assets/world/defense/searchlight.png",
+  "hp": 200,
+  "effect": {
+   "lightConeTiles": 10,
+   "needsPower": true
+  },
+  "cost": {
+   "scrap_metal": 3,
+   "circuit_board": 1,
+   "copper_wire": 2
+  },
+  "station": "electric_bench",
+  "destroyedSprite": null
+ },
+ {
+  "id": "alarm_bell",
+  "name_ru": "Тревожный колокол",
+  "sprite": "assets/world/defense/alarm_bell.png",
+  "hp": 150,
+  "effect": {
+   "alertRadiusTiles": 20
+  },
+  "cost": {
+   "scrap_metal": 4
+  },
+  "station": "workbench_2",
+  "destroyedSprite": null
+ },
+ {
+  "id": "landmine",
+  "name_ru": "Мина",
+  "sprite": "assets/world/defense/landmine.png",
+  "hp": 1,
+  "effect": {
+   "explosionDamage": 150,
+   "radiusTiles": 1.5
+  },
+  "cost": {
+   "steel_ingot": 1,
+   "sulfur": 2,
+   "coal": 1
+  },
+  "station": "chem_table",
+  "destroyedSprite": null
+ },
+ {
+  "id": "fire_trap",
+  "name_ru": "Огненная ловушка",
+  "sprite": "assets/world/defense/fire_trap.png",
+  "hp": 300,
+  "effect": {
+   "fireConeTiles": 3,
+   "fuel": "crude_oil"
+  },
+  "cost": {
+   "steel_plates": 2,
+   "crude_oil": 2
+  },
+  "station": "gun_bench",
+  "destroyedSprite": null
+ },
+ {
+  "id": "turret_mg",
+  "name_ru": "Турель (пулемёт)",
+  "sprite": "assets/world/defense/turret_base.png",
+  "hp": 700,
+  "effect": {
+   "head": "assets/replacements/turret_head_mg.png",
+   "damage": 12,
+   "rate": 5,
+   "rangeTiles": 9,
+   "ammo": "ammo_rifle"
+  },
+  "cost": {
+   "steel_plates": 4,
+   "circuit_board": 2,
+   "steel_ingot": 2
+  },
+  "station": "gun_bench",
+  "destroyedSprite": "assets/world/defense/turret_destroyed.png"
+ },
+ {
+  "id": "turret_energy",
+  "name_ru": "Турель (энергия)",
+  "sprite": "assets/world/defense/turret_base.png",
+  "hp": 900,
+  "effect": {
+   "head": "assets/world/defense/turret_head_energy.png",
+   "damage": 30,
+   "rate": 1.5,
+   "rangeTiles": 11,
+   "needsPower": true
+  },
+  "cost": {
+   "titanium_ingot": 2,
+   "circuit_board": 4,
+   "battery": 2
+  },
+  "station": "electric_bench",
+  "destroyedSprite": "assets/world/defense/turret_destroyed.png"
+ },
+ {
+  "id": "dart_trap",
+  "name_ru": "Ловушка-самострел",
+  "sprite": "assets/world/defense/dart_trap.png",
+  "hp": 300,
+  "effect": {
+   "damage": 20,
+   "rate": 1,
+   "rangeTiles": 6
+  },
+  "cost": {
+   "planks": 4,
+   "sticks": 10
+  },
+  "station": "workbench_2",
+  "destroyedSprite": null
+ },
+ {
+  "id": "blade_trap",
+  "name_ru": "Пила-ловушка",
+  "sprite": "assets/world/defense/blade_trap.png",
+  "hp": 500,
+  "effect": {
+   "contactDamage": 25,
+   "needsPower": true,
+   "spinPart": "circle r=0.32 от центра"
+  },
+  "cost": {
+   "steel_plates": 2,
+   "battery": 1
+  },
+  "station": "electric_bench",
+  "destroyedSprite": null
+ },
+ {
+  "id": "pit_trap",
+  "name_ru": "Яма с кольями",
+  "sprite": "assets/world/defense/pit_trap.png",
+  "hp": 200,
+  "effect": {
+   "damage": 40,
+   "rootSec": 3
+  },
+  "cost": {
+   "sticks": 8,
+   "planks": 4
+  },
+  "station": "workbench_1",
+  "destroyedSprite": null
+ },
+ {
+  "id": "gate_spiked",
+  "name_ru": "Ворота с шипами",
+  "sprite": "assets/world/defense/gate_spiked.png",
+  "hp": 1500,
+  "effect": {
+   "contactDamage": 6
+  },
+  "cost": {
+   "wood": 10,
+   "scrap_metal": 6
+  },
+  "station": "workbench_2",
+  "destroyedSprite": null
+ }
+]

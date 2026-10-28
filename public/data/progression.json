@@ -1,0 +1,557 @@
+{
+  "_note": "Прогрессия, боссы, задания, транспорт, обучение, звук (шаг 9). Числа из TZ/STEP_09 и GDD §11–15; помеченное «агент» (параметры атак боссов, тексты записок, шаблоны заданий, физика машин) — предложение, проверить владельцу.",
+  "xp": {
+    "perHarvestedResourceTier1": 1,
+    "craftPerTier": 2,
+    "poiFirstVisit": 25,
+    "newRecipe": 10,
+    "bossPerNumber": 500,
+    "poiRadiusTiles": 6
+  },
+  "skillEffects": {
+    "fighter_1": {
+      "meleeDamage": 0.1
+    },
+    "fighter_2": {
+      "gunDamage": 0.1
+    },
+    "fighter_3": {
+      "dodgeStamina": -0.15
+    },
+    "fighter_4": {
+      "backstab": 0.25
+    },
+    "fighter_5": {
+      "stunnedDamage": 1
+    },
+    "fighter_6": {
+      "maxHp": 10
+    },
+    "gatherer_1": {
+      "extraResourceChance": [
+        0.2,
+        0.35,
+        0.5
+      ]
+    },
+    "gatherer_2": {
+      "doubleLootChance": 0.15
+    },
+    "gatherer_3": {
+      "toolWear": -0.15
+    },
+    "gatherer_4": {
+      "highlightRadius": 2
+    },
+    "gatherer_5": {
+      "extraHide": 1
+    },
+    "gatherer_6": {
+      "fishingSpeed": 0.25
+    },
+    "engineer_1": {
+      "buildCost": -0.1
+    },
+    "engineer_2": {
+      "turretDamage": 0.1
+    },
+    "engineer_3": {
+      "stationSpeed": 0.2
+    },
+    "engineer_4": {
+      "repairWithoutKitAt": 3
+    },
+    "engineer_5": {
+      "fuel": -0.15
+    },
+    "engineer_6": {
+      "buildHp": 0.1
+    },
+    "survivor_1": {
+      "needsRate": -0.1
+    },
+    "survivor_2": {
+      "tempRes": 3
+    },
+    "survivor_3": {
+      "inventorySlots": 4
+    },
+    "survivor_4": {
+      "healing": 0.2
+    },
+    "survivor_5": {
+      "radPoison": -0.15
+    },
+    "survivor_6": {
+      "sleepHeal": 0.2
+    }
+  },
+  "bosses": {
+    "arenaRadiusTiles": 9,
+    "barrierColor": "#ff4030",
+    "telegraphSec": [
+      0.8,
+      1.2
+    ],
+    "phase2FlashMs": 400,
+    "attackPauseSec": [
+      1.2,
+      2.2
+    ],
+    "checkpointRespawnTiles": 2,
+    "butcher": {
+      "speed": 1.1,
+      "hookRange": 6,
+      "hookDamage": 14,
+      "hookPull": 4,
+      "slamRadius": 2,
+      "slamDamage": 26,
+      "swingRange": 2.4,
+      "swingDeg": 120,
+      "swingDamage": 18,
+      "phase2At": 0.5,
+      "phase2Speed": 1.3,
+      "phase2Summon": {
+        "walker": 4
+      }
+    },
+    "queen": {
+      "speed": 1.0,
+      "tongueRange": 5,
+      "tongueDamage": 12,
+      "tonguePull": 3,
+      "leapRadius": 2.5,
+      "leapDamage": 30,
+      "poolCount": 3,
+      "poolRadius": 1.2,
+      "poolSec": 6,
+      "poolDps": 6,
+      "diveSec": 2,
+      "phase2At": 0.5,
+      "phase2Speed": 1.15,
+      "tadpoles": 3
+    },
+    "tyrant": {
+      "speed": 1.2,
+      "chargeLen": 10,
+      "chargeWidth": 1.6,
+      "chargeDamage": 40,
+      "chargeSpeed": 9,
+      "biteRange": 2.6,
+      "biteDeg": 70,
+      "biteDamage": 30,
+      "tailRange": 3,
+      "tailDeg": 120,
+      "tailDamage": 22,
+      "roarRadius": 4,
+      "roarStun": 1,
+      "phase2At": 0.6,
+      "phase2Summon": {
+        "raptor": 2
+      },
+      "phase3At": 0.25,
+      "phase3Speed": 1.4
+    },
+    "devourer": {
+      "speed": 1.4,
+      "emergeRadius": 2.5,
+      "emergeDamage": 35,
+      "vulnerableSec": 2,
+      "phase2At": 0.5
+    },
+    "frost": {
+      "speed": 1.1,
+      "shardCount": 7,
+      "shardDamage": 14,
+      "coneRange": 5,
+      "coneDeg": 50,
+      "coneDps": 20,
+      "shieldUntil": 0.5
+    },
+    "zero": {
+      "speed": 1.2,
+      "whipRange": 5,
+      "whipDamage": 25,
+      "sectorDps": 8,
+      "phase2At": 0.66,
+      "phase3At": 0.33,
+      "summon": {
+        "glowing": 2
+      }
+    },
+    "rewardDoubleMul": 2,
+    "reward": {
+      "butcher": {
+        "scrap_metal": 20,
+        "nails_bolts": 15,
+        "planks": 20
+      },
+      "queen": {
+        "copper_ore": 15,
+        "clay": 20,
+        "herbal_poultice": 3
+      },
+      "tyrant": {
+        "steel_ingot": 8,
+        "circuit_board": 3,
+        "ammo_pistol": 30
+      },
+      "devourer": {
+        "titanium_ore": 10,
+        "sulfur": 10
+      },
+      "frost": {
+        "titanium_ingot": 6,
+        "battery": 3
+      },
+      "zero": {
+        "uranium": 5,
+        "circuit_board": 6
+      }
+    }
+  },
+  "notes": [
+    {
+      "id": "n01",
+      "title": "Дневник смотрителя бункера",
+      "text": "Тридцать лет мы сидели под землёй. Фильтры кончились. Если ты это читаешь — наверху ещё можно жить. Иди к посёлку: там был склад.",
+      "at": "start"
+    },
+    {
+      "id": "n02",
+      "title": "Объявление на столбе",
+      "text": "Не ходите к дачам за полем! Мясник забирает всех, кто приходит за водой. Крюк на цепи — бегите, если услышите звон.",
+      "biome": 1
+    },
+    {
+      "id": "n03",
+      "title": "Записка дачника",
+      "text": "Он носит ключ от шлагбаума на трассу на шее. Без этого ключа нам отсюда не выбраться.",
+      "biome": 1,
+      "boss": "butcher"
+    },
+    {
+      "id": "n04",
+      "title": "Рапорт патрульного",
+      "text": "Трасса перекрыта. В трясине у моста что-то огромное. Мостовой механизм открывается железой — её вынули из той твари учёные.",
+      "biome": 2
+    },
+    {
+      "id": "n05",
+      "title": "Обрывок журнала лаборанта",
+      "text": "Образец «Королева» вырвался при эвакуации. Откладывает яйца в болотной воде. Не подходите к лужам.",
+      "biome": 2,
+      "boss": "queen"
+    },
+    {
+      "id": "n06",
+      "title": "Письмо брату",
+      "text": "Если доберёшься до города — не шуми. Ночью из переулков выбегают такие, что не догонишь. Держись крыш и стен.",
+      "biome": 2
+    },
+    {
+      "id": "n07",
+      "title": "Сводка гарнизона",
+      "text": "КПП промзоны закрыт. Ключ-клык у Тирана — ящер из лаборатории, проламывает стены. Рапторы ходят за ним стаей.",
+      "biome": 3,
+      "boss": "tyrant"
+    },
+    {
+      "id": "n08",
+      "title": "Плакат «Вспышка»",
+      "text": "Экспериментальный реактор «Заря» безопасен. Сохраняйте спокойствие. Эвакуация отменена. (Кто-то подписал снизу: «Врут».)",
+      "biome": 3
+    },
+    {
+      "id": "n09",
+      "title": "Заметки инженера",
+      "text": "Реактор пошёл вразнос в 04:12. Через час заработали разломы. Всё, что вышло из них, — не животные. Это наши образцы.",
+      "biome": 3
+    },
+    {
+      "id": "n10",
+      "title": "Путевой лист карьера",
+      "text": "Экскаваторы стоят. Под песком кто-то роет ходы шире самосвала. Сердце карьера — единственный пропуск в лабораторию.",
+      "biome": 4,
+      "boss": "devourer"
+    },
+    {
+      "id": "n11",
+      "title": "Сообщение по рации",
+      "text": "...вода кончилась, жара под пятьдесят. Пустыня забирает слабых быстрее заражённых. Идите ночью...",
+      "biome": 4
+    },
+    {
+      "id": "n12",
+      "title": "Протокол «Мороз»",
+      "text": "Объект охлаждения ядра ожил. Щит снимается только электрическим разрядом. Без ядра вход в эпицентр не открыть.",
+      "biome": 5,
+      "boss": "frost"
+    },
+    {
+      "id": "n13",
+      "title": "Последняя запись метеоролога",
+      "text": "Снег идёт тридцатый год. Волки научились охотиться в метель — их не видно, пока не почувствуешь зубы.",
+      "biome": 5
+    },
+    {
+      "id": "n14",
+      "title": "Медицинская карта №0",
+      "text": "Пациент Ноль: первый облучённый. Ткани сращиваются с металлом труб. Агрессия растёт. Изолировать в эпицентре.",
+      "biome": 6,
+      "boss": "zero"
+    },
+    {
+      "id": "n15",
+      "title": "Записка без подписи",
+      "text": "Если убьёшь его — Вспышка не кончится. Но, может быть, у тех, кто выжил, появится завтра.",
+      "biome": 6
+    }
+  ],
+  "daily": {
+    "count": 3,
+    "templates": [
+      {
+        "type": "gather",
+        "n": [
+          15,
+          40
+        ],
+        "reward": {
+          "pool": "biome",
+          "count": [
+            5,
+            10
+          ]
+        }
+      },
+      {
+        "type": "kill_night",
+        "n": [
+          3,
+          8
+        ],
+        "reward": {
+          "pool": "ammo",
+          "count": [
+            10,
+            20
+          ]
+        }
+      },
+      {
+        "type": "craft",
+        "n": [
+          1,
+          3
+        ],
+        "reward": {
+          "pool": "biome",
+          "count": [
+            8,
+            14
+          ]
+        }
+      },
+      {
+        "type": "kill",
+        "n": [
+          5,
+          12
+        ],
+        "reward": {
+          "pool": "medicine",
+          "count": [
+            1,
+            3
+          ]
+        }
+      }
+    ],
+    "pools": {
+      "biome": {
+        "1": [
+          "wood",
+          "stone",
+          "sticks",
+          "fiber"
+        ],
+        "2": [
+          "clay",
+          "copper_ore",
+          "wood"
+        ],
+        "3": [
+          "scrap_metal",
+          "circuit_board",
+          "nails_bolts"
+        ],
+        "4": [
+          "sand",
+          "sulfur",
+          "scrap_metal"
+        ],
+        "5": [
+          "fur",
+          "titanium_ore"
+        ],
+        "6": [
+          "uranium",
+          "steel_plates"
+        ]
+      },
+      "ammo": [
+        "ammo_pistol",
+        "ammo_shotgun"
+      ],
+      "medicine": [
+        "bandage",
+        "herbal_poultice"
+      ]
+    }
+  },
+  "tutorial": {
+    "steps": [
+      {
+        "id": "move",
+        "event": "moved",
+        "n": 3
+      },
+      {
+        "id": "gather_hands",
+        "event": "gather",
+        "items": [
+          "sticks",
+          "stone"
+        ],
+        "n": 4
+      },
+      {
+        "id": "craft_tools",
+        "event": "craft",
+        "items": [
+          "axe_stone",
+          "pickaxe_stone"
+        ],
+        "n": 2
+      },
+      {
+        "id": "chop_campfire",
+        "event": "place",
+        "items": [
+          "campfire"
+        ],
+        "n": 1
+      },
+      {
+        "id": "fight",
+        "event": "kill",
+        "n": 1
+      },
+      {
+        "id": "build_base",
+        "event": "build",
+        "items": [
+          "base_core"
+        ],
+        "n": 1
+      },
+      {
+        "id": "first_night",
+        "event": "morning",
+        "n": 1
+      },
+      {
+        "id": "note",
+        "event": "note",
+        "n": 1
+      }
+    ],
+    "firstNightSpawnMul": 0.5,
+    "walkerAtFence": true
+  },
+  "vehicles": {
+    "baseSpeedTilesPerSec": 3.2,
+    "accelSec": 0.8,
+    "brakeSec": 0.5,
+    "offTerrainMul": 0.3,
+    "turnDegPerSec": 220,
+    "ramMinSpeed": 3,
+    "ramDamagePerSpeed": 8,
+    "ramIds": [
+      "moto_sidecar",
+      "pickup"
+    ],
+    "collisionDamagePerSpeed": 6,
+    "repairPerHit": 0.1,
+    "callFuel": 2,
+    "enterRadiusTiles": 1.8,
+    "terrainOfTile": {
+      "road": [
+        "asphalt_line_h",
+        "asphalt_cracked",
+        "dirt_road_h",
+        "concrete",
+        "ceramic_floor"
+      ],
+      "grass": [
+        "grass",
+        "grass_flowers"
+      ],
+      "dirt": [
+        "dirt",
+        "gravel",
+        "scorched_rad"
+      ],
+      "swamp_mud": [
+        "swamp_mud"
+      ],
+      "water_shallow": [
+        "water_shallow"
+      ],
+      "sand": [
+        "sand"
+      ],
+      "clay_cracked": [
+        "clay_cracked"
+      ],
+      "snow": [
+        "snow"
+      ],
+      "ice": [
+        "ice"
+      ]
+    },
+    "pickupMods": {
+      "armor": {
+        "cost": {
+          "steel_plates": 6,
+          "nails_bolts": 6
+        },
+        "hpMul": 1.5
+      },
+      "roofRack": {
+        "cost": {
+          "scrap_metal": 10,
+          "rubber": 2
+        },
+        "trunkAdd": 8
+      }
+    }
+  },
+  "map": {
+    "fogRevealTiles": 12,
+    "minimapRadiusTiles": 40,
+    "markers": {
+      "deathMax": 3
+    }
+  },
+  "audio": {
+    "buses": {
+      "music": 0.5,
+      "sfx": 0.8,
+      "ui": 0.7
+    },
+    "stepEverySec": 0.35
+  }
+}

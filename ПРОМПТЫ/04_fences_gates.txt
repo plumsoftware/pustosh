@@ -1,0 +1,37 @@
+ЛИСТ 04 — ЗАБОРЫ, ВОРОТА, ОГРАДА АРЕНЫ
+Файл листа: s27_fences_gates.png      Папка нарезки: building/walls/ и world/common/
+Зачем: забор между кольцами и заборы игрока сейчас собраны из одной секции fence рядами;
+у вертикальных участков и углов нет своих деталей; ворота на дорогах — две двери рядом;
+барьер арены босса рисуется кодом.
+Приложить: 1) source_sheets/s07_walls.png (колонка 8 — секции забора), 2) tools/angle_reference.png.
+
+===== PROMPT =====
+TWO ATTACHED IMAGES: image 1 = the wall sheet of this game; column 8 shows a fence section for each of 5 materials (wood, logs, brick, steel, concrete). Copy materials, colors and scale EXACTLY. Image 2 = the camera angle reference: copy ONLY its LEFT side.
+
+ART STYLE — follow strictly. Fence and gate pieces for a 2D top-down post-apocalyptic survival game, painted semi-realistic, worn, rust, moss, chipped paint, light from the top-left.
+
+CAMERA: classic front-facing top-down RPG view, every object stands square to the camera, we look down from about 45 degrees, only the top and the front are visible. Never diagonal, never isometric.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. No ground patch, no shadow. Hard, clean, fully opaque edges. Thin parts (wire, chains, bars) clearly thicker than a hair.
+
+FORBIDDEN: smoke, fire, glow, text, letters, numbers, logos, warning signs with writing, watermark, grid lines, labels.
+
+SHEET FORMAT: one image, invisible grid of 5 columns and 6 rows of equal cells, one object per cell, centered, at least 12% empty margin, objects never touch.
+Rows 1–5 — one row per material in the order of image 1 (wood, logs, brick, steel, concrete). In each row, left to right:
+1. single fence POST of that material (end post)
+2. fence section running AWAY from the viewer: we see the narrow end of the fence and its top, it is as tall as the fence in image 1 but only one post wide
+3. fence CORNER post with fence rails leaving to the right and upward
+4. small fence GATE, closed, the same height as the fence section
+5. the same small fence gate, OPEN (gate leaf swung, seen almost edge-on)
+Row 6 — big objects:
+26. wide ROAD GATE between zones, closed: two heavy welded scrap-metal gate leaves with barbed wire on top and a big rusty lock plate with a skull-shaped keyhole in the middle, wider than tall
+27. the same road gate, OPEN: both leaves pushed aside and bent, the passage clear
+28. the lock plate alone: a round riveted iron plate with a skull-shaped keyhole (for close-up)
+29. arena BARRIER STONE: a tall rough standing stone with rusty chains wrapped around it
+30. arena BARRIER segment: a rusty chain stretched between two short iron stakes, wider than tall
+
+CELL NAMES (порядок нарезки):
+ряды 1–5, <m> = wood, logs, brick, steel, concrete:
+<m>_fence_post <m>_fence_vertical <m>_fence_corner <m>_fence_gate_closed <m>_fence_gate_open
+ряд 6:
+road_gate_closed road_gate_open road_gate_lock arena_stone arena_chain

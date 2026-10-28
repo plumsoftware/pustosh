@@ -1,0 +1,34 @@
+ЛИСТ 10 — ТРАНСПОРТ: ИКОНКИ, РАЗБИТЫЕ КОРПУСА, ДЕТАЛИ
+Файл листа: s33_vehicles_extra.png      Папка нарезки: icons/vehicles/ и vehicles/
+Зачем: в инвентаре и книге крафта машина показана уменьшенным корпусом сбоку (плохо читается
+в слоте 64×64); сломанная машина выглядит как целая; руль/руль мотоцикла нужны, чтобы
+посадить героя (лист 05, поза «езда») и он держался за руль.
+Приложить: 1) source_sheets/s21_transport.png (те же машины), 2) source_sheets/s01_icons_tools.png (стиль иконок).
+
+===== PROMPT =====
+TWO ATTACHED IMAGES: image 1 = the vehicles of this game (bicycle, rusty moped, quad bike, motorcycle with sidecar, pickup truck, dune buggy, tracked snowcat). Keep each vehicle's design, colors and painting style exactly. Image 2 = the inventory icon style reference.
+
+ART STYLE: painted semi-realistic, slightly chunky friendly proportions, rust, dents, chipped paint, light from the top-left.
+
+VIEW — critical: Row 1 = inventory ICONS in the classic 3/4 inventory angle like image 2, each vehicle fits a square. Rows 2 and 3 = world sprites seen from the SIDE, facing RIGHT, slightly from above, exactly like image 1, the same size as the matching vehicle in image 1. Wrecked bodies in row 2 are drawn WITHOUT wheels, like the bodies in image 1.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. No ground, no shadow, no dust. Hard, clean, fully opaque edges. Glass painted opaque, spokes and thin bars thicker than a hair.
+
+FORBIDDEN: smoke, fire, text, letters, numbers, license plates with writing, logos, real brands, watermark, grid lines, labels.
+
+SHEET FORMAT: one image, invisible grid of 7 columns and 3 rows of equal cells, one drawing per cell, centered, at least 12% empty margin, drawings never touch. Column order in rows 1 and 2: bicycle, moped, quad bike, motorcycle with sidecar, pickup, buggy, snowcat.
+Row 1 — inventory icon of each vehicle (3/4 view, whole vehicle with wheels)
+Row 2 — the BROKEN body of each vehicle (no wheels): dented, cracked windows painted opaque, hanging panels, extra rust
+Row 3 — parts, left to right:
+15. a car steering wheel seen from the side (as an ellipse), with a short column
+16. motorcycle handlebars seen from the side, with grips
+17. bicycle handlebars seen from the side
+18. a rusty exhaust pipe with a muffler, horizontal
+19. a round headlight seen from the side
+20. a spare tire mounted on a small rack
+21. a coiled tow rope with a hook
+
+CELL NAMES (порядок нарезки):
+icon_bicycle icon_moped icon_quad icon_moto_sidecar icon_pickup icon_buggy icon_snowcat
+bicycle_body_broken moped_body_broken quad_body_broken moto_body_broken pickup_body_broken buggy_body_broken snowcat_body_broken
+steering_wheel moto_handlebar bicycle_handlebar exhaust_pipe headlight spare_tire tow_rope

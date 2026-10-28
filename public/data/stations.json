@@ -1,0 +1,298 @@
+[
+ {
+  "id": "hands",
+  "name_ru": "Руки (меню крафта)",
+  "tier": 0,
+  "sprite": "assets/ui/icon_hands.png",
+  "crafts": "базовые: инструменты тир 1, костёр, верстак I, тотем",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "campfire",
+  "name_ru": "Костёр",
+  "tier": 1,
+  "sprite": "assets/world/interior/campfire_unlit.png",
+  "crafts": "жарка еды, кипячение воды, свет и тепло",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false,
+  "stateSprites": {
+   "off": "assets/world/interior/campfire_unlit.png",
+   "on": "assets/world/interior/campfire_coals.png"
+  },
+  "fx": "effects/flame_1..6 поверх, свет радиус 5 тайлов, тепло радиус 3"
+ },
+ {
+  "id": "cooking_station",
+  "name_ru": "Кухня",
+  "tier": 2,
+  "sprite": "assets/world/interior/cooking_station.png",
+  "crafts": "сложная еда (паёк, рыба, мёд)",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "workbench_1",
+  "name_ru": "Верстак I",
+  "tier": 1,
+  "sprite": "assets/world/interior/workbench_1.png",
+  "crafts": "инструменты тир 1–2, оружие тир 1–2, мебель, постройки",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "workbench_2",
+  "name_ru": "Верстак II",
+  "tier": 2,
+  "sprite": "assets/world/interior/workbench_2.png",
+  "crafts": "инструменты тир 3, оружие тир 3, ремкомплекты, брёвна+металл",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "workbench_3",
+  "name_ru": "Верстак III",
+  "tier": 4,
+  "sprite": "assets/world/interior/workbench_3.png",
+  "crafts": "инструменты тир 4–5, второй этаж, броня",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "forge",
+  "name_ru": "Горн",
+  "tier": 2,
+  "sprite": "assets/world/interior/forge.png",
+  "crafts": "металлолом → сталь (с углём), ремонт металла",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false,
+  "fx": "coals glow"
+ },
+ {
+  "id": "smelter",
+  "name_ru": "Плавильня",
+  "tier": 3,
+  "sprite": "assets/world/interior/smelter.png",
+  "crafts": "руда → слитки (медь, титан, уран)",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "sewing_table",
+  "name_ru": "Швейный стол",
+  "tier": 2,
+  "sprite": "assets/world/interior/sewing_table.png",
+  "crafts": "одежда, рюкзаки, бинты, модификации одежды",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "chem_table",
+  "name_ru": "Химстол",
+  "tier": 3,
+  "sprite": "assets/world/interior/chem_table.png",
+  "crafts": "лекарства, антирадин, порох→патроны, взрывчатка",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "gun_bench",
+  "name_ru": "Оружейный стол",
+  "tier": 4,
+  "sprite": "assets/world/interior/gun_bench.png",
+  "crafts": "огнестрел, патроны, модификации оружия",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false,
+  "requiresSkill": "engineer_2"
+ },
+ {
+  "id": "generator",
+  "name_ru": "Генератор",
+  "tier": 3,
+  "sprite": "assets/world/interior/generator.png",
+  "crafts": "питание для электростола, электрозабора, турелей, света",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false,
+  "fuel": "crude_oil",
+  "powerRadiusTiles": 12
+ },
+ {
+  "id": "electric_bench",
+  "name_ru": "Электростол",
+  "tier": 4,
+  "sprite": "assets/world/interior/electric_bench.png",
+  "crafts": "электроника, энергооружие, турели",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": true
+ },
+ {
+  "id": "repair_pit",
+  "name_ru": "Гараж (ремонтная яма)",
+  "tier": 3,
+  "sprite": "assets/world/interior/repair_pit.png",
+  "crafts": "сборка, ремонт и улучшение транспорта",
+  "footprintTiles": [
+   2,
+   2
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "garden",
+  "name_ru": "Грядка",
+  "tier": 1,
+  "sprite": "assets/world/interior/garden_empty.png",
+  "crafts": "еда автоматически: 3 стадии за 1 игровой день",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false,
+  "stateSprites": {
+   "empty": "assets/world/interior/garden_empty.png",
+   "sprouts": "assets/world/interior/garden_sprouts.png",
+   "ripe": "assets/world/interior/garden_ripe.png"
+  }
+ },
+ {
+  "id": "rain_barrel",
+  "name_ru": "Бочка для воды",
+  "tier": 1,
+  "sprite": "assets/world/interior/rain_barrel.png",
+  "crafts": "копит грязную воду: 1 ед. в игровой час",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "water_purifier",
+  "name_ru": "Очиститель воды",
+  "tier": 3,
+  "sprite": "assets/world/interior/water_purifier.png",
+  "crafts": "грязная вода → чистая",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "chest_wood",
+  "name_ru": "Сундук",
+  "tier": 1,
+  "sprite": "assets/world/interior/chest_wood.png",
+  "crafts": "хранение 24 слота",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "chest_metal",
+  "name_ru": "Железный сундук",
+  "tier": 3,
+  "sprite": "assets/world/interior/chest_metal.png",
+  "crafts": "хранение 36 слотов, не ломается врагами",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "bed_pallets",
+  "name_ru": "Кровать",
+  "tier": 1,
+  "sprite": "assets/world/interior/bed_pallets.png",
+  "crafts": "точка возрождения, сон пропускает ночь",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "sleeping_bag",
+  "name_ru": "Спальник",
+  "tier": 1,
+  "sprite": "assets/world/interior/sleeping_bag.png",
+  "crafts": "точка возрождения на аванпосте",
+  "footprintTiles": [
+   2,
+   1
+  ],
+  "needsPower": false
+ },
+ {
+  "id": "base_core",
+  "name_ru": "Тотем базы",
+  "tier": 1,
+  "sprite": "assets/world/interior/base_core.png",
+  "crafts": "задаёт базу 24×24, без дневных спавнов, автосбор, телепорт",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false,
+  "radiusTiles": [
+   12,
+   16,
+   20
+  ],
+  "fx": "красная лампа мигает"
+ },
+ {
+  "id": "outpost_beacon",
+  "name_ru": "Аванпост",
+  "tier": 2,
+  "sprite": "assets/world/interior/outpost_beacon.png",
+  "crafts": "возрождение и телепорт, вызов транспорта",
+  "footprintTiles": [
+   1,
+   1
+  ],
+  "needsPower": false
+ }
+]

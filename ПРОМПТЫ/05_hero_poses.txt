@@ -1,0 +1,40 @@
+ЛИСТ 05 — ГЕРОЙ: ПОЗЫ И ДОПОЛНИТЕЛЬНЫЕ ЧАСТИ
+Файл листа: s28_hero_extra.png      Папка нарезки: characters/hero/
+Зачем: в машине герой сейчас просто скрыт; еда, питьё и сон без своей позы; кисть с хватом
+нужна, чтобы инструмент и руль держались в руке, а не висели рядом; лица для состояний.
+Приложить: source_sheets/s17_hero.png (тот же герой, тот же масштаб и стиль).
+
+===== PROMPT =====
+ONE ATTACHED IMAGE: the character sheet of the hero of this game (young man, messy brown hair, stubble, red bandana, olive camo jacket, grey cargo pants, brown boots, fingerless gloves). Draw THE SAME HERO: same face, clothes, colors, proportions and painting style. Full-body poses must have the same height as the full-body poses in the attached image. Separate body parts must have the same size as the matching parts in the attached image.
+
+VIEW — critical: the hero faces RIGHT, seen from the side and slightly from above, exactly like the attached image.
+
+ART STYLE: painted semi-realistic, slightly chunky friendly proportions, worn clothes, light from the top-left.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. No ground, no shadow, no vehicle, no furniture under him unless the cell says so. Hard, clean, fully opaque edges.
+
+FORBIDDEN: blood, smoke, text, letters, numbers, logos, watermark, grid lines, labels.
+
+SHEET FORMAT: one square image, invisible grid of 4 columns and 4 rows of equal cells, one drawing per cell, centered, at least 12% empty margin. Fill left to right, top to bottom:
+1. full body SEATED as if driving: sitting on nothing, knees bent forward at hip height, both arms reaching forward holding an invisible handlebar
+2. full body SLEEPING: lying on his side, eyes closed, knees slightly bent, arm under the head
+3. full body KNEELING on one knee, reaching down to the ground with one hand (picking something up)
+4. full body EATING: standing, holding an open food can to his mouth with one hand
+5. full body DRINKING: standing, head tilted back, drinking from a metal flask
+6. full body LYING DEFEATED on his back, eyes closed, arms spread (no blood)
+7. full body CARRYING a heavy log on his shoulder, slightly bent
+8. full body HAMMERING: kneeling, swinging a hammer down in front of him
+9. forearm with a GRIPPING hand: fist closed around an invisible round handle, a hole of the handle's thickness visible through the fist (same size as the forearm parts in the attached image)
+10. forearm with hand POINTING forward, index finger extended
+11. head EATING: mouth open, cheeks full (same size and angle as the heads in the attached image)
+12. head STRAINING: teeth clenched, effort, frowning
+13. head COLD: blue lips, frost on hair and stubble, shivering
+14. head HOT: red face, sweat drops on the forehead
+15. head SICK: pale greenish skin, dark circles under the eyes
+16. thigh bent 90 degrees with shin and boot, as one piece (seated leg)
+
+CELL NAMES (порядок нарезки):
+hero_pose_drive hero_pose_sleep hero_pose_kneel hero_pose_eat
+hero_pose_drink hero_pose_down hero_pose_carry hero_pose_hammer
+forearm_grip forearm_point head_eat head_strain
+head_cold head_hot head_sick leg_seated

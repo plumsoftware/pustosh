@@ -1,0 +1,23 @@
+{
+  "id": "ruin_house",
+  "kind": "ruin",
+  "anchor": [4, 7],
+  "plan": [
+    "###O#O###",
+    "#...#...#",
+    "#...#...#",
+    "#.......#",
+    "#...#...#",
+    "##D######",
+    ",,,,,,,,,",
+    ",,,,,,,,,"
+  ],
+  "objects": [
+    { "at": [1.6, 2.3], "furniture": "bed" },
+    { "at": [3.3, 2.2], "container": "random" },
+    { "at": [6.0, 2.3], "furniture": "stove" },
+    { "at": [7.4, 2.2], "furniture": "kitchen_sink" },
+    { "at": [6.5, 4.8], "furniture": "random" },
+    { "at": [2.0, 4.8], "container": "random" }
+  ]
+}

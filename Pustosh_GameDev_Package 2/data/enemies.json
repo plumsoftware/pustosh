@@ -1,0 +1,747 @@
+[
+ {
+  "id": "walker",
+  "name_ru": "Бродяга",
+  "family": "infected",
+  "biomes": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "hp": 40,
+  "damage": 6,
+  "speedTilesPerSec": 0.9,
+  "behavior": "wander_groups_2_4; chase_on_sight 7 tiles; night speed x1.6",
+  "drops": {
+   "rags": [
+    1,
+    2
+   ],
+   "nails_bolts": [
+    0,
+    1
+   ]
+  },
+  "specialParts": {
+   "shirt_flap": "assets/characters/enemies/walker_shirt_flap.png"
+  },
+  "xp": 8,
+  "targetHeightPx": 96,
+  "rig": "humanoid",
+  "parts": {
+   "idle": "assets/characters/enemies/walker_idle.png",
+   "head": "assets/characters/enemies/walker_head.png",
+   "torso": "assets/characters/enemies/walker_torso.png",
+   "pelvis": "assets/characters/enemies/walker_pelvis.png",
+   "upper_arm": "assets/characters/enemies/walker_upper_arm.png",
+   "forearm": "assets/characters/enemies/walker_forearm.png",
+   "thigh": "assets/characters/enemies/walker_thigh.png",
+   "shin": "assets/characters/enemies/walker_shin.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "crawler",
+  "name_ru": "Ползун",
+  "family": "infected",
+  "biomes": [
+   1,
+   2,
+   3
+  ],
+  "hp": 25,
+  "damage": 8,
+  "speedTilesPerSec": 0.7,
+  "behavior": "ambush_in_grass: invisible until 3 tiles; grab: roots player 1.5s",
+  "drops": {
+   "rags": [
+    1,
+    1
+   ]
+  },
+  "specialParts": {
+   "ambush_pose": "assets/characters/enemies/crawler_ambush_pose.png"
+  },
+  "xp": 8,
+  "targetHeightPx": 40,
+  "rig": "crawler",
+  "parts": {
+   "idle": "assets/characters/enemies/crawler_idle.png",
+   "head": "assets/characters/enemies/crawler_head.png",
+   "torso": "assets/characters/enemies/crawler_torso.png",
+   "pelvis": "assets/characters/enemies/crawler_pelvis.png",
+   "upper_arm": "assets/characters/enemies/crawler_upper_arm.png",
+   "forearm": "assets/characters/enemies/crawler_forearm.png",
+   "rags": "assets/characters/enemies/crawler_rags.png",
+   "forearm_2": "assets/characters/enemies/crawler_forearm_2.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "spitter",
+  "name_ru": "Болотник",
+  "family": "infected",
+  "biomes": [
+   2
+  ],
+  "hp": 45,
+  "damage": 7,
+  "speedTilesPerSec": 0.8,
+  "behavior": "keep_distance 5 tiles; spit poison every 3s (projectile: effects/slime_1 tinted, poison 4/s for 5s)",
+  "drops": {
+   "rags": [
+    1,
+    2
+   ],
+   "herbal_poultice": [
+    0,
+    1
+   ]
+  },
+  "specialParts": {
+   "throat_sac": "assets/characters/enemies/spitter_throat_sac.png"
+  },
+  "xp": 14,
+  "targetHeightPx": 96,
+  "rig": "humanoid",
+  "parts": {
+   "idle": "assets/characters/enemies/spitter_idle.png",
+   "head": "assets/characters/enemies/spitter_head.png",
+   "torso": "assets/characters/enemies/spitter_torso.png",
+   "pelvis": "assets/characters/enemies/spitter_pelvis.png",
+   "upper_arm": "assets/characters/enemies/spitter_upper_arm.png",
+   "forearm": "assets/characters/enemies/spitter_forearm.png",
+   "thigh": "assets/characters/enemies/spitter_thigh.png",
+   "shin": "assets/characters/enemies/spitter_shin.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "sprinter",
+  "name_ru": "Бегун",
+  "family": "infected",
+  "biomes": [
+   3,
+   4,
+   5,
+   6
+  ],
+  "hp": 35,
+  "damage": 9,
+  "speedTilesPerSec": 2.4,
+  "behavior": "sprints at night; lunges; low hp",
+  "drops": {
+   "rags": [
+    1,
+    2
+   ],
+   "circuit_board": [
+    0,
+    1
+   ]
+  },
+  "specialParts": {
+   "run_pose": "assets/characters/enemies/sprinter_run_pose.png"
+  },
+  "xp": 16,
+  "targetHeightPx": 104,
+  "rig": "humanoid",
+  "parts": {
+   "idle": "assets/characters/enemies/sprinter_idle.png",
+   "head": "assets/characters/enemies/sprinter_head.png",
+   "torso": "assets/characters/enemies/sprinter_torso.png",
+   "pelvis": "assets/characters/enemies/sprinter_pelvis.png",
+   "upper_arm": "assets/characters/enemies/sprinter_upper_arm.png",
+   "forearm": "assets/characters/enemies/sprinter_forearm.png",
+   "thigh": "assets/characters/enemies/sprinter_thigh.png",
+   "shin": "assets/characters/enemies/sprinter_shin.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "bloated",
+  "name_ru": "Толстяк",
+  "family": "infected",
+  "biomes": [
+   3,
+   4,
+   5,
+   6
+  ],
+  "hp": 90,
+  "damage": 4,
+  "speedTilesPerSec": 0.6,
+  "behavior": "walks to player; explodes on death (radius 2 tiles, 40 dmg, acid) — kill from range",
+  "drops": {
+   "crude_oil": [
+    0,
+    1
+   ],
+   "rags": [
+    1,
+    3
+   ]
+  },
+  "specialParts": {
+   "blisters": "assets/characters/enemies/bloated_blisters.png"
+  },
+  "xp": 20,
+  "targetHeightPx": 104,
+  "rig": "humanoid",
+  "parts": {
+   "idle": "assets/characters/enemies/bloated_idle.png",
+   "head": "assets/characters/enemies/bloated_head.png",
+   "torso": "assets/characters/enemies/bloated_torso.png",
+   "pelvis": "assets/characters/enemies/bloated_pelvis.png",
+   "upper_arm": "assets/characters/enemies/bloated_upper_arm.png",
+   "forearm": "assets/characters/enemies/bloated_forearm.png",
+   "thigh": "assets/characters/enemies/bloated_thigh.png",
+   "shin": "assets/characters/enemies/bloated_shin.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "soldier",
+  "name_ru": "Солдат",
+  "family": "infected",
+  "biomes": [
+   5,
+   6
+  ],
+  "hp": 140,
+  "damage": 14,
+  "speedTilesPerSec": 1.0,
+  "behavior": "armored (50% melee resist from front); throws grenade every 10s; helmet falls off at 50% hp",
+  "drops": {
+   "ammo_rifle": [
+    3,
+    8
+   ],
+   "steel_plates": [
+    0,
+    1
+   ]
+  },
+  "specialParts": {
+   "helmet": "assets/characters/enemies/soldier_helmet.png"
+  },
+  "xp": 40,
+  "targetHeightPx": 100,
+  "rig": "humanoid",
+  "parts": {
+   "idle": "assets/characters/enemies/soldier_idle.png",
+   "head": "assets/characters/enemies/soldier_head.png",
+   "torso": "assets/characters/enemies/soldier_torso.png",
+   "pelvis": "assets/characters/enemies/soldier_pelvis.png",
+   "upper_arm": "assets/characters/enemies/soldier_upper_arm.png",
+   "forearm": "assets/characters/enemies/soldier_forearm.png",
+   "thigh": "assets/characters/enemies/soldier_thigh.png",
+   "shin": "assets/characters/enemies/soldier_shin.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "glowing",
+  "name_ru": "Светящийся",
+  "family": "infected",
+  "biomes": [
+   6
+  ],
+  "hp": 160,
+  "damage": 12,
+  "speedTilesPerSec": 1.0,
+  "behavior": "radiation aura 2 tiles (+rad 3/s); explodes in radiation burst on death",
+  "drops": {
+   "uranium": [
+    0,
+    1
+   ],
+   "rags": [
+    1,
+    2
+   ]
+  },
+  "specialParts": {
+   "coat_flap": "assets/characters/enemies/glowing_coat_flap.png"
+  },
+  "xp": 50,
+  "targetHeightPx": 100,
+  "rig": "humanoid",
+  "parts": {
+   "idle": "assets/characters/enemies/glowing_idle.png",
+   "head": "assets/characters/enemies/glowing_head.png",
+   "torso": "assets/characters/enemies/glowing_torso.png",
+   "pelvis": "assets/characters/enemies/glowing_pelvis.png",
+   "upper_arm": "assets/characters/enemies/glowing_upper_arm.png",
+   "forearm": "assets/characters/enemies/glowing_forearm.png",
+   "thigh": "assets/characters/enemies/glowing_thigh.png",
+   "shin": "assets/characters/enemies/glowing_shin.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "dog",
+  "name_ru": "Бешеный пёс",
+  "family": "mutant",
+  "biomes": [
+   1,
+   2,
+   3
+  ],
+  "hp": 30,
+  "damage": 7,
+  "speedTilesPerSec": 2.2,
+  "behavior": "packs of 3; circle and bite; flee at 20% hp",
+  "drops": {
+   "meat_raw": [
+    1,
+    1
+   ],
+   "hide": [
+    0,
+    1
+   ]
+  },
+  "specialParts": {},
+  "xp": 10,
+  "targetHeightPx": 56,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/dog_idle.png",
+   "head": "assets/characters/animals/dog_head.png",
+   "body": "assets/characters/animals/dog_body.png",
+   "front_upper": "assets/characters/animals/dog_front_upper.png",
+   "front_lower": "assets/characters/animals/dog_front_lower.png",
+   "back_upper": "assets/characters/animals/dog_back_upper.png",
+   "back_lower": "assets/characters/animals/dog_back_lower.png",
+   "tail": "assets/characters/animals/dog_tail.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "toad",
+  "name_ru": "Гигантская жаба",
+  "family": "mutant",
+  "biomes": [
+   2
+  ],
+  "hp": 70,
+  "damage": 10,
+  "speedTilesPerSec": 0.8,
+  "behavior": "tongue pull 4 tiles every 5s; leaps",
+  "drops": {
+   "meat_raw": [
+    1,
+    2
+   ],
+   "hide": [
+    1,
+    1
+   ]
+  },
+  "specialParts": {},
+  "xp": 18,
+  "targetHeightPx": 64,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/toad_idle.png",
+   "head": "assets/characters/animals/toad_head.png",
+   "body": "assets/characters/animals/toad_body.png",
+   "front_upper": "assets/characters/animals/toad_front_upper.png",
+   "front_lower": "assets/characters/animals/toad_front_lower.png",
+   "back_upper": "assets/characters/animals/toad_back_upper.png",
+   "back_lower": "assets/characters/animals/toad_back_lower.png",
+   "tongue_and_sac": "assets/characters/animals/toad_tongue_and_sac.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "raptor",
+  "name_ru": "Раптор",
+  "family": "reptile",
+  "biomes": [
+   3,
+   4,
+   5
+  ],
+  "hp": 80,
+  "damage": 13,
+  "speedTilesPerSec": 2.6,
+  "behavior": "hunts in pairs, flanks from sides, pounce",
+  "drops": {
+   "meat_raw": [
+    1,
+    2
+   ],
+   "hide": [
+    1,
+    2
+   ],
+   "bones": [
+    1,
+    2
+   ]
+  },
+  "specialParts": {},
+  "xp": 30,
+  "targetHeightPx": 96,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/raptor_idle.png",
+   "head": "assets/characters/animals/raptor_head.png",
+   "body": "assets/characters/animals/raptor_body.png",
+   "arm_upper": "assets/characters/animals/raptor_arm_upper.png",
+   "arm_lower": "assets/characters/animals/raptor_arm_lower.png",
+   "leg_upper": "assets/characters/animals/raptor_leg_upper.png",
+   "leg_lower": "assets/characters/animals/raptor_leg_lower.png",
+   "tail": "assets/characters/animals/raptor_tail.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "scorpion",
+  "name_ru": "Скорпион",
+  "family": "mutant",
+  "biomes": [
+   4
+  ],
+  "hp": 110,
+  "damage": 14,
+  "speedTilesPerSec": 1.4,
+  "behavior": "buries in sand (ambush); poison sting",
+  "drops": {
+   "sulfur": [
+    0,
+    1
+   ],
+   "bones": [
+    1,
+    2
+   ]
+  },
+  "specialParts": {},
+  "xp": 34,
+  "targetHeightPx": 56,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/scorpion_idle.png",
+   "head": "assets/characters/animals/scorpion_head.png",
+   "body": "assets/characters/animals/scorpion_body.png",
+   "pincer_arm": "assets/characters/animals/scorpion_pincer_arm.png",
+   "pincer_claw": "assets/characters/animals/scorpion_pincer_claw.png",
+   "leg_upper": "assets/characters/animals/scorpion_leg_upper.png",
+   "leg_lower": "assets/characters/animals/scorpion_leg_lower.png",
+   "tail_stinger": "assets/characters/animals/scorpion_tail_stinger.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "armored_lizard",
+  "name_ru": "Броненосец-ящер",
+  "family": "reptile",
+  "biomes": [
+   4,
+   5
+  ],
+  "hp": 220,
+  "damage": 18,
+  "speedTilesPerSec": 0.9,
+  "behavior": "front armor 80%: hit from behind; charge",
+  "drops": {
+   "steel_plates": [
+    0,
+    1
+   ],
+   "hide": [
+    2,
+    3
+   ]
+  },
+  "specialParts": {},
+  "xp": 45,
+  "targetHeightPx": 64,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/armored_lizard_idle.png",
+   "head": "assets/characters/animals/armored_lizard_head.png",
+   "body": "assets/characters/animals/armored_lizard_body.png",
+   "front_upper": "assets/characters/animals/armored_lizard_front_upper.png",
+   "front_lower": "assets/characters/animals/armored_lizard_front_lower.png",
+   "back_upper": "assets/characters/animals/armored_lizard_back_upper.png",
+   "back_lower": "assets/characters/animals/armored_lizard_back_lower.png",
+   "tail": "assets/characters/animals/armored_lizard_tail.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "snow_wolf",
+  "name_ru": "Снежный волк",
+  "family": "mutant",
+  "biomes": [
+   5
+  ],
+  "hp": 90,
+  "damage": 14,
+  "speedTilesPerSec": 2.4,
+  "behavior": "packs of 4; invisible at night without light",
+  "drops": {
+   "fur": [
+    1,
+    2
+   ],
+   "meat_raw": [
+    1,
+    1
+   ]
+  },
+  "specialParts": {},
+  "xp": 28,
+  "targetHeightPx": 72,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/snow_wolf_idle.png",
+   "head": "assets/characters/animals/snow_wolf_head.png",
+   "body": "assets/characters/animals/snow_wolf_body.png",
+   "front_upper": "assets/characters/animals/snow_wolf_front_upper.png",
+   "front_lower": "assets/characters/animals/snow_wolf_front_lower.png",
+   "back_upper": "assets/characters/animals/snow_wolf_back_upper.png",
+   "back_lower": "assets/characters/animals/snow_wolf_back_lower.png",
+   "tail": "assets/characters/animals/snow_wolf_tail.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "deer",
+  "name_ru": "Олень",
+  "family": "animal",
+  "biomes": [
+   1,
+   5
+  ],
+  "hp": 30,
+  "damage": 0,
+  "speedTilesPerSec": 2.0,
+  "behavior": "passive; flees from player at 6 tiles",
+  "drops": {
+   "meat_raw": [
+    2,
+    3
+   ],
+   "hide": [
+    1,
+    2
+   ],
+   "bones": [
+    1,
+    1
+   ]
+  },
+  "specialParts": {},
+  "xp": 4,
+  "targetHeightPx": 96,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/deer_idle.png",
+   "head": "assets/characters/animals/deer_head.png",
+   "body": "assets/characters/animals/deer_body.png",
+   "front_upper": "assets/characters/animals/deer_front_upper.png",
+   "front_lower": "assets/characters/animals/deer_front_lower.png",
+   "back_upper": "assets/characters/animals/deer_back_upper.png",
+   "back_lower": "assets/characters/animals/deer_back_lower.png",
+   "tail": "assets/characters/animals/deer_tail.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "boar",
+  "name_ru": "Кабан",
+  "family": "animal",
+  "biomes": [
+   1,
+   2
+  ],
+  "hp": 60,
+  "damage": 8,
+  "speedTilesPerSec": 2.0,
+  "behavior": "neutral; charges back when hit",
+  "drops": {
+   "meat_raw": [
+    2,
+    3
+   ],
+   "hide": [
+    1,
+    2
+   ]
+  },
+  "specialParts": {},
+  "xp": 4,
+  "targetHeightPx": 64,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/boar_idle.png",
+   "head": "assets/characters/animals/boar_head.png",
+   "body": "assets/characters/animals/boar_body.png",
+   "front_upper": "assets/characters/animals/boar_front_upper.png",
+   "front_lower": "assets/characters/animals/boar_front_lower.png",
+   "back_upper": "assets/characters/animals/boar_back_upper.png",
+   "back_lower": "assets/characters/animals/boar_back_lower.png",
+   "tail": "assets/characters/animals/boar_tail.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ },
+ {
+  "id": "hare",
+  "name_ru": "Заяц",
+  "family": "animal",
+  "biomes": [
+   1,
+   3,
+   5
+  ],
+  "hp": 8,
+  "damage": 0,
+  "speedTilesPerSec": 2.0,
+  "behavior": "passive; fast zigzag flee",
+  "drops": {
+   "meat_raw": [
+    1,
+    1
+   ],
+   "hide": [
+    0,
+    1
+   ]
+  },
+  "specialParts": {},
+  "xp": 4,
+  "targetHeightPx": 32,
+  "rig": "quadruped",
+  "parts": {
+   "idle": "assets/characters/animals/hare_idle.png",
+   "head": "assets/characters/animals/hare_head.png",
+   "body": "assets/characters/animals/hare_body.png",
+   "front_upper": "assets/characters/animals/hare_front_upper.png",
+   "front_lower": "assets/characters/animals/hare_front_lower.png",
+   "back_upper": "assets/characters/animals/hare_back_upper.png",
+   "back_lower": "assets/characters/animals/hare_back_lower.png",
+   "ears": "assets/characters/animals/hare_ears.png"
+  },
+  "elite": {
+   "hpMul": 1.5,
+   "dmgMul": 1.3,
+   "scale": 1.15,
+   "eyeColor": "#FF3B2F",
+   "dropMul": 2,
+   "chance": 0.08
+  }
+ }
+]

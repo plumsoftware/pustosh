@@ -1,0 +1,28 @@
+ЛИСТ 07 — ЗВЕРИ: КЛЮЧЕВЫЕ ПОЗЫ
+Файл листа: s30_animal_poses.png      Папка нарезки: characters/animals/
+Зачем: как у заражённых — риги 9 зверей не откалиброваны, сейчас звери «скачут» одним
+спрайтом. Две фазы бега + атака = нормальный галоп и укус.
+Приложить: source_sheets/s19_animals.png.
+
+===== PROMPT =====
+ONE ATTACHED IMAGE: the animals sheet of this game. Draw THE SAME 9 animals, keeping each one's look, colors, size and painting style exactly. Every pose must have the same scale as that animal's full-body idle drawing in the attached image.
+
+THE 9 ANIMALS (columns, left to right): 1 rabid dog, 2 giant toad, 3 raptor, 4 giant scorpion, 5 armored lizard, 6 snow wolf, 7 deer, 8 boar, 9 hare.
+
+VIEW — critical: every animal faces RIGHT, seen from the side and slightly from above, like the attached image.
+
+ART STYLE: painted semi-realistic, slightly chunky proportions, mutated post-apocalyptic look, light from the top-left.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF (if the animal itself is pink or purple, use solid blue #0000FF for the whole sheet). No ground, no shadow, no snow or dust under the feet. Hard, clean, fully opaque edges.
+
+FORBIDDEN: blood, gore, smoke, glow halos, text, letters, numbers, logos, watermark, grid lines, labels.
+
+SHEET FORMAT: one image, invisible grid of 9 columns and 3 rows of equal cells, one drawing per cell, centered, at least 12% empty margin, drawings never touch. Column = animal (order above). Row = pose:
+Row 1 — RUN A: legs fully stretched, front legs forward, back legs back (toad and hare: mid-jump, body stretched; scorpion: legs spread, tail up)
+Row 2 — RUN B: legs gathered under the body (toad and hare: crouched before a jump)
+Row 3 — ATTACK: dog, wolf, raptor — biting lunge with open jaws; toad — mouth wide open, tongue just starting to come out; scorpion — tail stinger striking forward over its head; armored lizard — head lowered, charging; boar — tusks forward, charging; deer — rearing up on hind legs; hare — ears up, alert, about to flee
+
+CELL NAMES (порядок нарезки — ряд за рядом):
+dog_run_a toad_run_a raptor_run_a scorpion_run_a armored_lizard_run_a snow_wolf_run_a deer_run_a boar_run_a hare_run_a
+dog_run_b toad_run_b raptor_run_b scorpion_run_b armored_lizard_run_b snow_wolf_run_b deer_run_b boar_run_b hare_run_b
+dog_attack toad_attack raptor_attack scorpion_attack armored_lizard_attack snow_wolf_attack deer_attack boar_attack hare_attack

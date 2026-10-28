@@ -1,0 +1,345 @@
+{
+  "_note": "Параметры генерации мира, рендера мира и освещения (шаг 3). Создан агентом, согласовать с владельцем. Размеры мира, кольца и сид — в balance.json → world.",
+  "sea": {
+    "tile": "water_shallow"
+  },
+  "ringNoise": {
+    "amplitudeTiles": 10,
+    "scaleTiles": 70
+  },
+  "tileNoise": {
+    "scaleTiles": 14,
+    "octaves": 3
+  },
+  "tileMix": {
+    "1": {
+      "grass": 0.55,
+      "grass_flowers": 0.2,
+      "dirt": 0.25
+    },
+    "2": {
+      "swamp_mud": 0.45,
+      "grass": 0.3,
+      "water_shallow": 0.25
+    },
+    "3": {
+      "asphalt_cracked": 0.5,
+      "concrete": 0.3,
+      "gravel": 0.2
+    },
+    "4": {
+      "sand": 0.6,
+      "clay_cracked": 0.25,
+      "gravel": 0.15
+    },
+    "5": {
+      "snow": 0.65,
+      "ice": 0.15,
+      "gravel": 0.2
+    },
+    "6": {
+      "scorched_rad": 0.6,
+      "concrete": 0.2,
+      "gravel": 0.2
+    }
+  },
+  "waterTiles": [
+    "water_shallow"
+  ],
+  "blendPriority": [
+    "water_shallow",
+    "ice",
+    "asphalt_line_h",
+    "asphalt_cracked",
+    "dirt_road_h",
+    "concrete",
+    "ceramic_floor",
+    "gravel",
+    "clay_cracked",
+    "dirt",
+    "swamp_mud",
+    "sand",
+    "scorched_rad",
+    "snow",
+    "grass",
+    "grass_flowers"
+  ],
+  "roads": {
+    "count": 3,
+    "widthTiles": 3,
+    "wobbleTiles": 10,
+    "segmentTiles": 12,
+    "centerTile": {
+      "1": "dirt_road_h",
+      "2": "asphalt_line_h",
+      "3": "asphalt_line_h",
+      "4": "dirt_road_h",
+      "5": "dirt_road_h",
+      "6": "asphalt_line_h"
+    },
+    "sideTile": {
+      "1": "dirt",
+      "2": "asphalt_cracked",
+      "3": "asphalt_cracked",
+      "4": "gravel",
+      "5": "gravel",
+      "6": "concrete"
+    },
+    "endRadiusTiles": 12
+  },
+  "start": {
+    "angleDeg": 90,
+    "radiusTiles": 464,
+    "clearRadiusTiles": 3
+  },
+  "objects": {
+    "gridTiles": 3,
+    "keepOutFromRoadTiles": 1,
+    "kindChance": {
+      "tree": 0.16,
+      "bush": 0.07,
+      "grass": 0.08,
+      "rock": 0.05,
+      "deposit": 0.015,
+      "scrap": 0.025,
+      "decor": 0.02,
+      "loot": 0.012,
+      "hazard": 0.008,
+      "water_source": 0.004,
+      "fence": 0.01,
+      "heal_station": 0.003
+    },
+    "treeEdgeBoost": {
+      "edgeTiles": 14,
+      "mul": 2.2
+    },
+    "roadside": {
+      "kinds": [
+        "vehicle_wreck"
+      ],
+      "chance": 0.12,
+      "maxDistTiles": 4
+    },
+    "settlements": {
+      "perRing": 8,
+      "radiusTiles": 9,
+      "poiChance": 0.18,
+      "kinds": [
+        "building_poi",
+        "loot",
+        "scrap"
+      ]
+    },
+    "skipKinds": [
+      "road_edge_tileable",
+      "walkable_bridge_tileable"
+    ]
+  },
+  "ruins": {
+    "perBiome": [
+      24,
+      36
+    ],
+    "minSpacingTiles": 6,
+    "edgeMarginTiles": 4,
+    "roadClearTiles": 3,
+    "prefabs": [
+      "ruin_shack",
+      "ruin_house",
+      "ruin_long",
+      "ruin_store"
+    ],
+    "materials": {
+      "1": [
+        "wood",
+        "logs"
+      ],
+      "2": [
+        "logs",
+        "wood"
+      ],
+      "3": [
+        "brick",
+        "concrete"
+      ],
+      "4": [
+        "brick",
+        "concrete"
+      ],
+      "5": [
+        "steel",
+        "concrete"
+      ],
+      "6": [
+        "steel",
+        "concrete"
+      ]
+    }
+  },
+  "ringFences": {
+    "_note": "Забор по границе кольца N → N+1 (материал из building.json); проход — только через ворота на дорогах",
+    "materials": {
+      "1": "wood",
+      "2": "logs",
+      "3": "brick",
+      "4": "steel",
+      "5": "concrete"
+    }
+  },
+  "arenas": {
+    "prefab": "arena_boss",
+    "ringPosition": 0.5,
+    "angleOffsetDeg": 200
+  },
+  "gates": {
+    "prefab": "gate"
+  },
+  "bunker": {
+    "prefab": "bunker_start"
+  },
+  "colliders": {
+    "tree": {
+      "shape": "circle",
+      "radiusOfWidth": 0.18
+    },
+    "rock": {
+      "shape": "circle",
+      "radiusOfWidth": 0.38
+    },
+    "bush": {
+      "shape": "circle",
+      "radiusOfWidth": 0.25
+    },
+    "deposit": {
+      "shape": "circle",
+      "radiusOfWidth": 0.35
+    },
+    "scrap": {
+      "shape": "rect",
+      "widthOfWidth": 0.75,
+      "depthTiles": 0.5
+    },
+    "decor": {
+      "shape": "circle",
+      "radiusOfWidth": 0.2
+    },
+    "loot": {
+      "shape": "rect",
+      "widthOfWidth": 0.8,
+      "depthTiles": 0.5
+    },
+    "hazard": {
+      "shape": "circle",
+      "radiusOfWidth": 0.35
+    },
+    "water_source": {
+      "shape": "circle",
+      "radiusOfWidth": 0.35
+    },
+    "heal_station": {
+      "shape": "rect",
+      "widthOfWidth": 0.8,
+      "depthTiles": 0.5
+    },
+    "fence": {
+      "shape": "rect",
+      "widthOfWidth": 0.95,
+      "depthTiles": 0.25
+    },
+    "vehicle_wreck": {
+      "shape": "rect",
+      "widthOfWidth": 0.85,
+      "depthTiles": 0.7
+    },
+    "building_poi": {
+      "shape": "rect",
+      "widthOfWidth": 0.9,
+      "depthTiles": 1.2
+    },
+    "furniture": {
+      "shape": "rect",
+      "widthOfWidth": 0.85,
+      "depthTiles": 0.45
+    },
+    "container": {
+      "shape": "rect",
+      "widthOfWidth": 0.85,
+      "depthTiles": 0.45
+    },
+    "station": {
+      "shape": "rect",
+      "widthOfWidth": 0.8,
+      "depthTiles": 0.5
+    },
+    "gate": {
+      "shape": "rect",
+      "widthOfWidth": 1.0,
+      "depthTiles": 0.6
+    },
+    "grass": null,
+    "hero": {
+      "shape": "circle",
+      "radiusTiles": 0.22
+    },
+    "defense": {
+      "shape": "rect",
+      "widthOfWidth": 0.8,
+      "depthTiles": 0.5
+    }
+  },
+  "glow": {
+    "mushrooms_glow": "#7CFFB0",
+    "glow_fungus": "#9BFF6A",
+    "crystals": "#7FD8FF",
+    "uranium_rock": "#7DFF4F",
+    "molten_rock": "#FF8A3A"
+  },
+  "lights": {
+    "heroRadiusTiles": 3.5,
+    "campfireRadiusTiles": 5,
+    "streetLampRadiusTiles": 3,
+    "glowRadiusTiles": 1.6,
+    "lampObjects": [
+      "street_lamp"
+    ]
+  },
+  "dayNight": {
+    "transitionSec": 30
+  },
+  "camera": {
+    "lerp": 0.15,
+    "zoomMin": 0.75,
+    "zoomMax": 1.25,
+    "viewTilesDesktop": [
+      16,
+      9
+    ],
+    "viewTilesMobile": [
+      11,
+      6
+    ]
+  },
+  "persistence": {
+    "_note": "Выброшенный на землю предмет лежит droppedItemLifetimeSec игровых секунд, даже если чанк выгружен. Содержимое ящиков хранится до респауна (balance.json → world.lootRespawnGameDays)",
+    "droppedItemLifetimeSec": 600,
+    "updateEverySec": 1,
+    "maxSaveSlots": 10,
+    "saveNameMaxLength": 24,
+    "autosaveEverySec": 60
+  },
+  "atlasStreaming": {
+    "_note": "Атласы биомов догружаются, когда биом ближе preloadRadiusTiles к камере, и выгружаются дальше unloadRadiusTiles",
+    "preloadRadiusTiles": 56,
+    "unloadRadiusTiles": 112,
+    "sampleStepTiles": 8,
+    "checkEveryMs": 500
+  },
+  "streaming": {
+    "marginChunks": 1,
+    "unloadMarginChunks": 2,
+    "maxChunkBuildsPerFrame": 1,
+    "frameBudgetMs": 6,
+    "cullMarginPx": 256,
+    "cacheChunks": 96
+  }
+}

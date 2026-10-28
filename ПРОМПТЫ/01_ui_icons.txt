@@ -1,0 +1,50 @@
+ЛИСТ 01 — ИКОНКИ ИНТЕРФЕЙСА
+Файл листа: s24_ui_extra.png      Папка нарезки: ui/
+Зачем: сейчас эти значки рисуются кодом (цветные плашки, буквы) — см. ASSET_REQUESTS.md.
+Приложить: 1) source_sheets/s23_ui.png (стиль интерфейса), 2) source_sheets/s01_icons_tools.png.
+Целевой размер в игре: 64×64 (вписать в квадрат).
+
+===== PROMPT =====
+TWO ATTACHED IMAGES: image 1 = the UI style reference (riveted rusty metal game interface), image 2 = the inventory icon style reference.
+
+ART STYLE — follow strictly. UI icons for a mobile post-apocalyptic survival game. Match image 1 exactly: painted semi-realistic look, slightly chunky friendly shapes, worn rusty metal, scratched paint, warm muted palette (olive, rust orange, weathered brown, faded blue, bone white). Soft light from the top-left. Bold, simple, readable silhouettes that still read at 32 pixels.
+
+FORMAT OF EACH ICON: a single symbol, no frame, no plate, no circle behind it (the game puts it on its own button). Except where a cell says "round button" — then draw it like the round riveted buttons in image 1.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. No shadow on the background. Hard, clean, fully opaque edges.
+
+FORBIDDEN: text, letters, numbers, logos, real brands, watermark, grid lines, labels, glow halos, smoke.
+
+SHEET FORMAT: one square image, invisible grid of 5 columns and 5 rows of equal cells, one icon per cell, centered, at least 12% empty margin, icons never touch. Fill left to right, top to bottom:
+1. bleeding — three dark red drops falling from a torn bandage
+2. poison — a green skull-shaped drop with bubbles
+3. infection — a sickly yellow-green virus blob with spikes
+4. broken bone — a white bone cracked in two with a jagged break
+5. padlock — a heavy rusty closed padlock
+6. bare hands — two open hands side by side, palms up (crafting by hand)
+7. crafting book — a thick worn leather book with a gear and hammer embossed on the cover
+8. skills — a rising arrow made of three stacked chevrons on a small medal
+9. journal — an open notebook with a pencil and a paperclip
+10. map — a folded paper map with a red route line and a pin
+11. settings — a rusty gear wheel
+12. pause — two thick vertical metal bars
+13. sprint — a running boot with three speed lines (different from image 1's boot: side view, mid-stride)
+14. get into vehicle — a car door with an arrow pointing into it
+15. get out of vehicle — a car door with an arrow pointing out of it
+16. refuel — a red metal jerrycan with a nozzle
+17. repair — a wrench crossed with a screwdriver over a small gear
+18. car trunk — an open car trunk lid with a box inside
+19. level up — a golden star with an upward arrow inside
+20. task done — a paper task list with a big green check mark
+21. note — a rolled paper scroll tied with string
+22. experience — a glowing-yellow-painted gem (painted, not glowing halo)
+23. sleep — a crescent moon over a small pillow
+24. teleport — a round button with a swirling portal arrow (round button)
+25. boss arena — a cracked skull on crossed bones, on a red shield
+
+CELL NAMES (порядок нарезки):
+icon_bleeding icon_poison icon_infection icon_fracture icon_lock
+icon_hands icon_craft_book icon_skills icon_journal icon_map
+icon_settings icon_pause icon_sprint icon_vehicle_enter icon_vehicle_exit
+icon_refuel icon_repair icon_trunk icon_level_up icon_task_done
+icon_note icon_xp icon_sleep btn_teleport icon_boss_arena

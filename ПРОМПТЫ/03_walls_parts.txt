@@ -1,0 +1,31 @@
+ЛИСТ 03 — СТЕНЫ: КОНЦЫ, УГЛЫ, ВЕРТИКАЛЬНЫЕ УЧАСТКИ, ОТКРЫТАЯ ДВЕРЬ
+Файл листа: s26_walls_extra.png      Папка нарезки: building/walls/
+Зачем: сейчас любая клетка стены — одинаковый квадрат «верха» (top_cap), поэтому концы стен,
+углы и стены, идущие вверх по экрану, выглядят как ровные плитки без края. Открытая дверь —
+просто сжатая по ширине закрытая. Эти детали дадут аккуратные стыки.
+Приложить: 1) source_sheets/s07_walls.png (5 материалов, тот же порядок рядов), 2) tools/angle_reference.png.
+Размеры как у s07: верх — квадрат (в игре 64×64), лицо — прямоугольник (в игре 64×48).
+
+===== PROMPT =====
+TWO ATTACHED IMAGES: image 1 = the wall sheet of this game (5 rows = 5 materials: wooden planks, logs, red brick, rusty steel sheets, concrete). Copy its materials, colors, texture and scale EXACTLY. Image 2 = the camera angle reference: copy ONLY its LEFT side.
+
+ART STYLE — follow strictly. Modular wall pieces for a 2D top-down post-apocalyptic survival game, painted semi-realistic, worn, rust, moss, chipped paint, light from the top-left. Every piece must tile seamlessly with the pieces in image 1.
+
+TWO PROJECTIONS — critical: "top" pieces are seen STRICTLY FROM ABOVE and are square, exactly the size of the square top pieces in image 1. "Face" pieces are seen STRICTLY FROM THE FRONT and are the same size as the wall faces in image 1. No perspective, no diagonal, no isometric.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. No ground, no shadow. Hard, clean, fully opaque edges. Glass painted opaque.
+
+FORBIDDEN: smoke, fire, text, letters, numbers, logos, watermark, grid lines, labels.
+
+SHEET FORMAT: one image, invisible grid of 8 columns and 5 rows of equal cells, one piece per cell, centered, at least 12% empty margin, pieces never touch. Row 1 = wooden planks, row 2 = logs, row 3 = red brick with concrete trim, row 4 = rusty steel sheets with rivets, row 5 = concrete with steel frame. In EVERY row draw these 8 pieces, left to right:
+1. top piece, LEFT END of a horizontal wall: the left edge has a finished trim/cap, the right edge continues seamlessly
+2. top piece, RIGHT END of a horizontal wall: mirror of piece 1
+3. top piece of a wall running AWAY from the viewer (up the screen): the planks/bricks/sheets run vertically, finished trim on the left and right edges, top and bottom edges continue seamlessly
+4. top piece, CORNER: an L-shaped corner seen from above, the wall turns from going right to going up, with a corner post/pillar
+5. face piece, LEFT END: like the plain wall face of image 1, but with a vertical corner post/pillar on its left side
+6. face piece, RIGHT END: mirror of piece 5
+7. OPEN DOOR: the door of image 1 swung open, seen from the front almost edge-on, a narrow tall door leaf with hinges, the same height as the door in image 1
+8. face piece, HEAVILY CRACKED but still standing: the plain face with deep cracks, missing chips, bent nails or dents (no holes through it)
+
+CELL NAMES (порядок нарезки, <m> = wood, logs, brick, steel, concrete — ряды сверху вниз):
+<m>_top_end_left <m>_top_end_right <m>_top_vertical <m>_top_corner <m>_face_end_left <m>_face_end_right <m>_door_open <m>_face_cracked

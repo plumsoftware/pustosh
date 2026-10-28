@@ -1,0 +1,52 @@
+ЛИСТ 02 — 24 ИКОНКИ НАВЫКОВ
+Файл листа: s25_skills.png      Папка нарезки: ui/skills/
+Зачем: окно навыков (K). Сейчас вместо иконок — буква на цветном круге.
+Приложить: 1) source_sheets/s23_ui.png (круглые кнопки с заклёпками), 2) source_sheets/s01_icons_tools.png.
+Целевой размер: 64×64. Ряд = ветка, цвет ободка = цвет ветки.
+
+===== PROMPT =====
+TWO ATTACHED IMAGES: image 1 = the UI style reference (round riveted metal buttons), image 2 = the icon painting style reference.
+
+ART STYLE — follow strictly. Skill icons for a mobile post-apocalyptic survival game. Each icon is a ROUND riveted metal medallion exactly like the round buttons in image 1 (dark worn metal face, rusty rim with rivets), with a painted bone-white or full-color emblem in the middle. Painted semi-realistic look, chunky readable emblems that still read at 40 pixels, light from the top-left.
+
+RIM COLOR BY ROW — critical: row 1 rim painted dull RED, row 2 rim painted moss GREEN, row 3 rim painted ORANGE-YELLOW, row 4 rim painted faded BLUE. All 24 medallions the same size and shape.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. No shadow. Hard, clean, fully opaque edges.
+
+FORBIDDEN: text, letters, numbers, roman numerals, logos, watermark, grid lines, labels, glow halos.
+
+SHEET FORMAT: one image, invisible grid of 6 columns and 4 rows of equal cells, one medallion per cell, centered, at least 12% empty margin. Fill left to right, top to bottom:
+Row 1 — FIGHTER (red rim):
+1. strong strike — a fist breaking a wooden plank
+2. marksman — a crosshair over a bullet
+3. agility — a dodging figure silhouette with motion arcs
+4. backstab — a knife pointing at a figure's back
+5. finishing blow — a heavy sledgehammer coming down on a cracked skull
+6. toughness — a heart wrapped in an iron band
+Row 2 — GATHERER (green rim):
+7. greed — two logs and a rock with a small plus sign made of sticks
+8. looter — an open backpack spilling scrap and cans
+9. thrift — a stone axe with a protective leather wrap on the handle
+10. keen eye — an eye over a small glowing-painted ore nugget
+11. skinning — a hunting knife over an animal hide
+12. fisherman — a fishing hook with a fish
+Row 3 — ENGINEER (orange-yellow rim):
+13. economy — a stack of planks with a down arrow
+14. gunsmith — a rifle over a gear
+15. conveyor — two gears interlocked with a small arrow loop
+16. master — a golden hammer over an anvil
+17. mechanic — a wrench over a car wheel
+18. fortification — a reinforced wall section with metal plates and rivets
+Row 4 — SURVIVOR (blue rim):
+19. iron stomach — a food can with a strong-stomach emblem (a can and a shield)
+20. hardening — a snowflake and a sun split in half
+21. porter — a large overloaded backpack
+22. healer — a bandage roll with a red cross shape made of bandage strips
+23. immunity — a shield over a virus blob
+24. good sleep — a sleeping bag with a crescent moon
+
+CELL NAMES (порядок нарезки):
+skill_fighter_1 skill_fighter_2 skill_fighter_3 skill_fighter_4 skill_fighter_5 skill_fighter_6
+skill_gatherer_1 skill_gatherer_2 skill_gatherer_3 skill_gatherer_4 skill_gatherer_5 skill_gatherer_6
+skill_engineer_1 skill_engineer_2 skill_engineer_3 skill_engineer_4 skill_engineer_5 skill_engineer_6
+skill_survivor_1 skill_survivor_2 skill_survivor_3 skill_survivor_4 skill_survivor_5 skill_survivor_6

@@ -1,0 +1,95 @@
+{
+ "world": {
+  "seed": 20261027,
+  "sizeTiles": [
+   1024,
+   1024
+  ],
+  "chunkTiles": 32,
+  "tilePx": 64,
+  "biomeRingsRadiusTiles": [
+   512,
+   420,
+   330,
+   240,
+   160,
+   80
+  ],
+  "lootRespawnGameDays": 3,
+  "resourceRespawnGameDays": [
+   2,
+   5
+  ]
+ },
+ "dayNight": {
+  "fullDaySec": 720,
+  "daySec": 480,
+  "nightSec": 240,
+  "bloodNightEvery": 7,
+  "nightEnemySpeedMul": 1.6,
+  "nightSpawnMul": 2.5
+ },
+ "player": {
+  "hp": 100,
+  "stamina": 100,
+  "speedTilesPerSec": 3.2,
+  "sprintMul": 1.5,
+  "dodgeIFramesSec": 0.3,
+  "dodgeStamina": 20,
+  "inventorySlots": 20,
+  "hotbarSlots": 6,
+  "deathBackpackLifetimeSec": 1200,
+  "pickupRadiusTiles": 1.2,
+  "highlightRadiusTiles": 4
+ },
+ "survival": {
+  "yandex": {
+   "hungerPerMin": 0.7,
+   "thirstPerMin": 1.0,
+   "coldDmgPerSec": 0.5
+  },
+  "rustore": {
+   "hungerPerMin": 1.0,
+   "thirstPerMin": 1.5,
+   "coldDmgPerSec": 1.0
+  }
+ },
+ "ads": {
+  "yandex": {
+   "interstitialMinIntervalSec": 180,
+   "interstitialPoints": [
+    "death",
+    "night_start_at_base",
+    "menu_to_game",
+    "boss_defeated",
+    "sleep",
+    "teleport"
+   ],
+   "rewarded": [
+    "revive_with_backpack",
+    "double_loot",
+    "instant_craft",
+    "repair_all",
+    "buff_10min",
+    "extra_daily",
+    "supply_drop_30min"
+   ]
+  },
+  "rustore": {
+   "interstitialMinIntervalSec": 240,
+   "interstitialPoints": [
+    "death",
+    "boss_defeated",
+    "sleep"
+   ],
+   "rewarded": "as yandex"
+  }
+ },
+ "iap": [
+  "remove_interstitials",
+  "starter_pack(backpack_hiking + tier2 tools)",
+  "cosmetics (hero tint, vehicle paint)",
+  "extra_outposts"
+ ],
+ "iapRule": "не продавать силу в обход боссов"
+}

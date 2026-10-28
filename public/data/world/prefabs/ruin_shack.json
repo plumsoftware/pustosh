@@ -1,0 +1,17 @@
+{
+  "id": "ruin_shack",
+  "kind": "ruin",
+  "anchor": [2, 5],
+  "plan": [
+    "#####",
+    "#...#",
+    "#...#",
+    "#...#",
+    "#D###",
+    ",,,,,"
+  ],
+  "objects": [
+    { "at": [2.5, 2.3], "furniture": "random" },
+    { "at": [3.2, 3.8], "container": "random" }
+  ]
+}

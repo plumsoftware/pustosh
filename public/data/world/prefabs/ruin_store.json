@@ -1,0 +1,23 @@
+{
+  "id": "ruin_store",
+  "kind": "ruin",
+  "anchor": [3, 8],
+  "plan": [
+    "#######",
+    "#.....#",
+    "#.....#",
+    "#.....#",
+    "#.....#",
+    "#.....#",
+    "##ODO##",
+    ",,,,,,,",
+    ",,,,,,,"
+  ],
+  "objects": [
+    { "at": [1.6, 2.2], "container": "random" },
+    { "at": [5.4, 2.2], "container": "random" },
+    { "at": [1.6, 4.3], "furniture": "random" },
+    { "at": [5.4, 4.3], "container": "cardboard_boxes" },
+    { "at": [3.5, 3.4], "furniture": "table" }
+  ]
+}

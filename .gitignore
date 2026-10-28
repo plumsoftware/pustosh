@@ -1,0 +1,20 @@
+node_modules/
+dist/
+dist-*/
+dist-*.zip
+.DS_Store
+.idea/
+*.iml
+.vite/
+coverage/
+# Capacitor: собранный веб и кэши внутри android/ генерируются заново
+android/app/src/main/assets/public/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+# Старый KorGE-проект, исходные пакеты
+_legacy_korge/build/
+_legacy_korge/**/build/
+_legacy_korge/.gradle/
+_legacy_korge/_tmp_step2/

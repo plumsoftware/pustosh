@@ -1,0 +1,9 @@
+{
+  "id": "arena_boss",
+  "kind": "arena",
+  "clearRadiusTiles": 9,
+  "ring": { "radiusTiles": 10, "kind": "rock", "count": 16, "gapDeg": 30 },
+  "objects": [
+    { "at": [0, 8.2], "station": "campfire", "state": "on" }
+  ]
+}

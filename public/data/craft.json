@@ -1,0 +1,136 @@
+{
+  "_note": "Крафт и станки (шаг 6). Числа из TZ/STEP_06 и GDD §7; топливо и подсказки закрытых рецептов — предложение агента.",
+  "queueMax": 5,
+  "outputMaxStacks": 10,
+  "nearbyChestRadiusTiles": 4,
+  "handsMaxSec": 3,
+  "instantCraftMinSec": 30,
+  "stationOpenRadiusTiles": 2.5,
+  "placeableStack": 5,
+  "disassembleReturn": 0.5,
+  "disassembleTool": "hammer",
+  "noticeTier": 2,
+  "speedSkill": {
+    "id": "engineer_3",
+    "perLevel": 0.2
+  },
+  "fuelSkill": {
+    "id": "engineer_5",
+    "perLevel": 0.15
+  },
+  "skillLevelRequired": {
+    "engineer_2": 2
+  },
+  "fuel": {
+    "campfire": {
+      "items": {
+        "wood": 60,
+        "sticks": 15,
+        "peat": 90,
+        "coal": 150
+      },
+      "burnAlways": true
+    },
+    "forge": {
+      "items": {
+        "wood": 30,
+        "peat": 45,
+        "coal": 90
+      },
+      "burnAlways": false
+    },
+    "smelter": {
+      "items": {
+        "wood": 30,
+        "peat": 45,
+        "coal": 90
+      },
+      "burnAlways": false
+    },
+    "generator": {
+      "items": {
+        "crude_oil": 240
+      },
+      "burnAlways": true
+    }
+  },
+  "fuelSlotMax": 20,
+  "garden": {
+    "growGameDays": 1,
+    "sproutsAt": 0.4,
+    "harvest": {
+      "berries": [
+        3,
+        5
+      ],
+      "fiber": [
+        1,
+        2
+      ]
+    }
+  },
+  "locked": {
+    "r_katana_titanium": "trophy_frost",
+    "r_railgun": "trophy_zero",
+    "r_sniper_rifle": "trophy_tyrant",
+    "r_turret_energy": "blueprint",
+    "r_plasma_cutter": "blueprint",
+    "r_energy_rifle": "blueprint",
+    "r_bicycle": "blueprint",
+    "r_moped": "trophy_butcher",
+    "r_quad": "trophy_queen",
+    "r_moto_sidecar": "trophy_tyrant",
+    "r_buggy": "trophy_devourer",
+    "r_snowcat": "trophy_frost"
+  },
+  "blueprintItem": "blueprint",
+  "categories": {
+    "tools": [
+      "tool"
+    ],
+    "weapons": [
+      "weapon",
+      "ammo",
+      "mod"
+    ],
+    "clothing": [
+      "clothing"
+    ],
+    "medicine": [
+      "medicine"
+    ],
+    "food": [
+      "food",
+      "consumable"
+    ],
+    "buildings": [
+      "placeable"
+    ],
+    "defense": [
+      "defense"
+    ],
+    "materials": [
+      "resource",
+      "container",
+      "blueprint",
+      "trophy"
+    ],
+    "vehicles": [
+      "vehicle"
+    ]
+  },
+  "fx": {
+    "campfire": {
+      "flameFrames": 6,
+      "loopSec": 0.6,
+      "lightFlicker": 0.1
+    },
+    "hot": [
+      "forge",
+      "smelter"
+    ],
+    "vibrate": [
+      "generator"
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "name": "pustosh",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Пустошь — 2D-выживание с видом сверху (Phaser 3 + Vite + Capacitor)",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --mode dev --host",
+    "build:dev": "tsc --noEmit && vite build --mode dev",
+    "build:yandex": "tsc --noEmit && vite build --mode yandex --outDir dist-yandex && tsx tools/zip-dist.ts dist-yandex dist-yandex.zip",
+    "build:android": "tsc --noEmit && vite build --mode android --outDir dist-android && tsx tools/patch-android.ts && cap sync android",
+    "android:apk": "npm run build:android && cd android && ./gradlew assembleDebug",
+    "android:release": "npm run build:android && cd android && ./gradlew bundleRelease assembleRelease",
+    "preview:yandex": "vite preview --mode yandex --outDir dist-yandex --host",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "pack-assets": "tsx tools/pack-assets.ts",
+    "cut-sheets": "tsx tools/cut-sheets.ts",
+    "validate-data": "tsx tools/validate-data.ts",
+    "sync-package": "tsx tools/sync-package.ts",
+    "balance-check": "tsx tools/balance-check.ts"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/filesystem": "8.1.5",
+    "@capacitor/preferences": "8.0.1",
+    "@capacitor/status-bar": "8.0.4",
+    "phaser": "3.90.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3",
+    "@eslint/js": "10.0.1",
+    "@types/adm-zip": "0.6.0",
+    "@types/node": "26.6.5",
+    "adm-zip": "0.6.1",
+    "eslint": "10.13.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.13.0",
+    "maxrects-packer": "3.0.0",
+    "prettier": "3.9.10",
+    "sharp": "0.35.5",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

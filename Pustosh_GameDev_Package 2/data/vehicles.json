@@ -1,0 +1,138 @@
+[
+ {
+  "id": "bicycle",
+  "name_ru": "Велосипед",
+  "tier": 1,
+  "unlock": "чертёж в пригороде",
+  "body": "assets/vehicles/bicycle_body.png",
+  "wheel": "assets/vehicles/bicycle_wheel.png",
+  "speedMul": 1.6,
+  "trunkSlots": 0,
+  "fuelPer100Tiles": 0,
+  "hp": 150,
+  "terrain": [
+   "road",
+   "grass",
+   "dirt"
+  ],
+  "note": "без топлива, тихий"
+ },
+ {
+  "id": "moped",
+  "name_ru": "Ржавый мопед",
+  "tier": 2,
+  "unlock": "босс 1",
+  "body": "assets/vehicles/moped_body.png",
+  "wheel": "assets/vehicles/moped_wheel.png",
+  "speedMul": 2.2,
+  "trunkSlots": 4,
+  "fuelPer100Tiles": 1,
+  "hp": 200,
+  "terrain": [
+   "road",
+   "grass",
+   "dirt"
+  ],
+  "note": "хрупкий"
+ },
+ {
+  "id": "quad",
+  "name_ru": "Квадроцикл",
+  "tier": 3,
+  "unlock": "босс 2 / болото",
+  "body": "assets/vehicles/quad_body.png",
+  "wheel": "assets/vehicles/quad_wheel.png",
+  "speedMul": 2.0,
+  "trunkSlots": 8,
+  "fuelPer100Tiles": 1.5,
+  "hp": 350,
+  "terrain": [
+   "road",
+   "grass",
+   "dirt",
+   "swamp_mud",
+   "water_shallow"
+  ],
+  "note": "проходит болото"
+ },
+ {
+  "id": "moto_sidecar",
+  "name_ru": "Мотоцикл с коляской",
+  "tier": 4,
+  "unlock": "босс 3",
+  "body": "assets/vehicles/moto_body.png",
+  "wheel": "assets/vehicles/moto_wheel.png",
+  "speedMul": 2.8,
+  "trunkSlots": 12,
+  "fuelPer100Tiles": 2,
+  "hp": 400,
+  "terrain": [
+   "road",
+   "grass",
+   "dirt"
+  ],
+  "note": "таранит слабых врагов"
+ },
+ {
+  "id": "pickup",
+  "name_ru": "Пикап",
+  "tier": 5,
+  "unlock": "город, гараж",
+  "body": "assets/vehicles/pickup_body.png",
+  "wheel": "assets/vehicles/pickup_wheel.png",
+  "speedMul": 2.5,
+  "trunkSlots": 24,
+  "fuelPer100Tiles": 3,
+  "hp": 800,
+  "terrain": [
+   "road",
+   "grass",
+   "dirt",
+   "sand"
+  ],
+  "note": "передвижной сундук, броня, таран",
+  "mods": {
+   "armor": "assets/vehicles/pickup_armor_kit.png",
+   "roofRack": "assets/vehicles/roof_rack.png"
+  }
+ },
+ {
+  "id": "buggy",
+  "name_ru": "Багги",
+  "tier": 6,
+  "unlock": "босс 4",
+  "body": "assets/vehicles/buggy_body.png",
+  "wheel": "assets/vehicles/buggy_wheel.png",
+  "speedMul": 3.0,
+  "trunkSlots": 10,
+  "fuelPer100Tiles": 2.5,
+  "hp": 500,
+  "terrain": [
+   "road",
+   "sand",
+   "dirt",
+   "clay_cracked"
+  ],
+  "note": "не вязнет в песке"
+ },
+ {
+  "id": "snowcat",
+  "name_ru": "Вездеход",
+  "tier": 7,
+  "unlock": "босс 5 / тундра",
+  "body": "assets/vehicles/snowcat_body.png",
+  "wheel": null,
+  "speedMul": 2.4,
+  "trunkSlots": 20,
+  "fuelPer100Tiles": 3,
+  "hp": 1000,
+  "terrain": [
+   "snow",
+   "ice",
+   "road",
+   "dirt"
+  ],
+  "note": "гусеница: snowcat_track, текстура прокручивается; обогрев внутри",
+  "track": "assets/vehicles/snowcat_track.png"
+ }
+]

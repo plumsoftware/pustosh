@@ -1,0 +1,464 @@
+{
+ "humanoid": {
+  "facing": "right (влево = scaleX -1 у корня)",
+  "bodyHeightPx": 96,
+  "partLengthFrac": {
+   "head": 0.3,
+   "torso": 0.34,
+   "pelvis": 0.1,
+   "upper_arm": 0.22,
+   "forearm": 0.24,
+   "thigh": 0.24,
+   "shin": 0.3,
+   "backpack": 0.3
+  },
+  "scaleRule": "scale(part) = partLengthFrac[part] * bodyHeightPx / длинная_сторона(png части). Затем подправить в редакторе рига (шаг 4).",
+  "bones": [
+   {
+    "id": "root",
+    "parent": null,
+    "note": "точка на земле между стоп"
+   },
+   {
+    "id": "pelvis",
+    "parent": "root",
+    "sprite": "pelvis",
+    "pivot": [
+     0.5,
+     0.35
+    ],
+    "attach": [
+     0.0,
+     -0.5
+    ]
+   },
+   {
+    "id": "torso",
+    "parent": "pelvis",
+    "sprite": "torso",
+    "pivot": [
+     0.5,
+     0.95
+    ],
+    "attach": [
+     0.0,
+     -0.03
+    ]
+   },
+   {
+    "id": "head",
+    "parent": "torso",
+    "sprite": "head",
+    "pivot": [
+     0.42,
+     0.88
+    ],
+    "attach": [
+     0.06,
+     -0.3
+    ]
+   },
+   {
+    "id": "arm_far_upper",
+    "parent": "torso",
+    "sprite": "upper_arm",
+    "pivot": [
+     0.5,
+     0.1
+    ],
+    "attach": [
+     -0.02,
+     -0.27
+    ],
+    "tint": "#9A9A9A",
+    "z": -2
+   },
+   {
+    "id": "arm_far_lower",
+    "parent": "arm_far_upper",
+    "sprite": "forearm",
+    "pivot": [
+     0.1,
+     0.4
+    ],
+    "attach": [
+     0.0,
+     0.2
+    ],
+    "tint": "#9A9A9A",
+    "z": -2
+   },
+   {
+    "id": "leg_far_upper",
+    "parent": "pelvis",
+    "sprite": "thigh",
+    "pivot": [
+     0.5,
+     0.08
+    ],
+    "attach": [
+     -0.02,
+     0.02
+    ],
+    "tint": "#9A9A9A",
+    "z": -1
+   },
+   {
+    "id": "leg_far_lower",
+    "parent": "leg_far_upper",
+    "sprite": "shin",
+    "pivot": [
+     0.45,
+     0.06
+    ],
+    "attach": [
+     0.0,
+     0.22
+    ],
+    "tint": "#9A9A9A",
+    "z": -1
+   },
+   {
+    "id": "leg_near_upper",
+    "parent": "pelvis",
+    "sprite": "thigh",
+    "pivot": [
+     0.5,
+     0.08
+    ],
+    "attach": [
+     0.03,
+     0.02
+    ],
+    "z": 1
+   },
+   {
+    "id": "leg_near_lower",
+    "parent": "leg_near_upper",
+    "sprite": "shin",
+    "pivot": [
+     0.45,
+     0.06
+    ],
+    "attach": [
+     0.0,
+     0.22
+    ],
+    "z": 1
+   },
+   {
+    "id": "backpack",
+    "parent": "torso",
+    "sprite": "backpack",
+    "pivot": [
+     0.7,
+     0.5
+    ],
+    "attach": [
+     -0.1,
+     -0.17
+    ],
+    "z": -3,
+    "optional": true
+   },
+   {
+    "id": "arm_near_upper",
+    "parent": "torso",
+    "sprite": "upper_arm",
+    "pivot": [
+     0.5,
+     0.1
+    ],
+    "attach": [
+     0.02,
+     -0.27
+    ],
+    "z": 3
+   },
+   {
+    "id": "arm_near_lower",
+    "parent": "arm_near_upper",
+    "sprite": "forearm",
+    "pivot": [
+     0.1,
+     0.4
+    ],
+    "attach": [
+     0.0,
+     0.2
+    ],
+    "z": 3
+   },
+   {
+    "id": "held_item",
+    "parent": "arm_near_lower",
+    "sprite": "<icon of equipped tool/weapon>",
+    "pivot": [
+     0.25,
+     0.75
+    ],
+    "attach": [
+     0.2,
+     0.0
+    ],
+    "z": 4,
+    "note": "держимый предмет = его иконка, масштаб ~0.45 bodyHeight"
+   }
+  ],
+  "attachUnits": "attach = смещение точки крепления от pivot родителя в долях bodyHeightPx (x вправо, y вниз)",
+  "drawOrder": "по z: backpack(-3) → дальняя рука(-2) → дальняя нога(-1) → таз, торс, голова(0) → ближняя нога(1) → ближняя рука(3) → предмет(4)",
+  "animations": {
+   "idle": {
+    "loopSec": 2.0,
+    "keys": "torso y ±0.01 (дыхание), head rot ±2°, arms rot ±3°"
+   },
+   "walk": {
+    "loopSec": 0.7,
+    "keys": "thigh near: -25°→+25°, far: противофаза; shin: 0→+30° на заносе; arm upper: ±20° в противофазе ногам; root y bob 0.015"
+   },
+   "run": {
+    "loopSec": 0.45,
+    "keys": "как walk, амплитуды x1.5, torso наклон +8°"
+   },
+   "attack_slash": {
+    "durSec": 0.35,
+    "keys": "arm_near_upper -110° (замах) → +40° (удар) → 0; torso +6°; хит-кадр на 55%"
+   },
+   "attack_blunt": {
+    "durSec": 0.45,
+    "keys": "как slash, замах -130°, удар медленнее, тряска камеры 0.1"
+   },
+   "attack_pierce": {
+    "durSec": 0.3,
+    "keys": "arm_near_upper -20° → +70° с выносом вперёд на 0.08"
+   },
+   "shoot": {
+    "durSec": 0.15,
+    "keys": "обе руки вперёд +80°, отдача held_item x -0.03, вспышка effects/muzzle_1|2"
+   },
+   "gather": {
+    "loopSec": 0.6,
+    "keys": "как attack_blunt, но по объекту; частицы dust/spark от типа ресурса"
+   },
+   "dodge": {
+    "durSec": 0.35,
+    "keys": "root rot 0→360° (кувырок) или смещение 1.5 тайла + прозрачность 0.7"
+   },
+   "hurt": {
+    "durSec": 0.2,
+    "keys": "head → head_hurt, тинт красным 0.15 c, отброс 0.2 тайла"
+   },
+   "blink": {
+    "everySec": "3–6 случайно",
+    "durSec": 0.12,
+    "keys": "head → head_blink"
+   },
+   "death": {
+    "durSec": 0.6,
+    "keys": "root rot до 90°, опуститься на землю, альфа 1→0 за 2 c (для врагов)"
+   }
+  },
+  "fallbackMVP": "Если риг не готов: рисовать ref_idle целиком, шаг = ref_walk/ref_idle по очереди 0.18 c + bob, удар = поворот held_item. Игра должна работать и так."
+ },
+ "quadruped": {
+  "facing": "right",
+  "bodyLengthPx": 96,
+  "partLengthFrac": {
+   "head": 0.35,
+   "body": 0.6,
+   "front_upper": 0.28,
+   "front_lower": 0.3,
+   "back_upper": 0.3,
+   "back_lower": 0.3,
+   "tail": 0.35
+  },
+  "bones": [
+   {
+    "id": "root",
+    "parent": null
+   },
+   {
+    "id": "body",
+    "parent": "root",
+    "sprite": "body",
+    "pivot": [
+     0.5,
+     0.5
+    ],
+    "attach": [
+     0.0,
+     -0.42
+    ]
+   },
+   {
+    "id": "head",
+    "parent": "body",
+    "sprite": "head",
+    "pivot": [
+     0.25,
+     0.65
+    ],
+    "attach": [
+     0.3,
+     -0.08
+    ]
+   },
+   {
+    "id": "tail",
+    "parent": "body",
+    "sprite": "tail",
+    "pivot": [
+     0.9,
+     0.3
+    ],
+    "attach": [
+     -0.3,
+     -0.06
+    ],
+    "z": -1
+   },
+   {
+    "id": "leg_fl_far",
+    "parent": "body",
+    "sprite": "front_upper",
+    "pivot": [
+     0.5,
+     0.1
+    ],
+    "attach": [
+     0.2,
+     0.1
+    ],
+    "tint": "#9A9A9A",
+    "z": -1
+   },
+   {
+    "id": "leg_fl_far_lower",
+    "parent": "leg_fl_far",
+    "sprite": "front_lower",
+    "pivot": [
+     0.5,
+     0.08
+    ],
+    "attach": [
+     0,
+     0.22
+    ],
+    "tint": "#9A9A9A",
+    "z": -1
+   },
+   {
+    "id": "leg_bl_far",
+    "parent": "body",
+    "sprite": "back_upper",
+    "pivot": [
+     0.5,
+     0.1
+    ],
+    "attach": [
+     -0.2,
+     0.08
+    ],
+    "tint": "#9A9A9A",
+    "z": -1
+   },
+   {
+    "id": "leg_bl_far_lower",
+    "parent": "leg_bl_far",
+    "sprite": "back_lower",
+    "pivot": [
+     0.5,
+     0.08
+    ],
+    "attach": [
+     0,
+     0.22
+    ],
+    "tint": "#9A9A9A",
+    "z": -1
+   },
+   {
+    "id": "leg_fl",
+    "parent": "body",
+    "sprite": "front_upper",
+    "pivot": [
+     0.5,
+     0.1
+    ],
+    "attach": [
+     0.24,
+     0.1
+    ],
+    "z": 1
+   },
+   {
+    "id": "leg_fl_lower",
+    "parent": "leg_fl",
+    "sprite": "front_lower",
+    "pivot": [
+     0.5,
+     0.08
+    ],
+    "attach": [
+     0,
+     0.22
+    ],
+    "z": 1
+   },
+   {
+    "id": "leg_bl",
+    "parent": "body",
+    "sprite": "back_upper",
+    "pivot": [
+     0.5,
+     0.1
+    ],
+    "attach": [
+     -0.16,
+     0.08
+    ],
+    "z": 1
+   },
+   {
+    "id": "leg_bl_lower",
+    "parent": "leg_bl",
+    "sprite": "back_lower",
+    "pivot": [
+     0.5,
+     0.08
+    ],
+    "attach": [
+     0,
+     0.22
+    ],
+    "z": 1
+   }
+  ],
+  "variants": {
+   "raptor": "двуногий: front_* = arm_upper/arm_lower (маленькие), back_* = leg_upper/leg_lower, тело наклонено, хвост длинный",
+   "scorpion": "front = pincer_arm + pincer_claw; 6 ног = leg_upper/leg_lower повторить 3 раза с шагом 0.15 по X; tail = tail_stinger над телом",
+   "toad": "tongue_and_sac: разрезать по вертикали в коде НЕ надо — для атаки языком растягивать по X верхнюю часть (язык), мешок пульсирует масштабом",
+   "hare": "ears вместо tail: крепятся к голове, подёргиваются"
+  },
+  "animations": {
+   "walk": "диагональные пары ног в противофазе ±25°, 0.6 c",
+   "run": "галоп 0.4 c, body наклон ±5°",
+   "bite": "head rot -15° → +10°, рывок вперёд 0.1",
+   "idle": "дыхание body scaleY 1±0.02, хвост ±8°"
+  },
+  "fallbackMVP": "idle-спрайт целиком + bob/наклон при движении"
+ },
+ "boss": {
+  "note": "Боссы: целые спрайты idle/phase2 + отдельные части для эффектных атак. Не обязательно собирать полный риг.",
+  "approach": [
+   "Базовая отрисовка — спрайт idle (после 50% — phase2) с процедурной анимацией: дыхание scaleY, наклон к цели, тряска при ударе.",
+   "Атаки делаются отдельными частями поверх: butcher_hook_chain летит к игроку, цепь = повтор сегмента; tyrant_tail для взмаха; devourer_teeth_ring вращается в пасти; frost_ice_shard и zero_tentacle — снаряды/хлысты; queen_egg_sacs пульсируют.",
+   "Смерть — повернуть idle на 90°, затемнить, частицы dust/explosion, выпадает трофей."
+  ]
+ },
+ "usage": {
+  "hero": "characters/hero/*: pelvis, torso, head_*, upper_arm, forearm_open|forearm_fist, thigh, shin_boot, backpack",
+  "enemies": "characters/enemies/<id>_<part>; crawler без ног: rags вместо thigh, forearm_2 — запасная рука (в файле может быть стопа — не использовать)",
+  "animals": "characters/animals/<id>_<part>"
+ }
+}

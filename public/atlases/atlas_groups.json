@@ -1,0 +1,175 @@
+{
+ "scale": 2,
+ "groups": {
+  "ui": {
+   "load": "start",
+   "type": "atlas",
+   "json": "ui.json",
+   "images": [
+    "ui.png"
+   ],
+   "bytes": 367611,
+   "frames": 50
+  },
+  "icons": {
+   "load": "start",
+   "type": "atlas",
+   "json": "icons.json",
+   "images": [
+    "icons.png"
+   ],
+   "bytes": 909878,
+   "frames": 141
+  },
+  "tiles": {
+   "load": "start",
+   "type": "atlas",
+   "json": "tiles.json",
+   "images": [
+    "tiles.png"
+   ],
+   "bytes": 175302,
+   "frames": 16
+  },
+  "walls": {
+   "load": "start",
+   "type": "atlas",
+   "json": "walls.json",
+   "images": [
+    "walls.png"
+   ],
+   "bytes": 507072,
+   "frames": 50
+  },
+  "interior": {
+   "load": "start",
+   "type": "atlas",
+   "json": "interior.json",
+   "images": [
+    "interior.png"
+   ],
+   "bytes": 1024102,
+   "frames": 85
+  },
+  "biome1": {
+   "load": "start",
+   "type": "atlas",
+   "json": "biome1.json",
+   "images": [
+    "biome1.png"
+   ],
+   "bytes": 517249,
+   "frames": 22
+  },
+  "biome2": {
+   "load": "lazy",
+   "type": "atlas",
+   "json": "biome2.json",
+   "images": [
+    "biome2.png"
+   ],
+   "bytes": 498788,
+   "frames": 20
+  },
+  "biome3": {
+   "load": "lazy",
+   "type": "atlas",
+   "json": "biome3.json",
+   "images": [
+    "biome3.png"
+   ],
+   "bytes": 730548,
+   "frames": 23
+  },
+  "biome4": {
+   "load": "lazy",
+   "type": "atlas",
+   "json": "biome4.json",
+   "images": [
+    "biome4.png"
+   ],
+   "bytes": 600415,
+   "frames": 25
+  },
+  "biome5": {
+   "load": "lazy",
+   "type": "atlas",
+   "json": "biome5.json",
+   "images": [
+    "biome5.png"
+   ],
+   "bytes": 547088,
+   "frames": 25
+  },
+  "biome6": {
+   "load": "lazy",
+   "type": "atlas",
+   "json": "biome6.json",
+   "images": [
+    "biome6.png"
+   ],
+   "bytes": 637207,
+   "frames": 25
+  },
+  "hero": {
+   "load": "start",
+   "type": "atlas",
+   "json": "hero.json",
+   "images": [
+    "hero.png"
+   ],
+   "bytes": 360594,
+   "frames": 16
+  },
+  "enemies": {
+   "load": "start",
+   "type": "atlas",
+   "json": "enemies.json",
+   "images": [
+    "enemies.png"
+   ],
+   "bytes": 297916,
+   "frames": 63
+  },
+  "animals": {
+   "load": "start",
+   "type": "atlas",
+   "json": "animals.json",
+   "images": [
+    "animals.png"
+   ],
+   "bytes": 320763,
+   "frames": 74
+  },
+  "bosses": {
+   "load": "lazy",
+   "type": "atlas",
+   "json": "bosses.json",
+   "images": [
+    "bosses.png"
+   ],
+   "bytes": 385766,
+   "frames": 49
+  },
+  "vehicles": {
+   "load": "lazy",
+   "type": "atlas",
+   "json": "vehicles.json",
+   "images": [
+    "vehicles.png"
+   ],
+   "bytes": 221622,
+   "frames": 16
+  },
+  "effects": {
+   "load": "start",
+   "type": "atlas",
+   "json": "effects.json",
+   "images": [
+    "effects.png"
+   ],
+   "bytes": 152657,
+   "frames": 27
+  }
+ }
+}

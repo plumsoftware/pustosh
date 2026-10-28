@@ -1,0 +1,21 @@
+{
+  "note": "Дополнительные листы (ПРОМПТЫ/). npm run cut-sheets режет их в art/assets/<folder>/ и дописывает в art/assets_manifest.json. Запускать после sync-package (он перезаписывает art/).",
+  "sheets": [
+    {
+      "file": "s24_ui_extra.png",
+      "folder": "ui",
+      "key": "magenta",
+      "grid": [5, 5],
+      "scaleMode": "fit_box",
+      "targetPx": 64,
+      "pivot": "center",
+      "names": [
+        "icon_bleeding", "icon_poison", "icon_infection", "icon_fracture", "icon_lock",
+        "icon_hands", "icon_craft_book", "icon_skills", "icon_journal", "icon_map",
+        "icon_settings", "icon_pause", "icon_sprint", "icon_vehicle_enter", "icon_vehicle_exit",
+        "icon_refuel", "icon_repair", "icon_trunk", "icon_level_up", "icon_task_done",
+        "icon_note", "icon_xp", "icon_sleep", "btn_teleport", "icon_boss_arena"
+      ]
+    }
+  ]
+}

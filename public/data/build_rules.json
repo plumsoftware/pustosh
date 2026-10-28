@@ -1,0 +1,93 @@
+{
+  "_note": "Строительство, база, защита (шаг 7). Числа из TZ/STEP_07 и GDD §8; помеченные «агент» — предложение, проверить владельцу.",
+  "undoSec": 5,
+  "repairPerHit": 0.25,
+  "repairCostFrac": 0.1,
+  "disassembleHoldSec": 1,
+  "disassembleReturn": 0.5,
+  "fenceCostMul": 0.5,
+  "requiresStationRadiusTiles": 12,
+  "rubbleSec": 10,
+  "damageOverlayFrom": 0.3,
+  "doorOpenRadiusTiles": 1.3,
+  "roomFillLimit": 400,
+  "lineMaxCells": 12,
+  "base": {
+    "maxCores": 1,
+    "autoCollectEverySec": 30,
+    "maxOutposts": 3,
+    "rainBarrel": {
+      "item": "water_dirty",
+      "perGameHour": 1,
+      "max": 10
+    },
+    "ringDash": [
+      10,
+      8
+    ],
+    "upgrades": [
+      {
+        "level": 2,
+        "station": "workbench_2",
+        "cost": {
+          "planks": 20,
+          "scrap_metal": 15,
+          "nails_bolts": 10,
+          "steel_ingot": 2
+        }
+      },
+      {
+        "level": 3,
+        "station": "workbench_3",
+        "cost": {
+          "steel_plates": 8,
+          "steel_ingot": 6,
+          "circuit_board": 2
+        }
+      }
+    ]
+  },
+  "sleep": {
+    "noEnemiesRadiusTiles": 8,
+    "wakePhase": "dawn",
+    "fadeMs": 600
+  },
+  "defense": {
+    "solid": [
+      "sandbags",
+      "barricade_doors",
+      "watchtower",
+      "gate_spiked",
+      "spike_barricade",
+      "turret_mg",
+      "turret_energy",
+      "searchlight",
+      "alarm_bell",
+      "barrel_explosive",
+      "electric_fence",
+      "dart_trap",
+      "fire_trap",
+      "blade_trap"
+    ],
+    "contactTickSec": 1,
+    "triggerRadiusTiles": 0.55,
+    "turretTurnDegPerSec": 180,
+    "turretAimTolDeg": 10,
+    "ammoSlotMax": 200,
+    "fireTrap": {
+      "dps": 18,
+      "fuelPerSec": 0.1,
+      "coneDeg": 50
+    },
+    "alarmTriggerRadiusTiles": 3,
+    "explosionScorchSec": 30,
+    "trapRearmByHand": true,
+    "searchlightSwingDeg": 30
+  },
+  "dummy": {
+    "hp": 400,
+    "speedTilesPerSec": 1.2,
+    "patrolTiles": 6,
+    "radiusTiles": 0.3
+  }
+}

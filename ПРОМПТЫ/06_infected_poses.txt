@@ -1,0 +1,31 @@
+ЛИСТ 06 — ЗАРАЖЁННЫЕ: КЛЮЧЕВЫЕ ПОЗЫ
+Файл листа: s29_infected_poses.png      Папка нарезки: characters/enemies/
+Зачем: риги 7 заражённых не откалиброваны, сейчас каждый враг — один неподвижный спрайт
+с покачиванием. Две позы шага + удар + отшатывание дадут живую покадровую анимацию сразу,
+без ручной настройки 7 скелетов. (У ползуна в пакете нет своего скелета вовсе.)
+Приложить: source_sheets/s18_enemies.png (те же 7 персонажей, тот же масштаб).
+
+===== PROMPT =====
+ONE ATTACHED IMAGE: the infected enemies sheet of this game. Draw THE SAME 7 characters, keeping each one's face, clothes, colors, body shape, size and painting style exactly. Every pose of a character must have the same height and scale as that character's full-body idle drawing in the attached image.
+
+THE 7 CHARACTERS (columns, left to right): 1 walker (ragged shirt, slow shambling zombie), 2 crawler (legless zombie dragging itself on its arms), 3 spitter (swamp zombie with a swollen throat sac), 4 sprinter (thin fast zombie), 5 bloated (huge fat zombie covered in blisters), 6 soldier (zombie in a helmet and torn military gear), 7 glowing (irradiated zombie in a long coat, skin painted with sickly green light — painted only, no glow halo).
+
+VIEW — critical: every character faces RIGHT, seen from the side and slightly from above, like the attached image.
+
+ART STYLE: painted semi-realistic, slightly chunky proportions, creepy but not gory, light from the top-left.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. No ground, no shadow, no puddles. Hard, clean, fully opaque edges.
+
+FORBIDDEN: blood splashes, gore, smoke, glow halos, text, letters, numbers, logos, watermark, grid lines, labels.
+
+SHEET FORMAT: one image, invisible grid of 7 columns and 4 rows of equal cells, one drawing per cell, centered, at least 12% empty margin, drawings never touch. Column = character (order above). Row = pose:
+Row 1 — WALK A: front leg forward, back leg behind, arms swinging (crawler: right arm reaching far forward, body low)
+Row 2 — WALK B: the opposite step, legs passing each other (crawler: both arms pulling, body slid forward)
+Row 3 — ATTACK: lunging forward with arms or mouth (spitter: head thrown forward spitting, mouth wide; bloated: belly pushed forward, arms raised; soldier: swinging a rifle butt)
+Row 4 — HURT: staggering backward, head thrown back, arms flailing
+
+CELL NAMES (порядок нарезки — ряд за рядом):
+walker_walk_a crawler_walk_a spitter_walk_a sprinter_walk_a bloated_walk_a soldier_walk_a glowing_walk_a
+walker_walk_b crawler_walk_b spitter_walk_b sprinter_walk_b bloated_walk_b soldier_walk_b glowing_walk_b
+walker_attack crawler_attack spitter_attack sprinter_attack bloated_attack soldier_attack glowing_attack
+walker_hurt crawler_hurt spitter_hurt sprinter_hurt bloated_hurt soldier_hurt glowing_hurt
