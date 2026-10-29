@@ -9,8 +9,13 @@ import {
   WALL_NONE,
   WALL_SOLID,
   WALL_WINDOW,
+  EDGE_GEN,
+  EDGE_LEAF,
   type BuildCell,
   type Collider,
+  type EdgeRef,
+  type EdgeWall,
+  type Side,
   type ItemStack,
   type ObjectState,
   type Room,
@@ -36,10 +41,16 @@ export class Chunk {
   /** Материал пола + 1 (0 — нет пола). */
   readonly floor: Uint8Array;
   readonly room: Int16Array;
-  /** Постройки игрока: прочность стены, флаги (1 — стена игрока, 2 — пол игрока), створка двери. */
-  readonly hp: Float32Array;
+  /** Пол игрока в клетке (1) — генерация под ним не меняется. */
   readonly built: Uint8Array;
-  readonly leaf: Uint8Array;
+  /** Стены игрока на северном и западном рёбрах клетки: вид (WALL_*) | EDGE_LEAF; 0 — нет. */
+  readonly edgeN: Uint8Array;
+  readonly edgeW: Uint8Array;
+  /** Стены домов мира на рёбрах (генерация): биты | EDGE_GEN и материал + 1. */
+  readonly genN: Uint8Array;
+  readonly genW: Uint8Array;
+  readonly genMatN: Uint8Array;
+  readonly genMatW: Uint8Array;
   objects: WorldObject[] = [];
 
   constructor(
@@ -57,9 +68,13 @@ export class Chunk {
     this.wallKind = new Uint8Array(len);
     this.floor = new Uint8Array(len);
     this.room = new Int16Array(len).fill(-1);
-    this.hp = new Float32Array(len);
     this.built = new Uint8Array(len);
-    this.leaf = new Uint8Array(len);
+    this.edgeN = new Uint8Array(len);
+    this.edgeW = new Uint8Array(len);
+    this.genN = new Uint8Array(len);
+    this.genW = new Uint8Array(len);
+    this.genMatN = new Uint8Array(len);
+    this.genMatW = new Uint8Array(len);
   }
 
   get key(): string {
@@ -84,7 +99,7 @@ export interface ChunkDelta {
   objects: Record<string, ObjectDelta>;
   /** Объекты, поставленные игроком: станки, защита, дроп. */
   added: WorldObject[];
-  /** Стены, полы, двери игрока: индекс клетки в чанке → постройка. */
+  /** Полы и стены на рёбрах игрока: индекс клетки в чанке → постройка. */
   build?: Record<string, BuildCell>;
 }
 
@@ -240,18 +255,66 @@ export class World {
             c.passable[i] = 0;
             c.layer[i] = LAYER_GROUND;
           } else if (st.kind === 'wall' || st.kind === 'door' || st.kind === 'window') {
-            c.wall[i] = st.material + 1;
-            c.wallKind[i] = st.kind === 'wall' ? WALL_SOLID : st.kind === 'door' ? WALL_DOOR : WALL_WINDOW;
-            c.passable[i] = st.kind === 'door' ? 1 : 0;
+            // Стены домов — тонкие, на рёбрах (genEdge): клетка стены — земля снаружи дома,
+            // перегородка — пол комнаты.
             c.layer[i] = LAYER_GROUND;
-            if (st.kind === 'door') c.floor[i] = st.material + 1;
+            if (this.partition(tx, ty)) c.floor[i] = st.material + 1;
+            else c.room[i] = -1;
           }
+        }
+        for (const side of ['n', 'w'] as const) {
+          const g = this.genEdge(tx, ty, side);
+          if (!g) continue;
+          (side === 'n' ? c.genN : c.genW)[i] = g.bits;
+          (side === 'n' ? c.genMatN : c.genMatW)[i] = g.mat + 1;
+          (side === 'n' ? c.edgeN : c.edgeW)[i] = g.bits;
         }
       }
     }
     const pending = [...this.scatterObjects(c), ...(L.prefabObjects.get(c.key) ?? [])];
     c.objects = pending.map((p) => this.finishObject(p));
     return c;
+  }
+
+  /** Клетка стены префаба между полами комнат (по X или по Y) — перегородка: становится полом. */
+  private partition(tx: number, ty: number): 'v' | 'h' | null {
+    const L = this.layout;
+    const floor = (x: number, y: number) => L.stamps.get(L.cellIndex(x, y))?.kind === 'floor';
+    if (floor(tx - 1, ty) && floor(tx + 1, ty)) return 'v';
+    if (floor(tx, ty - 1) && floor(tx, ty + 1)) return 'h';
+    return null;
+  }
+
+  /**
+   * Стена дома мира на ребре клетки (северном или западном). План префаба — клетки стен вокруг пола;
+   * тонкая стена встаёт между клеткой стены и полом комнаты (внутренний край кольца стен), перегородка —
+   * одной стеной по своему западному (вертикальная) или северному (горизонтальная) краю.
+   */
+  private genEdge(tx: number, ty: number, side: Side): { bits: number; mat: number } | null {
+    const L = this.layout;
+    if (!L.inBounds(tx, ty)) return null;
+    const ax = side === 'w' ? tx - 1 : tx;
+    const ay = side === 'n' ? ty - 1 : ty;
+    if (!L.inBounds(ax, ay)) return null;
+    const sa = L.stamps.get(L.cellIndex(ax, ay));
+    const sb = L.stamps.get(L.cellIndex(tx, ty));
+    const isWall = (k: string | undefined) => k === 'wall' || k === 'door' || k === 'window';
+    const bits = (k: string) =>
+      (k === 'door' ? WALL_DOOR | EDGE_LEAF : k === 'window' ? WALL_WINDOW : WALL_SOLID) | EDGE_GEN;
+    // Перегородка: своя стена по западному/северному краю.
+    if (sb && isWall(sb.kind)) {
+      const p = this.partition(tx, ty);
+      if ((p === 'v' && side === 'w') || (p === 'h' && side === 'n'))
+        return { bits: bits(sb.kind), mat: sb.material };
+    }
+    const inside = (x: number, y: number, k: string | undefined) =>
+      k === 'floor' || (isWall(k) && !!this.partition(x, y));
+    // Кольцо стен ↔ пол комнаты.
+    if (sa && isWall(sa.kind) && !this.partition(ax, ay) && inside(tx, ty, sb?.kind))
+      return { bits: bits(sa.kind), mat: sa.material };
+    if (sb && isWall(sb.kind) && !this.partition(tx, ty) && inside(ax, ay, sa?.kind))
+      return { bits: bits(sb.kind), mat: sb.material };
+    return null;
   }
 
   /** Случайные объекты по сетке с джиттером; решения зависят только от сида и клетки сетки. */
@@ -545,7 +608,7 @@ export class World {
     if (!r) return;
     const d = this.deltaFor(r.key);
     const build = (d.build ??= {});
-    const empty = !cell || (cell.wall === undefined && cell.floor === undefined);
+    const empty = !cell || (cell.n === undefined && cell.w === undefined && cell.floor === undefined);
     if (empty) delete build[r.i];
     else build[r.i] = { ...cell };
     const c = this.cache.get(r.key);
@@ -555,20 +618,64 @@ export class World {
     }
   }
 
+  /** Множитель урона по постройкам игрока («Укрепление»: +HP построек = меньше урона). */
+  buildDamageMul = 1;
+
+  /** Стена игрока на ребре или null. */
+  edgeAt(e: EdgeRef): EdgeWall | null {
+    return this.builtAt(e.tx, e.ty)?.[e.side] ?? null;
+  }
+
+  /** Поставить/снять стену на ребре (остальное в клетке не меняется). */
+  setEdge(e: EdgeRef, wall: EdgeWall | null): void {
+    const b = { ...this.builtAt(e.tx, e.ty) };
+    if (wall) b[e.side] = { ...wall };
+    else delete b[e.side];
+    this.setBuilt(e.tx, e.ty, b);
+  }
+
+  /** Вид стены на ребре | EDGE_LEAF из загруженного чанка (0 — нет); быстро, для коллизий и ИИ. */
+  edgeBits(tx: number, ty: number, side: Side): number {
+    const r = this.chunkOfCell(tx, ty);
+    if (!r) return 0;
+    return (side === 'n' ? r.c.edgeN : r.c.edgeW)[r.i]!;
+  }
+
   /**
-   * Урон стене игрока. Возвращает 'destroyed' (стена снесена, пол остаётся), 'damaged' или null
-   * (в клетке нет стены игрока).
+   * Стена между соседними по стороне клетками (a → b): вид | EDGE_LEAF или 0. Для диагонали — 0
+   * (проверяется по двум сторонам вызывающим).
    */
-  damageWall(tx: number, ty: number, amount: number): 'destroyed' | 'damaged' | null {
-    const b = this.builtAt(tx, ty);
-    if (!b || b.wall === undefined) return null;
-    const hp = (b.hp ?? 0) - amount;
-    if (hp <= 0) {
-      this.setBuilt(tx, ty, b.floor !== undefined ? { floor: b.floor } : null);
-      return 'destroyed';
+  edgeBetween(ax: number, ay: number, bx: number, by: number): number {
+    if (ay === by && Math.abs(bx - ax) === 1) return this.edgeBits(Math.max(ax, bx), ay, 'w');
+    if (ax === bx && Math.abs(by - ay) === 1) return this.edgeBits(ax, Math.max(ay, by), 'n');
+    return 0;
+  }
+
+  /**
+   * Урон стене игрока на ребре. Возвращает 'destroyed' (стена снесена), 'damaged' или null
+   * (на ребре нет стены игрока).
+   */
+  damageEdge(e: EdgeRef, amount: number): 'destroyed' | 'damaged' | null {
+    const w = this.edgeAt(e);
+    if (!w) return null;
+    const hp = w.hp - amount * this.buildDamageMul;
+    this.setEdge(e, hp <= 0 ? null : { ...w, hp });
+    return hp <= 0 ? 'destroyed' : 'damaged';
+  }
+
+  /** Урон стенам на обоих рёбрах клетки (таран, взрыв по клетке): что задели. */
+  damageEdgesOfCell(
+    tx: number,
+    ty: number,
+    amount: number,
+  ): { e: EdgeRef; result: 'destroyed' | 'damaged' }[] {
+    const out: { e: EdgeRef; result: 'destroyed' | 'damaged' }[] = [];
+    for (const side of ['n', 'w'] as const) {
+      const e = { tx, ty, side };
+      const result = this.damageEdge(e, amount);
+      if (result) out.push({ e, result });
     }
-    this.setBuilt(tx, ty, { ...b, hp });
-    return 'damaged';
+    return out;
   }
 
   /** Все постройки игрока (для ремонта базы): мировые координаты клеток. */
@@ -606,6 +713,8 @@ export class World {
         if (!c.passable || c.wall !== 0 || c.layer === LAYER_WATER || c.biome === 0) return false;
         if (this.collidersAt(x, y).length > 0) return false;
         if (this.objectsAt(x, y).some((o) => o.kind === 'station' || o.kind === 'container')) return false;
+        // Стена игрока внутри прямоугольника (не по его краю) — объект её перекрыл бы.
+        if ((y > ty && this.edgeBits(x, y, 'n')) || (x > tx && this.edgeBits(x, y, 'w'))) return false;
       }
     }
     return true;
@@ -754,8 +863,11 @@ export class World {
       throw new Error(`Сохранение мира с другим сидом (${delta.seed} ≠ ${this.seed})`);
     this.deltas.clear();
     this.nextDropId = delta.nextDropId ?? 1;
-    for (const [k, d] of Object.entries(delta.chunks))
-      this.deltas.set(k, JSON.parse(JSON.stringify(d)) as ChunkDelta);
+    for (const [k, d] of Object.entries(delta.chunks)) {
+      const copy = JSON.parse(JSON.stringify(d)) as ChunkDelta;
+      dropLegacyWalls(copy);
+      this.deltas.set(k, copy);
+    }
     for (const key of [...this.cache.keys()]) {
       const [cx, cy] = key.split(',').map(Number) as [number, number];
       this.unloadChunk(cx, cy);
@@ -783,30 +895,43 @@ export class World {
   }
 }
 
+/**
+ * Стены старого формата занимали клетку целиком (поля wall/kind/hp/leaf) — при загрузке сносятся,
+ * пол остаётся (стены теперь на рёбрах клеток).
+ */
+function dropLegacyWalls(d: ChunkDelta): void {
+  if (!d.build) return;
+  for (const [k, raw] of Object.entries(d.build)) {
+    const b = raw as BuildCell & { wall?: unknown; kind?: unknown; hp?: unknown; leaf?: unknown };
+    if (b.wall === undefined && b.kind === undefined && b.hp === undefined && b.leaf === undefined) continue;
+    const next: BuildCell = {};
+    if (b.floor !== undefined) next.floor = b.floor;
+    if (b.n) next.n = b.n;
+    if (b.w) next.w = b.w;
+    if (next.floor === undefined && !next.n && !next.w) delete d.build[k];
+    else d.build[k] = next;
+  }
+}
+
 /** Снять постройку игрока с клетки чанка (генерация под ней не меняется). */
 function clearBuild(c: Chunk, i: number): void {
-  if (c.built[i]! & 1) {
-    c.wall[i] = 0;
-    c.wallKind[i] = WALL_NONE;
-    c.hp[i] = 0;
-    c.leaf[i] = 0;
-  }
-  if (c.built[i]! & 2) c.floor[i] = 0;
+  if (c.built[i]! & 1) c.floor[i] = 0;
   c.built[i] = 0;
+  c.edgeN[i] = c.genN[i]!;
+  c.edgeW[i] = c.genW[i]!;
+}
+
+function edgeBitsOf(w: EdgeWall | undefined): number {
+  return w ? w.kind | (w.leaf ? EDGE_LEAF : 0) : 0;
 }
 
 function applyBuild(c: Chunk, i: number, b: BuildCell): void {
-  if (b.wall !== undefined) {
-    c.wall[i] = b.wall + 1;
-    c.wallKind[i] = b.kind ?? WALL_SOLID;
-    c.hp[i] = b.hp ?? 0;
-    c.leaf[i] = b.leaf ? 1 : 0;
-    c.built[i]! |= 1;
-  }
   if (b.floor !== undefined) {
     c.floor[i] = b.floor + 1;
-    c.built[i]! |= 2;
+    c.built[i]! |= 1;
   }
+  c.edgeN[i] = edgeBitsOf(b.n) || c.genN[i]!;
+  c.edgeW[i] = edgeBitsOf(b.w) || c.genW[i]!;
 }
 
 /** Твёрдый ли объект: добытый без «остатка» (трава, ветки, обломки) не мешает ходить. */

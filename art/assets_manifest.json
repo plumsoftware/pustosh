@@ -1,6 +1,6 @@
 {
  "note": "Все пути от корня пакета. scaleMode: height/width = подогнать сторону к targetPx; fit_box = вписать в квадрат; exact = привести к targetPx x targetPx; rig = масштаб задаёт data/rigs.json; special = см. data/building.json. status=replaced — не использовать, есть замена в assets/replacements. pivot: точка привязки спрайта к позиции объекта.",
- "count": 748,
+ "count": 1001,
  "assets": [
   {
    "id": "effects.dust_1",
@@ -11240,6 +11240,3801 @@
    "srcSize": [
     181,
     210
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_fighter_1",
+   "path": "assets/ui/skills/skill_fighter_1.png",
+   "folder": "ui/skills",
+   "name": "skill_fighter_1",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    199,
+    193
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_fighter_2",
+   "path": "assets/ui/skills/skill_fighter_2.png",
+   "folder": "ui/skills",
+   "name": "skill_fighter_2",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    198,
+    193
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_fighter_3",
+   "path": "assets/ui/skills/skill_fighter_3.png",
+   "folder": "ui/skills",
+   "name": "skill_fighter_3",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    193,
+    193
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_fighter_4",
+   "path": "assets/ui/skills/skill_fighter_4.png",
+   "folder": "ui/skills",
+   "name": "skill_fighter_4",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    196,
+    193
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_fighter_5",
+   "path": "assets/ui/skills/skill_fighter_5.png",
+   "folder": "ui/skills",
+   "name": "skill_fighter_5",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    195,
+    193
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_fighter_6",
+   "path": "assets/ui/skills/skill_fighter_6.png",
+   "folder": "ui/skills",
+   "name": "skill_fighter_6",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    195,
+    193
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_gatherer_1",
+   "path": "assets/ui/skills/skill_gatherer_1.png",
+   "folder": "ui/skills",
+   "name": "skill_gatherer_1",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    200,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_gatherer_2",
+   "path": "assets/ui/skills/skill_gatherer_2.png",
+   "folder": "ui/skills",
+   "name": "skill_gatherer_2",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    199,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_gatherer_3",
+   "path": "assets/ui/skills/skill_gatherer_3.png",
+   "folder": "ui/skills",
+   "name": "skill_gatherer_3",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    194,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_gatherer_4",
+   "path": "assets/ui/skills/skill_gatherer_4.png",
+   "folder": "ui/skills",
+   "name": "skill_gatherer_4",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    196,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_gatherer_5",
+   "path": "assets/ui/skills/skill_gatherer_5.png",
+   "folder": "ui/skills",
+   "name": "skill_gatherer_5",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    196,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_gatherer_6",
+   "path": "assets/ui/skills/skill_gatherer_6.png",
+   "folder": "ui/skills",
+   "name": "skill_gatherer_6",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    195,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_engineer_1",
+   "path": "assets/ui/skills/skill_engineer_1.png",
+   "folder": "ui/skills",
+   "name": "skill_engineer_1",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    200,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_engineer_2",
+   "path": "assets/ui/skills/skill_engineer_2.png",
+   "folder": "ui/skills",
+   "name": "skill_engineer_2",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    197,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_engineer_3",
+   "path": "assets/ui/skills/skill_engineer_3.png",
+   "folder": "ui/skills",
+   "name": "skill_engineer_3",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    195,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_engineer_4",
+   "path": "assets/ui/skills/skill_engineer_4.png",
+   "folder": "ui/skills",
+   "name": "skill_engineer_4",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    196,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_engineer_5",
+   "path": "assets/ui/skills/skill_engineer_5.png",
+   "folder": "ui/skills",
+   "name": "skill_engineer_5",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    196,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_engineer_6",
+   "path": "assets/ui/skills/skill_engineer_6.png",
+   "folder": "ui/skills",
+   "name": "skill_engineer_6",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    196,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_survivor_1",
+   "path": "assets/ui/skills/skill_survivor_1.png",
+   "folder": "ui/skills",
+   "name": "skill_survivor_1",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    200,
+    196
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_survivor_2",
+   "path": "assets/ui/skills/skill_survivor_2.png",
+   "folder": "ui/skills",
+   "name": "skill_survivor_2",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    198,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_survivor_3",
+   "path": "assets/ui/skills/skill_survivor_3.png",
+   "folder": "ui/skills",
+   "name": "skill_survivor_3",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    196,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_survivor_4",
+   "path": "assets/ui/skills/skill_survivor_4.png",
+   "folder": "ui/skills",
+   "name": "skill_survivor_4",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    198,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_survivor_5",
+   "path": "assets/ui/skills/skill_survivor_5.png",
+   "folder": "ui/skills",
+   "name": "skill_survivor_5",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    197,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.skills.skill_survivor_6",
+   "path": "assets/ui/skills/skill_survivor_6.png",
+   "folder": "ui/skills",
+   "name": "skill_survivor_6",
+   "sourceSheet": "s25_skills",
+   "srcSize": [
+    196,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "building.walls.wood_top_end_left",
+   "path": "assets/building/walls/wood_top_end_left.png",
+   "folder": "building/walls",
+   "name": "wood_top_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    160,
+    85
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.wood_top_end_right",
+   "path": "assets/building/walls/wood_top_end_right.png",
+   "folder": "building/walls",
+   "name": "wood_top_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    156,
+    87
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.wood_top_vertical",
+   "path": "assets/building/walls/wood_top_vertical.png",
+   "folder": "building/walls",
+   "name": "wood_top_vertical",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    98,
+    174
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.wood_top_corner",
+   "path": "assets/building/walls/wood_top_corner.png",
+   "folder": "building/walls",
+   "name": "wood_top_corner",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    151,
+    133
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.wood_face_end_left",
+   "path": "assets/building/walls/wood_face_end_left.png",
+   "folder": "building/walls",
+   "name": "wood_face_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    152,
+    130
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.wood_face_end_right",
+   "path": "assets/building/walls/wood_face_end_right.png",
+   "folder": "building/walls",
+   "name": "wood_face_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    160,
+    131
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.wood_door_open",
+   "path": "assets/building/walls/wood_door_open.png",
+   "folder": "building/walls",
+   "name": "wood_door_open",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    75,
+    182
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 96,
+   "pivot": "top_left"
+  },
+  {
+   "id": "building.walls.wood_face_cracked",
+   "path": "assets/building/walls/wood_face_cracked.png",
+   "folder": "building/walls",
+   "name": "wood_face_cracked",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    157,
+    128
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.logs_top_end_left",
+   "path": "assets/building/walls/logs_top_end_left.png",
+   "folder": "building/walls",
+   "name": "logs_top_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    159,
+    121
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.logs_top_end_right",
+   "path": "assets/building/walls/logs_top_end_right.png",
+   "folder": "building/walls",
+   "name": "logs_top_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    156,
+    121
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.logs_top_vertical",
+   "path": "assets/building/walls/logs_top_vertical.png",
+   "folder": "building/walls",
+   "name": "logs_top_vertical",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    94,
+    164
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.logs_top_corner",
+   "path": "assets/building/walls/logs_top_corner.png",
+   "folder": "building/walls",
+   "name": "logs_top_corner",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    153,
+    131
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.logs_face_end_left",
+   "path": "assets/building/walls/logs_face_end_left.png",
+   "folder": "building/walls",
+   "name": "logs_face_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    151,
+    140
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.logs_face_end_right",
+   "path": "assets/building/walls/logs_face_end_right.png",
+   "folder": "building/walls",
+   "name": "logs_face_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    157,
+    140
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.logs_door_open",
+   "path": "assets/building/walls/logs_door_open.png",
+   "folder": "building/walls",
+   "name": "logs_door_open",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    73,
+    172
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 96,
+   "pivot": "top_left"
+  },
+  {
+   "id": "building.walls.logs_face_cracked",
+   "path": "assets/building/walls/logs_face_cracked.png",
+   "folder": "building/walls",
+   "name": "logs_face_cracked",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    161,
+    134
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.brick_top_end_left",
+   "path": "assets/building/walls/brick_top_end_left.png",
+   "folder": "building/walls",
+   "name": "brick_top_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    159,
+    109
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.brick_top_end_right",
+   "path": "assets/building/walls/brick_top_end_right.png",
+   "folder": "building/walls",
+   "name": "brick_top_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    155,
+    109
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.brick_top_vertical",
+   "path": "assets/building/walls/brick_top_vertical.png",
+   "folder": "building/walls",
+   "name": "brick_top_vertical",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    93,
+    158
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.brick_top_corner",
+   "path": "assets/building/walls/brick_top_corner.png",
+   "folder": "building/walls",
+   "name": "brick_top_corner",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    152,
+    136
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.brick_face_end_left",
+   "path": "assets/building/walls/brick_face_end_left.png",
+   "folder": "building/walls",
+   "name": "brick_face_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    153,
+    136
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.brick_face_end_right",
+   "path": "assets/building/walls/brick_face_end_right.png",
+   "folder": "building/walls",
+   "name": "brick_face_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    157,
+    136
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.brick_door_open",
+   "path": "assets/building/walls/brick_door_open.png",
+   "folder": "building/walls",
+   "name": "brick_door_open",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    71,
+    164
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 96,
+   "pivot": "top_left"
+  },
+  {
+   "id": "building.walls.brick_face_cracked",
+   "path": "assets/building/walls/brick_face_cracked.png",
+   "folder": "building/walls",
+   "name": "brick_face_cracked",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    158,
+    130
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.steel_top_end_left",
+   "path": "assets/building/walls/steel_top_end_left.png",
+   "folder": "building/walls",
+   "name": "steel_top_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    160,
+    116
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.steel_top_end_right",
+   "path": "assets/building/walls/steel_top_end_right.png",
+   "folder": "building/walls",
+   "name": "steel_top_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    159,
+    117
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.steel_top_vertical",
+   "path": "assets/building/walls/steel_top_vertical.png",
+   "folder": "building/walls",
+   "name": "steel_top_vertical",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    95,
+    162
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.steel_top_corner",
+   "path": "assets/building/walls/steel_top_corner.png",
+   "folder": "building/walls",
+   "name": "steel_top_corner",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    151,
+    133
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.steel_face_end_left",
+   "path": "assets/building/walls/steel_face_end_left.png",
+   "folder": "building/walls",
+   "name": "steel_face_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    154,
+    128
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.steel_face_end_right",
+   "path": "assets/building/walls/steel_face_end_right.png",
+   "folder": "building/walls",
+   "name": "steel_face_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    157,
+    127
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.steel_door_open",
+   "path": "assets/building/walls/steel_door_open.png",
+   "folder": "building/walls",
+   "name": "steel_door_open",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    73,
+    167
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 96,
+   "pivot": "top_left"
+  },
+  {
+   "id": "building.walls.steel_face_cracked",
+   "path": "assets/building/walls/steel_face_cracked.png",
+   "folder": "building/walls",
+   "name": "steel_face_cracked",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    158,
+    130
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.concrete_top_end_left",
+   "path": "assets/building/walls/concrete_top_end_left.png",
+   "folder": "building/walls",
+   "name": "concrete_top_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    156,
+    119
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.concrete_top_end_right",
+   "path": "assets/building/walls/concrete_top_end_right.png",
+   "folder": "building/walls",
+   "name": "concrete_top_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    155,
+    119
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.concrete_top_vertical",
+   "path": "assets/building/walls/concrete_top_vertical.png",
+   "folder": "building/walls",
+   "name": "concrete_top_vertical",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    94,
+    160
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.concrete_top_corner",
+   "path": "assets/building/walls/concrete_top_corner.png",
+   "folder": "building/walls",
+   "name": "concrete_top_corner",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    151,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.concrete_face_end_left",
+   "path": "assets/building/walls/concrete_face_end_left.png",
+   "folder": "building/walls",
+   "name": "concrete_face_end_left",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    152,
+    134
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.concrete_face_end_right",
+   "path": "assets/building/walls/concrete_face_end_right.png",
+   "folder": "building/walls",
+   "name": "concrete_face_end_right",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    153,
+    135
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.concrete_door_open",
+   "path": "assets/building/walls/concrete_door_open.png",
+   "folder": "building/walls",
+   "name": "concrete_door_open",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    73,
+    175
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 96,
+   "pivot": "top_left"
+  },
+  {
+   "id": "building.walls.concrete_face_cracked",
+   "path": "assets/building/walls/concrete_face_cracked.png",
+   "folder": "building/walls",
+   "name": "concrete_face_cracked",
+   "sourceSheet": "s26_walls_extra",
+   "srcSize": [
+    162,
+    133
+   ],
+   "status": "ok",
+   "scaleMode": "special",
+   "targetPx": 64,
+   "pivot": "see building.json"
+  },
+  {
+   "id": "building.walls.wood_fence_post",
+   "path": "assets/building/walls/wood_fence_post.png",
+   "folder": "building/walls",
+   "name": "wood_fence_post",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    59,
+    143
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 51,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.wood_fence_vertical",
+   "path": "assets/building/walls/wood_fence_vertical.png",
+   "folder": "building/walls",
+   "name": "wood_fence_vertical",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    37,
+    138
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 49,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.wood_fence_corner",
+   "path": "assets/building/walls/wood_fence_corner.png",
+   "folder": "building/walls",
+   "name": "wood_fence_corner",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    177,
+    140
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 50,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.wood_fence_gate_closed",
+   "path": "assets/building/walls/wood_fence_gate_closed.png",
+   "folder": "building/walls",
+   "name": "wood_fence_gate_closed",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    180,
+    136
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 48,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.wood_fence_gate_open",
+   "path": "assets/building/walls/wood_fence_gate_open.png",
+   "folder": "building/walls",
+   "name": "wood_fence_gate_open",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    85,
+    148
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 53,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.logs_fence_post",
+   "path": "assets/building/walls/logs_fence_post.png",
+   "folder": "building/walls",
+   "name": "logs_fence_post",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    59,
+    143
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 51,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.logs_fence_vertical",
+   "path": "assets/building/walls/logs_fence_vertical.png",
+   "folder": "building/walls",
+   "name": "logs_fence_vertical",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    46,
+    141
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 50,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.logs_fence_corner",
+   "path": "assets/building/walls/logs_fence_corner.png",
+   "folder": "building/walls",
+   "name": "logs_fence_corner",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    180,
+    143
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 51,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.logs_fence_gate_closed",
+   "path": "assets/building/walls/logs_fence_gate_closed.png",
+   "folder": "building/walls",
+   "name": "logs_fence_gate_closed",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    181,
+    138
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 49,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.logs_fence_gate_open",
+   "path": "assets/building/walls/logs_fence_gate_open.png",
+   "folder": "building/walls",
+   "name": "logs_fence_gate_open",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    85,
+    142
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 51,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.brick_fence_post",
+   "path": "assets/building/walls/brick_fence_post.png",
+   "folder": "building/walls",
+   "name": "brick_fence_post",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    70,
+    141
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 50,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.brick_fence_vertical",
+   "path": "assets/building/walls/brick_fence_vertical.png",
+   "folder": "building/walls",
+   "name": "brick_fence_vertical",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    49,
+    136
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 48,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.brick_fence_corner",
+   "path": "assets/building/walls/brick_fence_corner.png",
+   "folder": "building/walls",
+   "name": "brick_fence_corner",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    184,
+    142
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 51,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.brick_fence_gate_closed",
+   "path": "assets/building/walls/brick_fence_gate_closed.png",
+   "folder": "building/walls",
+   "name": "brick_fence_gate_closed",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    195,
+    136
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 48,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.brick_fence_gate_open",
+   "path": "assets/building/walls/brick_fence_gate_open.png",
+   "folder": "building/walls",
+   "name": "brick_fence_gate_open",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    87,
+    143
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 51,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.steel_fence_post",
+   "path": "assets/building/walls/steel_fence_post.png",
+   "folder": "building/walls",
+   "name": "steel_fence_post",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    64,
+    141
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 50,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.steel_fence_vertical",
+   "path": "assets/building/walls/steel_fence_vertical.png",
+   "folder": "building/walls",
+   "name": "steel_fence_vertical",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    49,
+    138
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 49,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.steel_fence_corner",
+   "path": "assets/building/walls/steel_fence_corner.png",
+   "folder": "building/walls",
+   "name": "steel_fence_corner",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    190,
+    142
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 51,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.steel_fence_gate_closed",
+   "path": "assets/building/walls/steel_fence_gate_closed.png",
+   "folder": "building/walls",
+   "name": "steel_fence_gate_closed",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    194,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 49,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.steel_fence_gate_open",
+   "path": "assets/building/walls/steel_fence_gate_open.png",
+   "folder": "building/walls",
+   "name": "steel_fence_gate_open",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    88,
+    148
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 53,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.concrete_fence_post",
+   "path": "assets/building/walls/concrete_fence_post.png",
+   "folder": "building/walls",
+   "name": "concrete_fence_post",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    71,
+    141
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 50,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.concrete_fence_vertical",
+   "path": "assets/building/walls/concrete_fence_vertical.png",
+   "folder": "building/walls",
+   "name": "concrete_fence_vertical",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    50,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 49,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.concrete_fence_corner",
+   "path": "assets/building/walls/concrete_fence_corner.png",
+   "folder": "building/walls",
+   "name": "concrete_fence_corner",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    187,
+    138
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 49,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.concrete_fence_gate_closed",
+   "path": "assets/building/walls/concrete_fence_gate_closed.png",
+   "folder": "building/walls",
+   "name": "concrete_fence_gate_closed",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    194,
+    136
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 48,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "building.walls.concrete_fence_gate_open",
+   "path": "assets/building/walls/concrete_fence_gate_open.png",
+   "folder": "building/walls",
+   "name": "concrete_fence_gate_open",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    87,
+    145
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 52,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.road_gate_closed",
+   "path": "assets/world/common/road_gate_closed.png",
+   "folder": "world/common",
+   "name": "road_gate_closed",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    282,
+    156
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 97,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.road_gate_open",
+   "path": "assets/world/common/road_gate_open.png",
+   "folder": "world/common",
+   "name": "road_gate_open",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    268,
+    159
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 99,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.road_gate_lock",
+   "path": "assets/world/common/road_gate_lock.png",
+   "folder": "world/common",
+   "name": "road_gate_lock",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    150,
+    151
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 94,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.arena_stone",
+   "path": "assets/world/common/arena_stone.png",
+   "folder": "world/common",
+   "name": "arena_stone",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    116,
+    188
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 118,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.arena_chain",
+   "path": "assets/world/common/arena_chain.png",
+   "folder": "world/common",
+   "name": "arena_chain",
+   "sourceSheet": "s27_fences_gates",
+   "srcSize": [
+    286,
+    105
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 65,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.hero_pose_drive",
+   "path": "assets/characters/hero/hero_pose_drive.png",
+   "folder": "characters/hero",
+   "name": "hero_pose_drive",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    241,
+    266
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 86,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.hero_pose_sleep",
+   "path": "assets/characters/hero/hero_pose_sleep.png",
+   "folder": "characters/hero",
+   "name": "hero_pose_sleep",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    309,
+    121
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 39,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.hero_pose_kneel",
+   "path": "assets/characters/hero/hero_pose_kneel.png",
+   "folder": "characters/hero",
+   "name": "hero_pose_kneel",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    223,
+    207
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 67,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.hero_pose_eat",
+   "path": "assets/characters/hero/hero_pose_eat.png",
+   "folder": "characters/hero",
+   "name": "hero_pose_eat",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    152,
+    302
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 98,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.hero_pose_drink",
+   "path": "assets/characters/hero/hero_pose_drink.png",
+   "folder": "characters/hero",
+   "name": "hero_pose_drink",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    148,
+    308
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 100,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.hero_pose_down",
+   "path": "assets/characters/hero/hero_pose_down.png",
+   "folder": "characters/hero",
+   "name": "hero_pose_down",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    312,
+    155
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 50,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.hero_pose_carry",
+   "path": "assets/characters/hero/hero_pose_carry.png",
+   "folder": "characters/hero",
+   "name": "hero_pose_carry",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    225,
+    284
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 92,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.hero_pose_hammer",
+   "path": "assets/characters/hero/hero_pose_hammer.png",
+   "folder": "characters/hero",
+   "name": "hero_pose_hammer",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    220,
+    223
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 72,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.hero.forearm_grip",
+   "path": "assets/characters/hero/forearm_grip.png",
+   "folder": "characters/hero",
+   "name": "forearm_grip",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    211,
+    134
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "rig"
+  },
+  {
+   "id": "characters.hero.forearm_point",
+   "path": "assets/characters/hero/forearm_point.png",
+   "folder": "characters/hero",
+   "name": "forearm_point",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    270,
+    125
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "rig"
+  },
+  {
+   "id": "characters.hero.head_eat",
+   "path": "assets/characters/hero/head_eat.png",
+   "folder": "characters/hero",
+   "name": "head_eat",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    234,
+    243
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "rig"
+  },
+  {
+   "id": "characters.hero.head_strain",
+   "path": "assets/characters/hero/head_strain.png",
+   "folder": "characters/hero",
+   "name": "head_strain",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    197,
+    235
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "rig"
+  },
+  {
+   "id": "characters.hero.head_cold",
+   "path": "assets/characters/hero/head_cold.png",
+   "folder": "characters/hero",
+   "name": "head_cold",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    202,
+    255
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "rig"
+  },
+  {
+   "id": "characters.hero.head_hot",
+   "path": "assets/characters/hero/head_hot.png",
+   "folder": "characters/hero",
+   "name": "head_hot",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    201,
+    258
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "rig"
+  },
+  {
+   "id": "characters.hero.head_sick",
+   "path": "assets/characters/hero/head_sick.png",
+   "folder": "characters/hero",
+   "name": "head_sick",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    194,
+    244
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "rig"
+  },
+  {
+   "id": "characters.hero.leg_seated",
+   "path": "assets/characters/hero/leg_seated.png",
+   "folder": "characters/hero",
+   "name": "leg_seated",
+   "sourceSheet": "s28_hero_extra",
+   "srcSize": [
+    196,
+    221
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "rig"
+  },
+  {
+   "id": "characters.enemies.walker_walk_a",
+   "path": "assets/characters/enemies/walker_walk_a.png",
+   "folder": "characters/enemies",
+   "name": "walker_walk_a",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    144,
+    232
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.crawler_walk_a",
+   "path": "assets/characters/enemies/crawler_walk_a.png",
+   "folder": "characters/enemies",
+   "name": "crawler_walk_a",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    205,
+    142
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.spitter_walk_a",
+   "path": "assets/characters/enemies/spitter_walk_a.png",
+   "folder": "characters/enemies",
+   "name": "spitter_walk_a",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    154,
+    234
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.sprinter_walk_a",
+   "path": "assets/characters/enemies/sprinter_walk_a.png",
+   "folder": "characters/enemies",
+   "name": "sprinter_walk_a",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    147,
+    219
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.bloated_walk_a",
+   "path": "assets/characters/enemies/bloated_walk_a.png",
+   "folder": "characters/enemies",
+   "name": "bloated_walk_a",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    149,
+    243
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.soldier_walk_a",
+   "path": "assets/characters/enemies/soldier_walk_a.png",
+   "folder": "characters/enemies",
+   "name": "soldier_walk_a",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    134,
+    242
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.glowing_walk_a",
+   "path": "assets/characters/enemies/glowing_walk_a.png",
+   "folder": "characters/enemies",
+   "name": "glowing_walk_a",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    141,
+    241
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.walker_walk_b",
+   "path": "assets/characters/enemies/walker_walk_b.png",
+   "folder": "characters/enemies",
+   "name": "walker_walk_b",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    160,
+    236
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.crawler_walk_b",
+   "path": "assets/characters/enemies/crawler_walk_b.png",
+   "folder": "characters/enemies",
+   "name": "crawler_walk_b",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    209,
+    142
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.spitter_walk_b",
+   "path": "assets/characters/enemies/spitter_walk_b.png",
+   "folder": "characters/enemies",
+   "name": "spitter_walk_b",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    134,
+    238
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.sprinter_walk_b",
+   "path": "assets/characters/enemies/sprinter_walk_b.png",
+   "folder": "characters/enemies",
+   "name": "sprinter_walk_b",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    146,
+    214
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.bloated_walk_b",
+   "path": "assets/characters/enemies/bloated_walk_b.png",
+   "folder": "characters/enemies",
+   "name": "bloated_walk_b",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    147,
+    230
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.soldier_walk_b",
+   "path": "assets/characters/enemies/soldier_walk_b.png",
+   "folder": "characters/enemies",
+   "name": "soldier_walk_b",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    134,
+    232
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.glowing_walk_b",
+   "path": "assets/characters/enemies/glowing_walk_b.png",
+   "folder": "characters/enemies",
+   "name": "glowing_walk_b",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    152,
+    237
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.walker_attack",
+   "path": "assets/characters/enemies/walker_attack.png",
+   "folder": "characters/enemies",
+   "name": "walker_attack",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    175,
+    230
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.crawler_attack",
+   "path": "assets/characters/enemies/crawler_attack.png",
+   "folder": "characters/enemies",
+   "name": "crawler_attack",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    209,
+    144
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.spitter_attack",
+   "path": "assets/characters/enemies/spitter_attack.png",
+   "folder": "characters/enemies",
+   "name": "spitter_attack",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    169,
+    221
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.sprinter_attack",
+   "path": "assets/characters/enemies/sprinter_attack.png",
+   "folder": "characters/enemies",
+   "name": "sprinter_attack",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    167,
+    212
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.bloated_attack",
+   "path": "assets/characters/enemies/bloated_attack.png",
+   "folder": "characters/enemies",
+   "name": "bloated_attack",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    164,
+    245
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.soldier_attack",
+   "path": "assets/characters/enemies/soldier_attack.png",
+   "folder": "characters/enemies",
+   "name": "soldier_attack",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    159,
+    255
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.glowing_attack",
+   "path": "assets/characters/enemies/glowing_attack.png",
+   "folder": "characters/enemies",
+   "name": "glowing_attack",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    166,
+    238
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.walker_hurt",
+   "path": "assets/characters/enemies/walker_hurt.png",
+   "folder": "characters/enemies",
+   "name": "walker_hurt",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    163,
+    253
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.crawler_hurt",
+   "path": "assets/characters/enemies/crawler_hurt.png",
+   "folder": "characters/enemies",
+   "name": "crawler_hurt",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    189,
+    195
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.spitter_hurt",
+   "path": "assets/characters/enemies/spitter_hurt.png",
+   "folder": "characters/enemies",
+   "name": "spitter_hurt",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    130,
+    251
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.sprinter_hurt",
+   "path": "assets/characters/enemies/sprinter_hurt.png",
+   "folder": "characters/enemies",
+   "name": "sprinter_hurt",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    122,
+    255
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.bloated_hurt",
+   "path": "assets/characters/enemies/bloated_hurt.png",
+   "folder": "characters/enemies",
+   "name": "bloated_hurt",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    152,
+    263
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.soldier_hurt",
+   "path": "assets/characters/enemies/soldier_hurt.png",
+   "folder": "characters/enemies",
+   "name": "soldier_hurt",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    164,
+    261
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.enemies.glowing_hurt",
+   "path": "assets/characters/enemies/glowing_hurt.png",
+   "folder": "characters/enemies",
+   "name": "glowing_hurt",
+   "sourceSheet": "s29_infected_poses",
+   "srcSize": [
+    130,
+    254
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.dog_run_a",
+   "path": "assets/characters/animals/dog_run_a.png",
+   "folder": "characters/animals",
+   "name": "dog_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    184,
+    111
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.toad_run_a",
+   "path": "assets/characters/animals/toad_run_a.png",
+   "folder": "characters/animals",
+   "name": "toad_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    182,
+    103
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.raptor_run_a",
+   "path": "assets/characters/animals/raptor_run_a.png",
+   "folder": "characters/animals",
+   "name": "raptor_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    206,
+    162
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.scorpion_run_a",
+   "path": "assets/characters/animals/scorpion_run_a.png",
+   "folder": "characters/animals",
+   "name": "scorpion_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    161,
+    179
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.armored_lizard_run_a",
+   "path": "assets/characters/animals/armored_lizard_run_a.png",
+   "folder": "characters/animals",
+   "name": "armored_lizard_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    169,
+    117
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.snow_wolf_run_a",
+   "path": "assets/characters/animals/snow_wolf_run_a.png",
+   "folder": "characters/animals",
+   "name": "snow_wolf_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    175,
+    130
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.deer_run_a",
+   "path": "assets/characters/animals/deer_run_a.png",
+   "folder": "characters/animals",
+   "name": "deer_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    183,
+    224
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.boar_run_a",
+   "path": "assets/characters/animals/boar_run_a.png",
+   "folder": "characters/animals",
+   "name": "boar_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    184,
+    146
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.hare_run_a",
+   "path": "assets/characters/animals/hare_run_a.png",
+   "folder": "characters/animals",
+   "name": "hare_run_a",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    125,
+    130
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.dog_run_b",
+   "path": "assets/characters/animals/dog_run_b.png",
+   "folder": "characters/animals",
+   "name": "dog_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    184,
+    134
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.toad_run_b",
+   "path": "assets/characters/animals/toad_run_b.png",
+   "folder": "characters/animals",
+   "name": "toad_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    163,
+    109
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.raptor_run_b",
+   "path": "assets/characters/animals/raptor_run_b.png",
+   "folder": "characters/animals",
+   "name": "raptor_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    168,
+    138
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.scorpion_run_b",
+   "path": "assets/characters/animals/scorpion_run_b.png",
+   "folder": "characters/animals",
+   "name": "scorpion_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    153,
+    163
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.armored_lizard_run_b",
+   "path": "assets/characters/animals/armored_lizard_run_b.png",
+   "folder": "characters/animals",
+   "name": "armored_lizard_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    157,
+    118
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.snow_wolf_run_b",
+   "path": "assets/characters/animals/snow_wolf_run_b.png",
+   "folder": "characters/animals",
+   "name": "snow_wolf_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    175,
+    125
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.deer_run_b",
+   "path": "assets/characters/animals/deer_run_b.png",
+   "folder": "characters/animals",
+   "name": "deer_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    129,
+    204
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.boar_run_b",
+   "path": "assets/characters/animals/boar_run_b.png",
+   "folder": "characters/animals",
+   "name": "boar_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    180,
+    131
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.hare_run_b",
+   "path": "assets/characters/animals/hare_run_b.png",
+   "folder": "characters/animals",
+   "name": "hare_run_b",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    106,
+    112
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.dog_attack",
+   "path": "assets/characters/animals/dog_attack.png",
+   "folder": "characters/animals",
+   "name": "dog_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    169,
+    127
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.toad_attack",
+   "path": "assets/characters/animals/toad_attack.png",
+   "folder": "characters/animals",
+   "name": "toad_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    157,
+    109
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.raptor_attack",
+   "path": "assets/characters/animals/raptor_attack.png",
+   "folder": "characters/animals",
+   "name": "raptor_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    187,
+    155
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.scorpion_attack",
+   "path": "assets/characters/animals/scorpion_attack.png",
+   "folder": "characters/animals",
+   "name": "scorpion_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    163,
+    196
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.armored_lizard_attack",
+   "path": "assets/characters/animals/armored_lizard_attack.png",
+   "folder": "characters/animals",
+   "name": "armored_lizard_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    170,
+    121
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.snow_wolf_attack",
+   "path": "assets/characters/animals/snow_wolf_attack.png",
+   "folder": "characters/animals",
+   "name": "snow_wolf_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    172,
+    139
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.deer_attack",
+   "path": "assets/characters/animals/deer_attack.png",
+   "folder": "characters/animals",
+   "name": "deer_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    122,
+    252
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.boar_attack",
+   "path": "assets/characters/animals/boar_attack.png",
+   "folder": "characters/animals",
+   "name": "boar_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    193,
+    154
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "characters.animals.hare_attack",
+   "path": "assets/characters/animals/hare_attack.png",
+   "folder": "characters/animals",
+   "name": "hare_attack",
+   "sourceSheet": "s30_animal_poses",
+   "srcSize": [
+    100,
+    189
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.devourer_hole",
+   "path": "assets/world/common/devourer_hole.png",
+   "folder": "world/common",
+   "name": "devourer_hole",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    225,
+    188
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 92,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.devourer_mound",
+   "path": "assets/world/common/devourer_mound.png",
+   "folder": "world/common",
+   "name": "devourer_mound",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    256,
+    117
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 57,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.queen_egg",
+   "path": "assets/world/common/queen_egg.png",
+   "folder": "world/common",
+   "name": "queen_egg",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    162,
+    191
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 62,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.queen_egg_open",
+   "path": "assets/world/common/queen_egg_open.png",
+   "folder": "world/common",
+   "name": "queen_egg_open",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    192,
+    188
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 61,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.frost_spikes",
+   "path": "assets/world/common/frost_spikes.png",
+   "folder": "world/common",
+   "name": "frost_spikes",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    178,
+    231
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 91,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.frost_crystal",
+   "path": "assets/world/common/frost_crystal.png",
+   "folder": "world/common",
+   "name": "frost_crystal",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    154,
+    262
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 103,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.zero_tentacle_rubble",
+   "path": "assets/world/common/zero_tentacle_rubble.png",
+   "folder": "world/common",
+   "name": "zero_tentacle_rubble",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    202,
+    245
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 96,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.arena_hook_rack",
+   "path": "assets/world/common/arena_hook_rack.png",
+   "folder": "world/common",
+   "name": "arena_hook_rack",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    179,
+    235
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 92,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.base_core_2",
+   "path": "assets/world/common/base_core_2.png",
+   "folder": "world/common",
+   "name": "base_core_2",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    208,
+    265
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 86,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.base_core_3",
+   "path": "assets/world/common/base_core_3.png",
+   "folder": "world/common",
+   "name": "base_core_3",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    207,
+    283
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 92,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.note_world",
+   "path": "assets/world/common/note_world.png",
+   "folder": "world/common",
+   "name": "note_world",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    155,
+    169
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 33,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.quest_board",
+   "path": "assets/world/common/quest_board.png",
+   "folder": "world/common",
+   "name": "quest_board",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    205,
+    220
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 71,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.grave_marker",
+   "path": "assets/world/common/grave_marker.png",
+   "folder": "world/common",
+   "name": "grave_marker",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    129,
+    238
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 77,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.signpost",
+   "path": "assets/world/common/signpost.png",
+   "folder": "world/common",
+   "name": "signpost",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    158,
+    220
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 71,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.trophy_shelf",
+   "path": "assets/world/common/trophy_shelf.png",
+   "folder": "world/common",
+   "name": "trophy_shelf",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    213,
+    150
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 48,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.fuel_barrel",
+   "path": "assets/world/common/fuel_barrel.png",
+   "folder": "world/common",
+   "name": "fuel_barrel",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    129,
+    260
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 84,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.lamp_post",
+   "path": "assets/world/common/lamp_post.png",
+   "folder": "world/common",
+   "name": "lamp_post",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    90,
+    278
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 90,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.map_table",
+   "path": "assets/world/common/map_table.png",
+   "folder": "world/common",
+   "name": "map_table",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    222,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 63,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.campfire_spit",
+   "path": "assets/world/common/campfire_spit.png",
+   "folder": "world/common",
+   "name": "campfire_spit",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    219,
+    230
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 75,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "world.common.sat_dish_broken",
+   "path": "assets/world/common/sat_dish_broken.png",
+   "folder": "world/common",
+   "name": "sat_dish_broken",
+   "sourceSheet": "s31_world_extra",
+   "srcSize": [
+    206,
+    214
+   ],
+   "status": "ok",
+   "scaleMode": "height",
+   "targetPx": 69,
+   "pivot": "bottom_center"
+  },
+  {
+   "id": "effects.rain_streak",
+   "path": "assets/effects/rain_streak.png",
+   "folder": "effects",
+   "name": "rain_streak",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    115,
+    180
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.rain_splash",
+   "path": "assets/effects/rain_splash.png",
+   "folder": "effects",
+   "name": "rain_splash",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    197,
+    142
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.snowflake",
+   "path": "assets/effects/snowflake.png",
+   "folder": "effects",
+   "name": "snowflake",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    134,
+    147
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.snow_puff",
+   "path": "assets/effects/snow_puff.png",
+   "folder": "effects",
+   "name": "snow_puff",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    186,
+    174
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.sand_gust",
+   "path": "assets/effects/sand_gust.png",
+   "folder": "effects",
+   "name": "sand_gust",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    237,
+    163
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.toxic_haze",
+   "path": "assets/effects/toxic_haze.png",
+   "folder": "effects",
+   "name": "toxic_haze",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    222,
+    197
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.leaf",
+   "path": "assets/effects/leaf.png",
+   "folder": "effects",
+   "name": "leaf",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    105,
+    118
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.bleed_drops",
+   "path": "assets/effects/bleed_drops.png",
+   "folder": "effects",
+   "name": "bleed_drops",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    72,
+    174
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.arc_1",
+   "path": "assets/effects/arc_1.png",
+   "folder": "effects",
+   "name": "arc_1",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    218,
+    133
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.arc_2",
+   "path": "assets/effects/arc_2.png",
+   "folder": "effects",
+   "name": "arc_2",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    234,
+    121
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.arc_3",
+   "path": "assets/effects/arc_3.png",
+   "folder": "effects",
+   "name": "arc_3",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    217,
+    104
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.flame_jet_1",
+   "path": "assets/effects/flame_jet_1.png",
+   "folder": "effects",
+   "name": "flame_jet_1",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    227,
+    146
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.flame_jet_2",
+   "path": "assets/effects/flame_jet_2.png",
+   "folder": "effects",
+   "name": "flame_jet_2",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    230,
+    148
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.fire_trap_burst",
+   "path": "assets/effects/fire_trap_burst.png",
+   "folder": "effects",
+   "name": "fire_trap_burst",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    165,
+    235
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.saw_blur",
+   "path": "assets/effects/saw_blur.png",
+   "folder": "effects",
+   "name": "saw_blur",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    208,
+    190
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.shockwave",
+   "path": "assets/effects/shockwave.png",
+   "folder": "effects",
+   "name": "shockwave",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    225,
+    132
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.cold_breath",
+   "path": "assets/effects/cold_breath.png",
+   "folder": "effects",
+   "name": "cold_breath",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    225,
+    160
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.ice_burst",
+   "path": "assets/effects/ice_burst.png",
+   "folder": "effects",
+   "name": "ice_burst",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    194,
+    202
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.heal_plus",
+   "path": "assets/effects/heal_plus.png",
+   "folder": "effects",
+   "name": "heal_plus",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    181,
+    177
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.levelup_burst",
+   "path": "assets/effects/levelup_burst.png",
+   "folder": "effects",
+   "name": "levelup_burst",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    202,
+    198
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.poison_bubbles",
+   "path": "assets/effects/poison_bubbles.png",
+   "folder": "effects",
+   "name": "poison_bubbles",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    119,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.tracer_streak",
+   "path": "assets/effects/tracer_streak.png",
+   "folder": "effects",
+   "name": "tracer_streak",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    229,
+    47
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.step_dust",
+   "path": "assets/effects/step_dust.png",
+   "folder": "effects",
+   "name": "step_dust",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    175,
+    152
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.ripple",
+   "path": "assets/effects/ripple.png",
+   "folder": "effects",
+   "name": "ripple",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    212,
+    131
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "effects.sleep_curls",
+   "path": "assets/effects/sleep_curls.png",
+   "folder": "effects",
+   "name": "sleep_curls",
+   "sourceSheet": "s32_effects_extra",
+   "srcSize": [
+    154,
+    184
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "icons.vehicles.icon_bicycle",
+   "path": "assets/icons/vehicles/icon_bicycle.png",
+   "folder": "icons/vehicles",
+   "name": "icon_bicycle",
+   "sourceSheet": "s33_vehicles_extra",
+   "srcSize": [
+    188,
+    194
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "icons.vehicles.icon_moped",
+   "path": "assets/icons/vehicles/icon_moped.png",
+   "folder": "icons/vehicles",
+   "name": "icon_moped",
+   "sourceSheet": "s33_vehicles_extra",
+   "srcSize": [
+    170,
+    191
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "icons.vehicles.icon_quad",
+   "path": "assets/icons/vehicles/icon_quad.png",
+   "folder": "icons/vehicles",
+   "name": "icon_quad",
+   "sourceSheet": "s33_vehicles_extra",
+   "srcSize": [
+    212,
+    187
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "icons.vehicles.icon_moto_sidecar",
+   "path": "assets/icons/vehicles/icon_moto_sidecar.png",
+   "folder": "icons/vehicles",
+   "name": "icon_moto_sidecar",
+   "sourceSheet": "s33_vehicles_extra",
+   "srcSize": [
+    215,
+    178
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "icons.vehicles.icon_pickup",
+   "path": "assets/icons/vehicles/icon_pickup.png",
+   "folder": "icons/vehicles",
+   "name": "icon_pickup",
+   "sourceSheet": "s33_vehicles_extra",
+   "srcSize": [
+    240,
+    208
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "icons.vehicles.icon_buggy",
+   "path": "assets/icons/vehicles/icon_buggy.png",
+   "folder": "icons/vehicles",
+   "name": "icon_buggy",
+   "sourceSheet": "s33_vehicles_extra",
+   "srcSize": [
+    195,
+    199
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "icons.vehicles.icon_snowcat",
+   "path": "assets/icons/vehicles/icon_snowcat.png",
+   "folder": "icons/vehicles",
+   "name": "icon_snowcat",
+   "sourceSheet": "s33_vehicles_extra",
+   "srcSize": [
+    215,
+    201
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_normal",
+   "path": "assets/ui/kit/btn_normal.png",
+   "folder": "ui/kit",
+   "name": "btn_normal",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    177,
+    78
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_hover",
+   "path": "assets/ui/kit/btn_hover.png",
+   "folder": "ui/kit",
+   "name": "btn_hover",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    172,
+    78
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_pressed",
+   "path": "assets/ui/kit/btn_pressed.png",
+   "folder": "ui/kit",
+   "name": "btn_pressed",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    168,
+    79
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_disabled",
+   "path": "assets/ui/kit/btn_disabled.png",
+   "folder": "ui/kit",
+   "name": "btn_disabled",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    172,
+    78
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_primary",
+   "path": "assets/ui/kit/btn_primary.png",
+   "folder": "ui/kit",
+   "name": "btn_primary",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    171,
+    78
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_danger",
+   "path": "assets/ui/kit/btn_danger.png",
+   "folder": "ui/kit",
+   "name": "btn_danger",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    173,
+    79
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.panel_large",
+   "path": "assets/ui/kit/panel_large.png",
+   "folder": "ui/kit",
+   "name": "panel_large",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    189,
+    180
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.panel_popup",
+   "path": "assets/ui/kit/panel_popup.png",
+   "folder": "ui/kit",
+   "name": "panel_popup",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    201,
+    121
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.tooltip_frame",
+   "path": "assets/ui/kit/tooltip_frame.png",
+   "folder": "ui/kit",
+   "name": "tooltip_frame",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    152,
+    89
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.title_banner",
+   "path": "assets/ui/kit/title_banner.png",
+   "folder": "ui/kit",
+   "name": "title_banner",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    188,
+    61
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.notify_plaque",
+   "path": "assets/ui/kit/notify_plaque.png",
+   "folder": "ui/kit",
+   "name": "notify_plaque",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    183,
+    51
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.row_frame",
+   "path": "assets/ui/kit/row_frame.png",
+   "folder": "ui/kit",
+   "name": "row_frame",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    170,
+    46
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.tab_active",
+   "path": "assets/ui/kit/tab_active.png",
+   "folder": "ui/kit",
+   "name": "tab_active",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    163,
+    77
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.tab_inactive",
+   "path": "assets/ui/kit/tab_inactive.png",
+   "folder": "ui/kit",
+   "name": "tab_inactive",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    160,
+    77
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.checkbox_off",
+   "path": "assets/ui/kit/checkbox_off.png",
+   "folder": "ui/kit",
+   "name": "checkbox_off",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    95,
+    95
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.checkbox_on",
+   "path": "assets/ui/kit/checkbox_on.png",
+   "folder": "ui/kit",
+   "name": "checkbox_on",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    93,
+    95
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.slider_track",
+   "path": "assets/ui/kit/slider_track.png",
+   "folder": "ui/kit",
+   "name": "slider_track",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    276,
+    58
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.slider_knob",
+   "path": "assets/ui/kit/slider_knob.png",
+   "folder": "ui/kit",
+   "name": "slider_knob",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    99,
+    100
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.bar_frame_long",
+   "path": "assets/ui/kit/bar_frame_long.png",
+   "folder": "ui/kit",
+   "name": "bar_frame_long",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    259,
+    58
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.bar_fill_green",
+   "path": "assets/ui/kit/bar_fill_green.png",
+   "folder": "ui/kit",
+   "name": "bar_fill_green",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    235,
+    56
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.bar_fill_gold",
+   "path": "assets/ui/kit/bar_fill_gold.png",
+   "folder": "ui/kit",
+   "name": "bar_fill_gold",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    209,
+    56
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.bar_fill_blue",
+   "path": "assets/ui/kit/bar_fill_blue.png",
+   "folder": "ui/kit",
+   "name": "bar_fill_blue",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    206,
+    56
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.scroll_track",
+   "path": "assets/ui/kit/scroll_track.png",
+   "folder": "ui/kit",
+   "name": "scroll_track",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    44,
+    196
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.scroll_thumb",
+   "path": "assets/ui/kit/scroll_thumb.png",
+   "folder": "ui/kit",
+   "name": "scroll_thumb",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    45,
+    147
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_round_plus",
+   "path": "assets/ui/kit/btn_round_plus.png",
+   "folder": "ui/kit",
+   "name": "btn_round_plus",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    136,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_round_minus",
+   "path": "assets/ui/kit/btn_round_minus.png",
+   "folder": "ui/kit",
+   "name": "btn_round_minus",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    138,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_round_back",
+   "path": "assets/ui/kit/btn_round_back.png",
+   "folder": "ui/kit",
+   "name": "btn_round_back",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    137,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_round_next",
+   "path": "assets/ui/kit/btn_round_next.png",
+   "folder": "ui/kit",
+   "name": "btn_round_next",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    138,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_round_ad",
+   "path": "assets/ui/kit/btn_round_ad.png",
+   "folder": "ui/kit",
+   "name": "btn_round_ad",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    139,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.btn_round_home",
+   "path": "assets/ui/kit/btn_round_home.png",
+   "folder": "ui/kit",
+   "name": "btn_round_home",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    136,
+    137
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.cursor_normal",
+   "path": "assets/ui/kit/cursor_normal.png",
+   "folder": "ui/kit",
+   "name": "cursor_normal",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    99,
+    114
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.cursor_active",
+   "path": "assets/ui/kit/cursor_active.png",
+   "folder": "ui/kit",
+   "name": "cursor_active",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    106,
+    122
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.cursor_grab",
+   "path": "assets/ui/kit/cursor_grab.png",
+   "folder": "ui/kit",
+   "name": "cursor_grab",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    135,
+    156
+   ],
+   "status": "ok",
+   "scaleMode": "fit_box",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.minimap_frame",
+   "path": "assets/ui/kit/minimap_frame.png",
+   "folder": "ui/kit",
+   "name": "minimap_frame",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    170,
+    170
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.separator",
+   "path": "assets/ui/kit/separator.png",
+   "folder": "ui/kit",
+   "name": "separator",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    188,
+    25
+   ],
+   "status": "ok",
+   "scaleMode": "rig",
+   "targetPx": 64,
+   "pivot": "center"
+  },
+  {
+   "id": "ui.kit.bottlecap",
+   "path": "assets/ui/kit/bottlecap.png",
+   "folder": "ui/kit",
+   "name": "bottlecap",
+   "sourceSheet": "s34_ui_kit",
+   "srcSize": [
+    138,
+    138
    ],
    "status": "ok",
    "scaleMode": "fit_box",

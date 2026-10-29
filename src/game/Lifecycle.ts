@@ -45,7 +45,9 @@ export function installLifecycle(game: Phaser.Game): AudioBus {
   }
 
   clock.onPauseChange((paused, reasons) => {
-    audio.setPausedMute(paused);
+    // Окна игры (инвентарь, карта, навыки, подсказка — DIALOG) звук не глушат: музыка и фон идут дальше.
+    // Глушат меню паузы, реклама, скрытая вкладка, пауза площадки, поворот экрана.
+    audio.setPausedMute(paused && [...reasons].some((r) => r !== 'DIALOG'));
     // Меню паузы, сворачивание, скрытая вкладка, пауза площадки — сохранить игру.
     if (paused && (reasons.has('MENU') || reasons.has('TAB_HIDDEN') || reasons.has('PLATFORM')))
       game.events.emit('save-request');

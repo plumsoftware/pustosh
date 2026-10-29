@@ -9,6 +9,7 @@ export type Command =
   | { type: 'build' }
   | { type: 'inventory' }
   | { type: 'craft' }
+  | { type: 'heal' }
   | { type: 'skills' }
   | { type: 'journal' }
   | { type: 'map' }
@@ -35,6 +36,7 @@ const ONE_SHOT: Record<string, Command> = {
   Tab: { type: 'inventory' },
   KeyI: { type: 'inventory' },
   KeyC: { type: 'craft' },
+  KeyH: { type: 'heal' },
   KeyK: { type: 'skills' },
   KeyJ: { type: 'journal' },
   KeyM: { type: 'map' },

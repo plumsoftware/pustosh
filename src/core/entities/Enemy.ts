@@ -2,12 +2,13 @@ import type { Registry } from '../data/Registry';
 import type { EnemyDef } from '../data/schemas';
 import { angleDelta, angleOf } from '../systems/Combat';
 import { findPath } from '../systems/Pathfind';
+import type { EdgeRef } from '../world/types';
 
 export type EnemyState = 'idle' | 'wander' | 'notice' | 'chase' | 'attack' | 'flee' | 'return' | 'dead';
 
 export type EnemyEvent =
   | { type: 'melee'; e: Enemy; damage: number; poison?: [number, number] }
-  | { type: 'wall'; e: Enemy; tx: number; ty: number; damage: number }
+  | { type: 'wall'; e: Enemy; edge: EdgeRef; damage: number }
   | { type: 'spit'; e: Enemy; tx: number; ty: number }
   | { type: 'grenade'; e: Enemy; tx: number; ty: number }
   | { type: 'explode'; e: Enemy; radius: number; damage: number; kind: 'acid' | 'rad' }
@@ -21,11 +22,38 @@ export type EnemyEvent =
   | { type: 'died'; e: Enemy };
 
 /** Мир глазами врага: герой, свет, трава, проходимость, движение с коллизиями, события. */
+/** combat.json → enemyHp: здоровье по биому появления (баланс ТЗ 8.5). */
+interface EnemyHpCfg {
+  byBiome: Record<string, number>;
+  toughness: Record<string, number>;
+  eliteHpMul: number;
+  skipFamilies: string[];
+}
+
+/**
+ * Максимум HP врага: toughness × byBiome[биом] (если враг в схеме и биом известен), иначе hp из
+ * enemies.json; элита — × eliteHpMul (или elite.hpMul врага без схемы).
+ */
+export function enemyMaxHp(reg: Registry, def: EnemyDef, biome: number, elite: boolean): number {
+  const cfg = reg.combat['enemyHp'] as EnemyHpCfg | undefined;
+  const el = def.elite;
+  const inScheme =
+    !!cfg &&
+    !cfg.skipFamilies.includes(def.family) &&
+    cfg.toughness[def.id] !== undefined &&
+    !!cfg.byBiome[String(biome)];
+  const base = inScheme ? cfg.toughness[def.id]! * cfg.byBiome[String(biome)]! : def.hp;
+  const eliteMul = inScheme ? cfg.eliteHpMul : (el?.hpMul ?? 1);
+  return Math.round(base * (elite && el ? eliteMul : 1));
+}
+
 export interface EnemyCtx {
   now: number;
   dt: number;
   night: boolean;
   nightSpeedMul: number;
+  /** Погода: множитель дальности зрения и слуха (дождь, метель, буря — меньше). */
+  senseMul?: number;
   hero: { x: number; y: number; r: number; alive: boolean };
   /** Куда идти, если героя не видно (тотем — в кровавую ночь). */
   goal: { x: number; y: number } | null;
@@ -34,10 +62,14 @@ export interface EnemyCtx {
   rng(): number;
   inGrass(x: number, y: number): boolean;
   passable(tx: number, ty: number): boolean;
+  /** Соседей по стороне разделяет стена игрока (дверь — тоже). */
+  wallBetween(ax: number, ay: number, bx: number, by: number): boolean;
+  /** Стена на ребре ещё стоит. */
+  wallStands(e: EdgeRef): boolean;
   /** Сдвинуть с коллизиями (стены, объекты, двери игрока) — новая позиция. */
   move(e: Enemy, dx: number, dy: number): { x: number; y: number };
   /** Стена игрока для пролома по пути к цели (наименьшая прочность рядом) или null. */
-  wallToBreak(e: Enemy, tx: number, ty: number): { tx: number; ty: number } | null;
+  wallToBreak(e: Enemy, tx: number, ty: number): EdgeRef | null;
   pack(e: Enemy): readonly Enemy[];
   emit(ev: EnemyEvent): void;
 }
@@ -85,7 +117,7 @@ export class Enemy {
   private lastSeen: { x: number; y: number } | null = null;
   private path: [number, number][] = [];
   private pathAt = -99;
-  private wall: { tx: number; ty: number } | null = null;
+  private wall: EdgeRef | null = null;
   private charge: { dx: number; dy: number; until: number } | null = null;
   private zig = 0;
   readonly beh: Beh;
@@ -97,11 +129,13 @@ export class Enemy {
     public x: number,
     public y: number,
     elite: boolean,
+    /** Биом появления — от него здоровье (combat.json → enemyHp); 0 — hp из enemies.json. */
+    biome = 0,
   ) {
     this.def = def;
     this.elite = elite;
     const el = def.elite;
-    this.maxHp = def.hp * (elite && el ? el.hpMul : 1);
+    this.maxHp = enemyMaxHp(reg, def, biome, elite);
     this.hp = this.maxHp;
     this.damage = def.damage * (elite && el ? el.dmgMul : 1);
     const R = reg.combat.enemy.radiusTiles;
@@ -147,6 +181,8 @@ export class Enemy {
       knock?: number;
       backstabMul?: number;
       ignoreArmor?: boolean;
+      /** Множитель урона по оглушённому («Добивание»). */
+      stunnedMul?: number;
     },
   ): { dmg: number; back: boolean; blocked: boolean } {
     if (!this.alive) return { dmg: 0, back: false, blocked: false };
@@ -160,6 +196,7 @@ export class Enemy {
       blocked = true;
     }
     if (back && opts.melee) dmg *= opts.backstabMul ?? 1.25;
+    if (opts.now < this.stunUntil) dmg *= opts.stunnedMul ?? 1;
     if (this.hidden) this.reveal();
     this.hp -= dmg;
     const sp = opts.specials ?? [];
@@ -243,7 +280,7 @@ export class Enemy {
       }
     }
 
-    const vision = ctx.night ? E.visionNightTiles : E.visionDayTiles;
+    const vision = (ctx.night ? E.visionNightTiles : E.visionDayTiles) * (ctx.senseMul ?? 1);
     const sees = h.alive && dh <= vision;
     if (sees) {
       this.lastSeen = { x: h.x, y: h.y };
@@ -252,7 +289,7 @@ export class Enemy {
     // Шум выстрела или тревоги — идти на звук.
     for (const n of ctx.noises) {
       if (
-        Math.hypot(n.x - this.x, n.y - this.y) <= n.r &&
+        Math.hypot(n.x - this.x, n.y - this.y) <= n.r * (ctx.senseMul ?? 1) &&
         this.state !== 'chase' &&
         this.state !== 'attack'
       ) {
@@ -347,15 +384,16 @@ export class Enemy {
     const E = this.reg.combat.enemy;
     if (this.wall) {
       const w = this.wall;
-      const wx = w.tx + 0.5;
-      const wy = w.ty + 0.5;
-      if (!ctx.passable(w.tx, w.ty)) {
-        if (Math.hypot(wx - this.x, wy - this.y) <= this.r + 0.9) {
+      // Середина ребра: северное — (tx+0.5, ty), западное — (tx, ty+0.5).
+      const wx = w.side === 'n' ? w.tx + 0.5 : w.tx;
+      const wy = w.side === 'n' ? w.ty : w.ty + 0.5;
+      if (ctx.wallStands(w)) {
+        if (Math.hypot(wx - this.x, wy - this.y) <= this.r + 0.6) {
           this.faceDeg = angleOf(this.x, this.y, wx, wy);
           if (this.attackCd === 0) {
             this.attackCd = E.attackCooldownSec;
             this.anim = { kind: 'attack', at: ctx.now };
-            ctx.emit({ type: 'wall', e: this, tx: w.tx, ty: w.ty, damage: this.damage });
+            ctx.emit({ type: 'wall', e: this, edge: w, damage: this.damage });
           }
         } else this.step(ctx, wx - this.x, wy - this.y, this.speed(ctx));
         return;
@@ -375,7 +413,8 @@ export class Enemy {
     if (ctx.now - this.pathAt > E.repathSec || this.path.length === 0) {
       this.pathAt = ctx.now;
       const R = Math.min(E.pathRadiusTiles, Math.ceil(dist) + 4);
-      const p = dist <= E.pathRadiusTiles ? findPath(sx, sy, tx, ty, R, ctx.passable, 900) : null;
+      const p =
+        dist <= E.pathRadiusTiles ? findPath(sx, sy, tx, ty, R, ctx.passable, 900, ctx.wallBetween) : null;
       if (p) this.path = p;
       else {
         this.path = [];
@@ -398,10 +437,20 @@ export class Enemy {
 
   private lineClear(ctx: EnemyCtx, x0: number, y0: number, x1: number, y1: number): boolean {
     const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0));
-    for (let i = 1; i < n; i++) {
+    let px = x0;
+    let py = y0;
+    for (let i = 1; i <= n; i++) {
       const x = Math.round(x0 + ((x1 - x0) * i) / n);
       const y = Math.round(y0 + ((y1 - y0) * i) / n);
-      if (!ctx.passable(x, y)) return false;
+      if (i < n && !ctx.passable(x, y)) return false;
+      // Стена на ребре между шагами: по диагонали хватит одного свободного обхода угла.
+      if (px !== x && py !== y) {
+        const viaX = !ctx.wallBetween(px, py, x, py) && !ctx.wallBetween(x, py, x, y);
+        const viaY = !ctx.wallBetween(px, py, px, y) && !ctx.wallBetween(px, y, x, y);
+        if (!viaX && !viaY) return false;
+      } else if (ctx.wallBetween(px, py, x, y)) return false;
+      px = x;
+      py = y;
     }
     return true;
   }

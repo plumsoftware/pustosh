@@ -1,6 +1,7 @@
 import type { Registry } from '../data/Registry';
 import type { MaterialDef } from '../data/schemas';
 import type { ItemSet } from '../inventory/Inventory';
+import { edgeRect, type Rect } from './Collision';
 import {
   LAYER_WATER,
   WALL_DOOR,
@@ -10,6 +11,10 @@ import {
   WALL_WINDOW,
   WALL_WINDOW_BOARDED,
   type BuildCell,
+  type BuildSlot,
+  type Collider,
+  type EdgeRef,
+  type EdgeWall,
 } from './types';
 import type { World } from './World';
 
@@ -25,7 +30,7 @@ export const BUILD_PIECES: readonly BuildPiece[] = [
   'fence',
 ];
 
-/** Вид стены в чанке для детали. */
+/** Вид стены на ребре для детали. */
 export const PIECE_KIND: Partial<Record<BuildPiece, number>> = {
   wall: WALL_SOLID,
   window: WALL_WINDOW,
@@ -86,41 +91,125 @@ export function requirementMet(
   return reg.stations.has(m.requires) ? stationNear(m.requires) : hasItem(m.requires);
 }
 
-export type BuildBlock = 'out' | 'water' | 'occupied' | 'object' | 'creature' | 'no_opening' | 'no_wall';
+export type BuildBlock =
+  'out' | 'water' | 'occupied' | 'object' | 'creature' | 'no_opening' | 'no_floor' | 'wrong_slot';
+
+/** Деталь ставится на ребро клетки (всё, кроме пола). */
+export function onEdge(piece: BuildPiece): boolean {
+  return piece !== 'floor';
+}
+
+/** Две клетки по сторонам ребра: для 'n' — северная и южная, для 'w' — западная и восточная. */
+export function edgeCells(e: EdgeRef): [[number, number], [number, number]] {
+  return e.side === 'n'
+    ? [
+        [e.tx, e.ty - 1],
+        [e.tx, e.ty],
+      ]
+    : [
+        [e.tx - 1, e.ty],
+        [e.tx, e.ty],
+      ];
+}
+
+function overlaps(r: Rect, c: Collider): boolean {
+  if (c.shape === 'circle') {
+    const dx = c.x - Math.max(r.x0, Math.min(c.x, r.x1));
+    const dy = c.y - Math.max(r.y0, Math.min(c.y, r.y1));
+    return dx * dx + dy * dy < c.r * c.r;
+  }
+  return c.x0 < r.x1 && c.x1 > r.x0 && c.y0 < r.y1 && c.y1 > r.y0;
+}
+
+function hasFloor(world: World, tx: number, ty: number): boolean {
+  return world.builtAt(tx, ty)?.floor !== undefined;
+}
 
 /**
- * Можно ли поставить деталь в клетку (TZ 7.1.2): не на воду, не на объекты мира, не на персонажей;
- * пол — под стенами и мебелью можно; дверь — только в пустой проём игрока.
+ * Можно ли поставить деталь (TZ 7.1.2, стены как в Last Day on Earth): пол — в свободную клетку суши;
+ * стена, окно, проём — на свободное ребро рядом с полом игрока (фундамент); забор — на ребро без пола;
+ * не на воду, не через объекты мира и персонажей; дверь — только в пустой проём игрока.
+ * creatureIn — есть ли персонаж в прямоугольнике (клетки мира).
  */
 export function canBuild(
   world: World,
   piece: BuildPiece,
+  slot: BuildSlot,
+  creatureIn: (r: Rect) => boolean,
+): BuildBlock | null {
+  const land = (tx: number, ty: number): BuildBlock | null => {
+    if (tx < 0 || ty < 0 || tx >= world.size || ty >= world.size) return 'out';
+    const c = world.cell(tx, ty);
+    if (c.biome === 0) return 'out';
+    if (c.layer === LAYER_WATER) return 'water';
+    if (c.wall !== WALL_NONE || !c.passable) return 'occupied';
+    return null;
+  };
+  if (!onEdge(piece)) {
+    if (slot.side !== 'c') return 'wrong_slot';
+    return land(slot.tx, slot.ty) ?? (world.cell(slot.tx, slot.ty).floor !== 0 ? 'occupied' : null);
+  }
+  if (slot.side === 'c') return 'wrong_slot';
+  const e: EdgeRef = { tx: slot.tx, ty: slot.ty, side: slot.side };
+  const cur = world.edgeAt(e);
+  if (piece === 'door') return !cur || cur.kind !== WALL_DOOR || cur.leaf ? 'no_opening' : null;
+  if (cur || world.edgeBits(e.tx, e.ty, e.side)) return 'occupied';
+  const cells = edgeCells(e);
+  const blocks = cells.map(([x, y]) => land(x, y));
+  // Стена держится на полу с одной стороны — другая может быть водой или обрывом; забору нужна суша с обеих.
+  if (piece === 'fence') {
+    const b = blocks.find((x) => x !== null);
+    if (b) return b;
+  } else {
+    if (!cells.some(([x, y]) => hasFloor(world, x, y))) return 'no_floor';
+    const b = blocks.find((x, i) => x !== null && x !== 'water' && hasFloor(world, ...cells[i]!));
+    if (b) return b;
+    if (blocks.every((x) => x !== null)) return blocks[0]!;
+  }
+  const r = edgeRect(e.tx, e.ty, e.side);
+  for (const [x, y] of cells)
+    for (const o of world.collidersAt(x, y))
+      if (o.kind !== 'drop' && o.collider && overlaps(r, o.collider)) return 'object';
+  if (creatureIn(r)) return 'creature';
+  return null;
+}
+
+/** Клетка свободна под станок или защиту: суша, без объектов и персонажей (пол и стены по краю можно). */
+export function cellFree(
+  world: World,
   tx: number,
   ty: number,
-  creatureAt: (tx: number, ty: number) => boolean,
+  creatureIn: (r: Rect) => boolean,
 ): BuildBlock | null {
   if (tx < 0 || ty < 0 || tx >= world.size || ty >= world.size) return 'out';
   const c = world.cell(tx, ty);
   if (c.biome === 0) return 'out';
   if (c.layer === LAYER_WATER) return 'water';
-  const b = world.builtAt(tx, ty);
-  if (piece === 'door') {
-    if (!b || b.kind !== WALL_DOOR || b.leaf) return 'no_opening';
-    return null;
-  }
-  if (piece === 'floor') return c.floor !== 0 || (c.wall !== WALL_NONE && !b) ? 'occupied' : null;
-  if (c.wall !== WALL_NONE) return 'occupied';
-  if (!c.passable) return 'occupied';
+  if (c.wall !== WALL_NONE || !c.passable) return 'occupied';
   for (const o of world.objectsAt(tx, ty)) if (o.kind !== 'drop') return 'object';
-  if (creatureAt(tx, ty)) return 'creature';
+  if (creatureIn({ x0: tx, y0: ty, x1: tx + 1, y1: ty + 1 })) return 'creature';
   return null;
 }
 
-/** Новая клетка после постройки детали. */
-export function placePiece(reg: Registry, prev: BuildCell | null, piece: BuildPiece, mat: number): BuildCell {
-  if (piece === 'floor') return { ...prev, floor: mat };
-  if (piece === 'door') return { ...prev, leaf: true };
-  return { ...prev, wall: mat, kind: PIECE_KIND[piece] ?? WALL_SOLID, hp: maxHp(reg, mat), leaf: false };
+/** Новая клетка после постройки детали: пол — в клетку, остальное — на её ребро. */
+export function placePiece(
+  reg: Registry,
+  prev: BuildCell | null,
+  piece: BuildPiece,
+  mat: number,
+  slot: BuildSlot,
+): BuildCell {
+  const next: BuildCell = { ...prev };
+  if (slot.side === 'c') {
+    next.floor = mat;
+    return next;
+  }
+  const cur = next[slot.side];
+  next[slot.side] =
+    piece === 'door' && cur
+      ? { ...cur, leaf: true }
+      : { mat, kind: PIECE_KIND[piece] ?? WALL_SOLID, hp: maxHp(reg, mat) };
+  return next;
 }
 
 /** Следующий материал для улучшения или null (армобетон — последний). */
@@ -132,121 +221,164 @@ export function nextMaterial(reg: Registry, mat: number): number | null {
  * Улучшение молотком (upgradeRule): следующий материал за полную цену новой детали,
  * HP пересчитывается пропорционально (было 50% — станет 50% нового максимума).
  */
-export function upgradeCell(reg: Registry, b: BuildCell): { cell: BuildCell; cost: ItemSet } | null {
-  if (b.wall === undefined) return null;
-  const next = nextMaterial(reg, b.wall);
+export function upgradeEdge(reg: Registry, w: EdgeWall): { wall: EdgeWall; cost: ItemSet } | null {
+  const next = nextMaterial(reg, w.mat);
   if (next === null) return null;
-  const frac = (b.hp ?? 0) / maxHp(reg, b.wall);
-  const piece = pieceOfKind(b.kind ?? WALL_SOLID);
+  const frac = w.hp / maxHp(reg, w.mat);
   return {
-    cell: { ...b, wall: next, hp: Math.max(1, Math.round(frac * maxHp(reg, next))) },
-    cost: pieceCost(reg, piece, next),
+    wall: { ...w, mat: next, hp: Math.max(1, Math.round(frac * maxHp(reg, next))) },
+    cost: pieceCost(reg, pieceOfKind(w.kind), next),
   };
 }
 
 /** Починка молотком (TZ 7.1.5): +repairPerHit от максимума за удар, цена — repairCostFrac материала детали. */
-export function repairCell(reg: Registry, b: BuildCell): { cell: BuildCell; cost: ItemSet } | null {
-  if (b.wall === undefined) return null;
-  const max = maxHp(reg, b.wall);
-  if ((b.hp ?? 0) >= max) return null;
-  const piece = pieceOfKind(b.kind ?? WALL_SOLID);
+export function repairEdge(reg: Registry, w: EdgeWall): { wall: EdgeWall; cost: ItemSet } | null {
+  const max = maxHp(reg, w.mat);
+  if (w.hp >= max) return null;
   return {
-    cell: { ...b, hp: Math.min(max, (b.hp ?? 0) + max * reg.build.repairPerHit) },
-    cost: scaled(pieceCost(reg, piece, b.wall), reg.build.repairCostFrac),
+    wall: { ...w, hp: Math.min(max, w.hp + max * reg.build.repairPerHit) },
+    cost: scaled(pieceCost(reg, pieceOfKind(w.kind), w.mat), reg.build.repairCostFrac),
   };
 }
 
-/** Сколько ударов и ресурсов нужно на полный ремонт (кнопка «Починить всё на базе»). */
-export function fullRepairCost(reg: Registry, b: BuildCell): ItemSet {
+/** Сколько ресурсов нужно на полный ремонт (кнопка «Починить всё на базе»). */
+export function fullRepairCost(reg: Registry, w: EdgeWall): ItemSet {
   const out: Record<string, number> = {};
-  let cur: BuildCell | null = b;
+  let cur: EdgeWall | null = w;
   for (let i = 0; i < 100 && cur; i++) {
-    const r = repairCell(reg, cur);
+    const r = repairEdge(reg, cur);
     if (!r) break;
     for (const [id, n] of Object.entries(r.cost)) out[id] = (out[id] ?? 0) + n;
-    cur = r.cell;
+    cur = r.wall;
   }
   return out;
 }
 
+/** Четыре ребра вокруг клетки. */
+export function edgesAround(tx: number, ty: number): EdgeRef[] {
+  return [
+    { tx, ty, side: 'n' },
+    { tx, ty, side: 'w' },
+    { tx, ty: ty + 1, side: 'n' },
+    { tx: tx + 1, ty, side: 'w' },
+  ];
+}
+
+/** Пол клетки — единственная опора стены рядом (её разбирают первой). */
+export function floorHoldsWalls(world: World, tx: number, ty: number): boolean {
+  for (const e of edgesAround(tx, ty)) {
+    const w = world.edgeAt(e);
+    if (!w || w.kind === WALL_FENCE) continue;
+    const other = edgeCells(e).find(([x, y]) => x !== tx || y !== ty)!;
+    if (!hasFloor(world, other[0], other[1])) return true;
+  }
+  return false;
+}
+
 /**
- * Разбор (TZ 7.1.6): сначала дверь (если есть), потом стена/забор, потом пол.
- * Возвращает новую клетку и disassembleReturn от стоимости снятой детали (вниз, нули отбрасываются).
+ * Разбор (TZ 7.1.6): на ребре — сначала дверь (если есть), потом стена; в клетке — пол, если он
+ * не держит стену. Возвращает новую клетку и disassembleReturn от стоимости снятой детали.
  */
-export function disassembleCell(
+export function disassembleSlot(
   reg: Registry,
-  b: BuildCell,
+  world: World,
+  slot: BuildSlot,
 ): { cell: BuildCell | null; piece: BuildPiece; refund: ItemSet } | null {
+  const b = world.builtAt(slot.tx, slot.ty);
+  if (!b) return null;
   let piece: BuildPiece;
-  let next: BuildCell | null;
   let mat: number;
-  if (b.leaf) {
-    piece = 'door';
-    mat = b.wall ?? 0;
-    next = { ...b, leaf: false };
-  } else if (b.wall !== undefined) {
-    piece = pieceOfKind(b.kind ?? WALL_SOLID);
-    mat = b.wall;
-    next = b.floor !== undefined ? { floor: b.floor } : null;
-  } else if (b.floor !== undefined) {
+  const next: BuildCell = { ...b };
+  if (slot.side === 'c') {
+    if (b.floor === undefined || floorHoldsWalls(world, slot.tx, slot.ty)) return null;
     piece = 'floor';
     mat = b.floor;
-    next = null;
-  } else return null;
+    delete next.floor;
+  } else {
+    const w = b[slot.side];
+    if (!w) return null;
+    mat = w.mat;
+    if (w.leaf) {
+      piece = 'door';
+      next[slot.side] = { ...w, leaf: false };
+    } else {
+      piece = pieceOfKind(w.kind);
+      delete next[slot.side];
+    }
+  }
   const refund: Record<string, number> = {};
   for (const [id, n] of Object.entries(pieceCost(reg, piece, mat))) {
     const k = Math.floor(n * reg.build.disassembleReturn);
     if (k > 0) refund[id] = k;
   }
-  return { cell: next, piece, refund };
+  const empty = next.floor === undefined && !next.n && !next.w;
+  return { cell: empty ? null : next, piece, refund };
 }
 
-/** Клетки линии от (x0,y0) до (x1,y1) по большей оси (протяжка пальцем ставит линию стен). */
-export function lineCells(x0: number, y0: number, x1: number, y1: number, max: number): [number, number][] {
-  const out: [number, number][] = [];
-  const horiz = Math.abs(x1 - x0) >= Math.abs(y1 - y0);
-  const n = Math.min(max, (horiz ? Math.abs(x1 - x0) : Math.abs(y1 - y0)) + 1);
-  const sx = Math.sign(x1 - x0);
-  const sy = Math.sign(y1 - y0);
-  for (let i = 0; i < n; i++) out.push(horiz ? [x0 + i * sx, y0] : [x0, y0 + i * sy]);
+/** Рёбра линии вдоль ребра from до клетки (x, y): северные — по X, западные — по Y (протяжка). */
+export function lineEdges(from: EdgeRef, x: number, y: number, max: number): EdgeRef[] {
+  const out: EdgeRef[] = [];
+  const along = from.side === 'n' ? x - from.tx : y - from.ty;
+  const n = Math.min(max, Math.abs(along) + 1);
+  const s = Math.sign(along);
+  for (let i = 0; i < n; i++)
+    out.push(
+      from.side === 'n'
+        ? { tx: from.tx + i * s, ty: from.ty, side: 'n' }
+        : { tx: from.tx, ty: from.ty + i * s, side: 'w' },
+    );
   return out;
 }
 
-/** Замкнута ли клетка: стена (не проём без двери) — граница комнаты. */
-function isBoundary(world: World, tx: number, ty: number): boolean {
-  const c = world.cell(tx, ty);
-  return c.wall !== WALL_NONE;
+/** Клетки прямоугольника от (x0,y0) до (x1,y1), не больше max по стороне (пол протяжкой). */
+export function rectCells(x0: number, y0: number, x1: number, y1: number, max: number): [number, number][] {
+  const out: [number, number][] = [];
+  const sx = Math.sign(x1 - x0) || 1;
+  const sy = Math.sign(y1 - y0) || 1;
+  const w = Math.min(max, Math.abs(x1 - x0) + 1);
+  const h = Math.min(max, Math.abs(y1 - y0) + 1);
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) out.push([x0 + i * sx, y0 + j * sy]);
+  return out;
+}
+
+/** Ключ ребра для множеств. */
+export function edgeKey(e: EdgeRef): string {
+  return `${e.tx},${e.ty},${e.side}`;
 }
 
 /**
- * Комната вокруг клетки (TZ 7.2): заливка от клетки героя по клеткам без стен; если заливка
- * упирается в лимит — комнаты нет (открытое место). southWalls — стены южного ряда (ключи «x,y»).
+ * Комната вокруг клетки (TZ 7.2): заливка от клетки героя через рёбра без стен (проём тоже граница);
+ * упёрлась в лимит — комнаты нет (открытое место). southEdges — северные рёбра южной границы (ключи edgeKey).
  */
 export function enclosure(
   world: World,
   tx: number,
   ty: number,
   limit: number,
-): { cells: Set<string>; southWalls: Set<string> } | null {
-  if (isBoundary(world, tx, ty)) return null;
+): { cells: Set<string>; southEdges: Set<string> } | null {
+  if (world.cell(tx, ty).wall !== WALL_NONE) return null;
   const cells = new Set<string>();
   const stack: [number, number][] = [[tx, ty]];
+  const open = (x: number, y: number, nx: number, ny: number) =>
+    world.cell(nx, ny).wall === WALL_NONE && world.edgeBetween(x, y, nx, ny) === 0;
   while (stack.length) {
     const [x, y] = stack.pop()!;
     const k = `${x},${y}`;
     if (cells.has(k)) continue;
-    if (isBoundary(world, x, y)) continue;
     cells.add(k);
     if (cells.size > limit) return null;
-    stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+    for (const [nx, ny] of [
+      [x + 1, y],
+      [x - 1, y],
+      [x, y + 1],
+      [x, y - 1],
+    ] as const)
+      if (!cells.has(`${nx},${ny}`) && open(x, y, nx, ny)) stack.push([nx, ny]);
   }
-  // Южный ряд: стены прямо под клетками комнаты + соседние по горизонтали (углы).
-  const southWalls = new Set<string>();
+  const southEdges = new Set<string>();
   for (const k of cells) {
     const [x, y] = k.split(',').map(Number) as [number, number];
-    if (!isBoundary(world, x, y + 1)) continue;
-    southWalls.add(`${x},${y + 1}`);
-    for (const dx of [-1, 1]) if (isBoundary(world, x + dx, y + 1)) southWalls.add(`${x + dx},${y + 1}`);
+    if (world.edgeBits(x, y + 1, 'n')) southEdges.add(edgeKey({ tx: x, ty: y + 1, side: 'n' }));
   }
-  return { cells, southWalls };
+  return { cells, southEdges };
 }

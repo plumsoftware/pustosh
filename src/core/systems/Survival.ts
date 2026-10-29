@@ -32,6 +32,20 @@ export interface SurvivalEnv {
   coldRes: number;
   heatRes: number;
   radRes: number;
+  /** Погода вокруг героя (в укрытии — нет). */
+  weather?: WeatherEffects;
+  /** Множитель скорости голода и жажды (навык «Выносливый желудок»). */
+  needsMul?: number;
+}
+
+/** Влияние погоды на выживание (worldgen.json → weather.types.<вид>.effects). */
+export interface WeatherEffects {
+  /** Сдвиг целевой температуры, ° (до учёта одежды). */
+  tempDelta?: number;
+  /** Множитель жажды. */
+  thirstMul?: number;
+  /** Радиация в секунду (до защиты radRes). */
+  radPerSec?: number;
 }
 
 /** Скорости площадки из balance.json → survival.<площадка>. */
@@ -60,7 +74,7 @@ export function maxHp(baseHp: number, v: Vitals): number {
 /** Температура, к которой тянется тело: биом и время суток, одежда, костёр (греет до верха комфорта). */
 export function targetTemperature(def: SurvivalDef, env: SurvivalEnv): number {
   const b = def.temperature.biomes[String(env.biome)];
-  let t = b ? (env.night ? b.night : b.day) : 0;
+  let t = (b ? (env.night ? b.night : b.day) : 0) + (env.weather?.tempDelta ?? 0);
   if (t < 0) t = Math.min(0, t + env.coldRes);
   else if (t > 0) t = Math.max(0, t - env.heatRes);
   // Костёр греет, но не перегревает: не выше верхней границы комфорта (и не остужает в жару).
@@ -98,9 +112,11 @@ export function stepSurvival(
 ): boolean {
   if (v.hp <= 0) return true;
   const n = def.needs;
-  const thirstMul = env.biome === n.desertBiome && env.day ? n.desertDayThirstMul : 1;
-  v.hunger = Math.max(0, v.hunger - (rates.hungerPerMin / 60) * dt);
-  v.thirst = Math.max(0, v.thirst - (rates.thirstPerMin / 60) * thirstMul * dt);
+  const thirstMul =
+    (env.biome === n.desertBiome && env.day ? n.desertDayThirstMul : 1) * (env.weather?.thirstMul ?? 1);
+  const nm = env.needsMul ?? 1;
+  v.hunger = Math.max(0, v.hunger - (rates.hungerPerMin / 60) * nm * dt);
+  v.thirst = Math.max(0, v.thirst - (rates.thirstPerMin / 60) * thirstMul * nm * dt);
 
   let dmg = 0;
   if (v.hunger <= 0) dmg += n.zeroHpLossPerSec;
@@ -111,7 +127,7 @@ export function stepSurvival(
   v.temperature += Math.max(-step, Math.min(step, target - v.temperature));
   if (outOfComfort(def, v)) dmg += rates.coldDmgPerSec;
 
-  const radPerSec = def.radiation.zonePerSecByBiome[String(env.biome)] ?? 0;
+  const radPerSec = (def.radiation.zonePerSecByBiome[String(env.biome)] ?? 0) + (env.weather?.radPerSec ?? 0);
   if (radPerSec > 0)
     v.radiation = Math.min(def.radiation.max, v.radiation + radPerSec * Math.max(0, 1 - env.radRes) * dt);
 

@@ -1,0 +1,31 @@
+ЛИСТ 12 — ЗАСТАВКА, ОБЛОЖКА И ИКОНКА (ОДИН ЛИСТ)
+Файл листа: s35_key_art.png      Формат: 1536×1024 (горизонтальный)
+Зачем: из одного листа агент нарежет всё для релиза:
+  - заставку при запуске (Android splash и экран загрузки в браузере) — из левой картины;
+  - обложку Яндекс Игр (800×470) и баннер магазина — кадрированием левой картины;
+  - иконку приложения 512×512 (Яндекс, RuStore, Android) — правый верхний квадрат;
+  - адаптивную иконку Android (эмблема отдельно, фон отдельно) — правый нижний квадрат.
+Название «ПУСТОШЬ» на картинке НЕ рисовать: генератор искажает буквы. Логотип агент наложит
+кодом шрифтом игры (Rubik Dirt), как в главном меню.
+Приложить: 1) скриншот главного меню игры (ночная стоянка у костра), 2) source_sheets/s17_hero.png
+(герой), 3) source_sheets/s11_biome1_suburb.png (стиль мира).
+
+Всё — на одном листе. Если генератор смешал части (фон картины залез на иконки, иконки
+оказались на картине) — повторить тот же промпт, добавив в конец:
+«The three parts are separated by straight black gaps; parts B and C are separate squares
+in the right column, outside the painting».
+
+===== PROMPT =====
+THREE ATTACHED IMAGES: image 1 = the main menu of this game (night camp by a campfire), image 2 = the hero of this game (young man, messy brown hair, stubble, red bandana, olive camo jacket, grey cargo pants, brown boots, backpack), image 3 = the world art style of this game. Match the painting style of these images exactly: painted semi-realistic, slightly chunky friendly proportions, rust, moss, worn materials, warm muted palette.
+
+ONE IMAGE, LANDSCAPE 3:2, divided into THREE separate parts that never overlap:
+
+PART A — the LEFT square (left two thirds of the image, full height): KEY ART for a post-apocalyptic survival game. Seen slightly from above, like the game camera. At night in an overgrown abandoned suburb: the hero from image 2 sits by a crackling campfire next to a rusty overgrown hatchback car and a makeshift camp (bedroll, crates, a hanging pot). Warm orange firelight on the hero and the ground, cold blue moonlight around. In the dark background: silhouettes of ruined houses and a broken power pole, and the glowing eyes and hunched silhouettes of several infected zombies lurking at the edge of the light. Far in the distance, in the center of the horizon, a faint sickly green glow (the radioactive epicenter). Strong readable composition: the hero and the fire slightly left of center, empty dark sky in the upper third (space for the game title), important things away from the edges (the picture will be cropped to 16:9). This part has a full painted background, NOT magenta.
+
+PART B — the RIGHT column, TOP square: APP ICON. A bold, simple emblem that reads at 48 pixels: a rusty gas mask over a crossed hatchet and wrench, a small campfire glow behind it, on a dark weathered steel round plate with rivets. Fills the square, centered, solid dark background inside the square (rust-brown to dark olive gradient). No text.
+
+PART C — the RIGHT column, BOTTOM square: the SAME emblem as part B (gas mask over crossed hatchet and wrench) ALONE, without the round plate and without background, centered with 25% empty margin on every side, on perfectly flat solid magenta #FF00FF. Hard, clean, fully opaque edges.
+
+Between the parts — a thin straight gap of solid black.
+
+FORBIDDEN everywhere: text, letters, numbers, the game title, logos, real brands, watermark, UI elements, frames, borders, signatures.

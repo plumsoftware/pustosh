@@ -210,14 +210,15 @@ export function rayTargets<T extends Hittable>(
   angleDeg: number,
   range: number,
   targets: readonly T[],
-  blocked: (x: number, y: number) => boolean,
+  /** Точка (x, y) за препятствием; (px, py) — предыдущая точка луча (стены на рёбрах). */
+  blocked: (x: number, y: number, px: number, py: number) => boolean,
 ): { hits: T[]; endX: number; endY: number } {
   const a = (angleDeg * Math.PI) / 180;
   const dx = Math.cos(a);
   const dy = Math.sin(a);
   let len = range;
   for (let s = 0.25; s <= range; s += 0.25) {
-    if (blocked(x + dx * s, y + dy * s)) {
+    if (blocked(x + dx * s, y + dy * s, x + dx * (s - 0.25), y + dy * (s - 0.25))) {
       len = s;
       break;
     }

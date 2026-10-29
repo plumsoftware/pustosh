@@ -247,7 +247,7 @@ function placeableItems(src: RegistrySource): ItemDef[] {
       name_ru: v.name_ru,
       category: 'vehicle',
       tier: Math.min(6, v.tier),
-      icon: v.body,
+      icon: v.icon ?? v.body,
       stack: 1,
     });
   }

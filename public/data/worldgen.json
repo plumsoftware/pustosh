@@ -177,7 +177,8 @@
     }
   },
   "ringFences": {
-    "_note": "Забор по границе кольца N → N+1 (материал из building.json); проход — только через ворота на дорогах",
+    "_note": "Забор по границе кольца N → N+1 (материал из building.json); проход — только через ворота на дорогах. enabled: false — граница мягкая (по решению владельца 29.10.2026)",
+    "enabled": false,
     "materials": {
       "1": "wood",
       "2": "logs",
@@ -192,10 +193,12 @@
     "angleOffsetDeg": 200
   },
   "gates": {
+    "enabled": false,
     "prefab": "gate"
   },
   "bunker": {
-    "prefab": "bunker_start"
+    "prefab": "bunker_start",
+    "_note": "Стартовая стоянка: поляна с костром (бункер убран по решению владельца 29.10.2026)"
   },
   "colliders": {
     "tree": {
@@ -311,12 +314,12 @@
     "zoomMin": 0.75,
     "zoomMax": 1.25,
     "viewTilesDesktop": [
-      16,
-      9
+      13.5,
+      7.6
     ],
     "viewTilesMobile": [
-      11,
-      6
+      9.4,
+      5.1
     ]
   },
   "persistence": {
@@ -341,5 +344,189 @@
     "frameBudgetMs": 6,
     "cullMarginPx": 256,
     "cacheChunks": 96
+  },
+  "weather": {
+    "_note": "Погода по биому (лист s32, частицы в WorldOverlay под маской света): смена каждые changeEverySec игровых секунд, вес вариантов по биому; types — вид частиц; tint — цвет частиц, dim/dimColor — затемнение экрана при этой погоде; effects — влияние на героя (tempDelta к целевой температуре, thirstMul, radPerSec, speedMul) и врагов (senseMul — зрение и слух); visionTiles — видимость (затемнение вокруг героя). В комнате (под крышей) эффекты не действуют; icon — значок у часов",
+    "changeEverySec": 300,
+    "biomes": {
+      "1": [
+        [
+          "clear",
+          0.55
+        ],
+        [
+          "leaves",
+          0.25
+        ],
+        [
+          "rain",
+          0.2
+        ]
+      ],
+      "2": [
+        [
+          "rain",
+          0.6
+        ],
+        [
+          "clear",
+          0.4
+        ]
+      ],
+      "3": [
+        [
+          "rain",
+          0.3
+        ],
+        [
+          "clear",
+          0.7
+        ]
+      ],
+      "4": [
+        [
+          "sand",
+          0.55
+        ],
+        [
+          "clear",
+          0.45
+        ]
+      ],
+      "5": [
+        [
+          "snow",
+          0.75
+        ],
+        [
+          "clear",
+          0.25
+        ]
+      ],
+      "6": [
+        [
+          "haze",
+          0.8
+        ],
+        [
+          "clear",
+          0.2
+        ]
+      ]
+    },
+    "types": {
+      "rain": {
+        "sprite": "effects.rain_streak",
+        "perSec": 150,
+        "sizePx": [
+          40,
+          60
+        ],
+        "speed": [
+          650,
+          800
+        ],
+        "angleDeg": 115,
+        "alpha": 0.9,
+        "from": "top",
+        "splash": "effects.rain_splash",
+        "splashPerSec": 18,
+        "tint": "#d8ecff",
+        "dim": 0.18,
+        "effects": {
+          "tempDelta": -2,
+          "thirstMul": 0.85,
+          "senseMul": 0.8
+        },
+        "icon": "effects.rain_streak"
+      },
+      "snow": {
+        "sprite": "effects.snowflake",
+        "perSec": 30,
+        "sizePx": [
+          8,
+          14
+        ],
+        "speed": [
+          40,
+          80
+        ],
+        "angleDeg": 95,
+        "alpha": 0.85,
+        "from": "top",
+        "spin": true,
+        "dim": 0.06,
+        "effects": {
+          "tempDelta": -2,
+          "speedMul": 0.9,
+          "senseMul": 0.8
+        },
+        "icon": "effects.snowflake"
+      },
+      "sand": {
+        "sprite": "effects.sand_gust",
+        "perSec": 5,
+        "sizePx": [
+          140,
+          240
+        ],
+        "speed": [
+          300,
+          460
+        ],
+        "angleDeg": 2,
+        "alpha": 0.5,
+        "from": "left",
+        "dim": 0.12,
+        "dimColor": "#6a4a20",
+        "effects": {
+          "tempDelta": 1,
+          "thirstMul": 1.3,
+          "speedMul": 0.9,
+          "senseMul": 0.6
+        },
+        "visionTiles": 4,
+        "icon": "effects.sand_gust"
+      },
+      "haze": {
+        "sprite": "effects.toxic_haze",
+        "perSec": 1.6,
+        "sizePx": [
+          260,
+          420
+        ],
+        "speed": [
+          10,
+          25
+        ],
+        "angleDeg": 0,
+        "alpha": 0.4,
+        "from": "any",
+        "dim": 0.14,
+        "dimColor": "#203a10",
+        "effects": {
+          "radPerSec": 1,
+          "senseMul": 0.9
+        },
+        "icon": "effects.toxic_haze"
+      },
+      "leaves": {
+        "sprite": "effects.leaf",
+        "perSec": 2,
+        "sizePx": [
+          12,
+          18
+        ],
+        "speed": [
+          50,
+          90
+        ],
+        "angleDeg": 75,
+        "alpha": 0.95,
+        "from": "top",
+        "spin": true,
+        "icon": "effects.leaf"
+      }
+    }
   }
 }

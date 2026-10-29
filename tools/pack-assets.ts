@@ -75,9 +75,14 @@ const WALL_FACE_PIECES = new Set([
   'door',
   'fence',
   'damage_overlay',
+  // Дополнительный лист s26 (art_extra): концы лица стены и треснувшее лицо.
+  'face_end_left',
+  'face_end_right',
+  'face_cracked',
 ]);
 const WALL_SQUARE_PIECES = new Set(['top_cap', 'floor']);
-const WALL_WIDTH_PIECES = new Set(['rubble']);
+/** По ширине клетки; концы и углы верха из s26 нарисованы не строго сверху — пока не используются. */
+const WALL_WIDTH_PIECES = new Set(['rubble', 'top_end_left', 'top_end_right', 'top_vertical', 'top_corner']);
 
 // ---------------------------------------------------------------- типы
 
@@ -134,12 +139,12 @@ export interface AtlasGroupInfo {
 
 function groupOf(e: ManifestEntry): string | null {
   const f = e.folder;
-  if (f === 'ui') return 'ui';
+  if (f === 'ui' || f.startsWith('ui/')) return 'ui';
   if (f.startsWith('icons/')) return 'icons';
   if (f === 'replacements') return e.scaleMode === 'fit_box' ? 'icons' : 'interior';
   if (f === 'tiles') return 'tiles';
   if (f === 'building/walls') return 'walls';
-  if (f === 'world/interior' || f === 'world/defense') return 'interior';
+  if (f === 'world/interior' || f === 'world/defense' || f === 'world/common') return 'interior';
   const bm = /^world\/biome(\d)_/.exec(f);
   if (bm) return `biome${bm[1]}`;
   if (f === 'characters/hero') return 'hero';

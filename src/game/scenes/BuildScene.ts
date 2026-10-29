@@ -7,6 +7,7 @@ import { spawnSprite } from '../assets/spawnSprite';
 import { registry } from '../GameContext';
 import { SceneKeys } from '../SceneKeys';
 import { UI_FONT } from '../ui/BitmapFont';
+import { chip, panel } from '../ui/Styled';
 import { Button } from '../ui/Button';
 import { COLORS, FONT, TEXT_RES, uiScale } from '../ui/layout';
 import type { WorldScene } from './WorldScene';
@@ -138,35 +139,20 @@ export class BuildScene extends Phaser.Scene {
     const ph = Math.round(118 * k);
     const py = height - ph;
     this.panelTop = py;
-    this.root.add(this.add.rectangle(0, py, width, ph, 0x15120f, 0.92).setOrigin(0).setInteractive());
-    this.root.add(this.add.rectangle(0, py, width, 2, 0x5a4a35).setOrigin(0));
+    // Панель стройки — металлическая плита во всю ширину.
+    this.root.add(panel(this, width / 2, py + ph / 2 + 4 * k, width + 8, ph + 8 * k).setInteractive());
     // Вкладки.
     const th = Math.round(28 * k);
     let x = 10;
     for (const tab of TABS) {
-      const on = tab === this.tab;
-      const txt = this.add.text(0, 0, t(`build.tab.${tab}`), {
-        fontFamily: FONT,
-        resolution: TEXT_RES,
-        fontSize: `${Math.round(12 * k + 2)}px`,
-        color: on ? '#1d1a16' : COLORS.text,
-        fontStyle: '600',
-      });
-      const w = txt.width + 14 * k;
-      const r = this.add
-        .rectangle(x, py + 6 * k, w, th, on ? COLORS.accent : 0x2a251f)
-        .setOrigin(0)
-        .setStrokeStyle(1, 0x5a4a35)
-        .setInteractive({ useHandCursor: true });
-      r.on('pointerup', () => {
+      const c = chip(this, x, py + 8 * k, t(`build.tab.${tab}`), tab === this.tab, th, () => {
         this.tab = tab;
         const first = this.entries()[0];
         if (first) this.select(first.sel);
         this.build();
       });
-      txt.setPosition(x + 7 * k, py + 6 * k + th / 2).setOrigin(0, 0.5);
-      this.root.add([r, txt]);
-      x += w + 4 * k;
+      this.root.add(c.objs);
+      x += c.width + 4 * k;
     }
     // Детали вкладки.
     const cell = Math.round(58 * k);

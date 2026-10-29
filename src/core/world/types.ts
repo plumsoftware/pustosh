@@ -74,19 +74,51 @@ export interface ItemStack {
   mods?: string[];
 }
 
+/** Ребро клетки: северное (между ty−1 и ty, вдоль X) или западное (между tx−1 и tx, вдоль Y). */
+export type Side = 'n' | 'w';
+
+/** Ребро-место стены: клетка-владелец и её сторона. */
+export interface EdgeRef {
+  tx: number;
+  ty: number;
+  side: Side;
+}
+
+/** Место постройки: ребро (стены, окна, двери, забор) или сама клетка (пол). */
+export interface BuildSlot {
+  tx: number;
+  ty: number;
+  side: Side | 'c';
+}
+
 /**
- * Постройка игрока в клетке (шаг 7): стена/окно/проём/забор с материалом и прочностью, створка двери, пол.
- * Материал — индекс в building.json → materials.
+ * Стена игрока на ребре клетки (как в Last Day on Earth — тонкая, между клетками).
+ * mat — индекс в building.json → materials; kind — WALL_SOLID, WALL_WINDOW, WALL_WINDOW_BOARDED,
+ * WALL_DOOR (проём), WALL_FENCE.
  */
-export interface BuildCell {
-  wall?: number;
-  /** WALL_SOLID, WALL_WINDOW, WALL_WINDOW_BOARDED, WALL_DOOR (проём), WALL_FENCE. */
-  kind?: number;
-  hp?: number;
+export interface EdgeWall {
+  mat: number;
+  kind: number;
+  hp: number;
   /** В проёме висит дверь. */
   leaf?: boolean;
-  floor?: number;
 }
+
+/** Постройки игрока в клетке (шаг 7): пол-фундамент и стены на её северном и западном рёбрах. */
+export interface BuildCell {
+  floor?: number;
+  n?: EdgeWall;
+  w?: EdgeWall;
+}
+
+/** Толщина стены игрока, клетки. */
+export const EDGE_T = 0.2;
+/** Бит створки двери в Chunk.edgeN/edgeW (младшие биты — вид стены). */
+export const EDGE_LEAF = 0x80;
+/** Стена префаба (генерация, не постройка игрока): дверь пропускает врагов, стену не сломать. */
+export const EDGE_GEN = 0x40;
+/** Вид стены из битов ребра. */
+export const EDGE_KIND = 0x3f;
 
 /** Комната префаба: границы по стенам (включительно), южный ряд стен. */
 export interface Room {

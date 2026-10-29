@@ -32,6 +32,17 @@ interface SheetJob {
   scaleMode: string;
   targetPx: number;
   pivot: string;
+  /**
+   * Общий масштаб листа: логических px на px листа. Тогда каждому спрайту — scaleMode height с
+   * targetPx = высота × pxScale, и пропорции между спрайтами листа сохраняются.
+   */
+  pxScale?: number | null;
+  /** Центры объектов, px листа, по порядку имён — вместо сетки, если объекты сдвинуты. */
+  points?: [number, number][];
+  /** Переопределения по имени (регулярное выражение): scaleMode, targetPx, pivot, pxScale, folder. */
+  overrides?: ({ match: string } & Partial<Pick<SheetJob, 'scaleMode' | 'targetPx' | 'pivot' | 'folder'>> & {
+      pxScale?: number | null;
+    })[];
 }
 interface ManifestEntry {
   id: string;
@@ -97,6 +108,7 @@ function cellComponents(
   rows: number,
   cols: number,
   dil: number,
+  points?: [number, number][],
 ): Map<number, CellGroup> {
   const solid = new Uint8Array(W * H);
   for (let k = 0; k < W * H; k++) solid[k] = px[k * 4 + 3]! > 15 ? 1 : 0;
@@ -168,9 +180,25 @@ function cellComponents(
         }
     }
     if (area < MIN_AREA_FRAC * W * H) continue;
-    const r = Math.min(rows - 1, Math.floor(sy / area / (H / rows)));
-    const c = Math.min(cols - 1, Math.floor(sx / area / (W / cols)));
-    const cell = r * cols + c;
+    const mx = sx / area;
+    const my = sy / area;
+    let cell: number;
+    if (points) {
+      // Ячейка — ближайшая заданная точка (лист, где объекты сдвинуты относительно сетки).
+      cell = 0;
+      let best = Infinity;
+      points.forEach(([px, py], i) => {
+        const d = Math.hypot(px - mx, py - my);
+        if (d < best) {
+          best = d;
+          cell = i;
+        }
+      });
+    } else {
+      const r = Math.min(rows - 1, Math.floor(my / (H / rows)));
+      const c = Math.min(cols - 1, Math.floor(mx / (W / cols)));
+      cell = r * cols + c;
+    }
     const g = groups.get(cell);
     if (!g) groups.set(cell, { x0, y0, x1, y1, labels: new Set([id]) });
     else {
@@ -198,14 +226,16 @@ async function cutSheet(job: SheetJob): Promise<ManifestEntry[]> {
     keyed[o + 3] = Math.round(a * 255);
   }
   const [rows, cols] = job.grid;
-  const groups = cellComponents(keyed, W, H, rows, cols, job.key === 'black' ? 8 : 3);
+  const groups = cellComponents(keyed, W, H, rows, cols, job.key === 'black' ? 8 : 3, job.points);
   const out: ManifestEntry[] = [];
-  const dir = join(ART, 'assets', job.folder);
-  mkdirSync(dir, { recursive: true });
   const sheetId = job.file.replace(/\.png$/, '');
   for (let idx = 0; idx < rows * cols; idx++) {
     const name = job.names[idx];
     if (!name) continue;
+    const o = { ...job, ...job.overrides?.find((x) => new RegExp(`^(${x.match})$`).test(name)) };
+    if (o.pxScale === null) delete o.pxScale; // null в переопределении — без общего масштаба
+    const dir = join(ART, 'assets', o.folder);
+    mkdirSync(dir, { recursive: true });
     const g = groups.get(idx);
     if (!g) throw new Error(`${job.file}: пустая ячейка ${idx + 1} (${name})`);
     const { x0, y0, x1, y1, labels } = g;
@@ -229,18 +259,18 @@ async function cutSheet(job: SheetJob): Promise<ManifestEntry[]> {
     await sharp(px, { raw: { width: w + PAD * 2, height: h + PAD * 2, channels: 4 } })
       .png({ compressionLevel: 9 })
       .toFile(join(dir, `${name}.png`));
-    const folderId = job.folder.replace(/\//g, '.');
+    const folderId = o.folder.replace(/\//g, '.');
     out.push({
       id: `${folderId}.${name}`,
-      path: `assets/${job.folder}/${name}.png`,
-      folder: job.folder,
+      path: `assets/${o.folder}/${name}.png`,
+      folder: o.folder,
       name,
       sourceSheet: sheetId,
       srcSize: [w + PAD * 2, h + PAD * 2],
       status: 'ok',
-      scaleMode: job.scaleMode,
-      targetPx: job.targetPx,
-      pivot: job.pivot,
+      scaleMode: o.pxScale ? 'height' : o.scaleMode,
+      targetPx: o.pxScale ? Math.max(1, Math.round(h * o.pxScale)) : o.targetPx,
+      pivot: o.pivot,
     });
   }
   return out;
@@ -259,9 +289,19 @@ async function main(): Promise<void> {
       if (i >= 0) manifest.assets[i] = e;
       else manifest.assets.push(e);
     }
-    console.log(`${job.file}: ${entries.length} спрайтов → art/assets/${job.folder}/`);
+    console.log(`${job.file}: ${entries.length} спрайтов`);
   }
   manifest.count = manifest.assets.length;
+  // Курсоры для браузера — отдельные PNG 32×32 (CSS cursor не берёт кадры атласа).
+  const cur = join(ART, 'assets', 'ui', 'kit');
+  const outDir = join(ROOT, 'public', 'cursors');
+  mkdirSync(outDir, { recursive: true });
+  for (const n of ['cursor_normal', 'cursor_active', 'cursor_grab'])
+    if (existsSync(join(cur, `${n}.png`)))
+      await sharp(join(cur, `${n}.png`))
+        .resize(32, 32, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+        .png()
+        .toFile(join(outDir, `${n.replace('cursor_', '')}.png`));
   writeFileSync(MANIFEST, JSON.stringify(manifest, null, 1) + '\n');
 }
 

@@ -97,7 +97,8 @@
     "nightEveryMul": 0.4,
     "weights": { "walker": 10, "crawler": 5, "spitter": 6, "sprinter": 5, "bloated": 4, "soldier": 4, "glowing": 4, "dog": 4, "toad": 4, "raptor": 3, "scorpion": 4, "armored_lizard": 3, "snow_wolf": 4, "deer": 3, "boar": 3, "hare": 4 },
     "nightOnly": [],
-    "dayOnlyFamilies": ["animal"]
+    "dayOnlyFamilies": ["animal"],
+  "byDay": {"_note": "Плотность врагов по прожитым суткам (по решению владельца 29.10.2026): дни 1–7 — от startMul до calmEndMul, дальше +stepMul каждые stepEveryDays дней плавно, максимум maxMul. Множит лимит живых и частоту появления.", "calmDays": 7, "startMul": 0.35, "calmEndMul": 0.6, "stepEveryDays": 3, "stepMul": 0.15, "maxMul": 1.35}
   },
   "bloodNight": {
     "waves": 3,
@@ -107,5 +108,19 @@
     "perBiome": 3,
     "rewardContainer": "crate_military_closed"
   },
-  "numbers": { "riseTiles": 0.8, "sec": 0.8 }
+  "numbers": { "riseTiles": 0.8, "sec": 0.8 },
+ "enemyHp": {
+  "_note": "Здоровье врага = toughness × byBiome[биом появления] (цель ТЗ 8.5: обычный — 3–6 ударов оружием тира биома, элита — 8–12; elite.hpMul из enemies.json заменён eliteHpMul). Звери семейства skipFamilies — со своим hp. Пересчитано 29.10.2026 (npm run balance-check).",
+  "byBiome": {"1": 54, "2": 107, "3": 179, "4": 336, "5": 404, "6": 546},
+  "toughness": {"walker": 0.918, "crawler": 0.9, "spitter": 0.934, "sprinter": 0.9, "bloated": 1.036, "soldier": 1.1, "glowing": 1.1, "dog": 0.9, "toad": 0.998, "raptor": 1.018, "scorpion": 1.068, "armored_lizard": 1.1, "snow_wolf": 1.036},
+  "eliteHpMul": 2.1,
+  "skipFamilies": ["animal"]
+ },
+ "held": {
+  "_note": "Предмет в руке героя: доля роста по типу инструмента/оружия (по умолчанию defaultFrac) и иконки, отражённые вдоль рукояти (у молотков боёк нарисован с другой стороны, чем лезвие топора)",
+  "defaultFrac": 0.45,
+  "fracByTool": { "hammer": 0.3, "knife": 0.28, "wrench": 0.3, "shovel": 0.42, "fishing": 0.5 },
+  "fracById": { "club": 0.38 },
+  "mirror": ["hammer_builder", "hammer_claw"]
+ }
 }

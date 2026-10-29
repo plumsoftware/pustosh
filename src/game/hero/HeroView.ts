@@ -83,6 +83,9 @@ export class HeroView {
   private held: AssetId | null = null;
   private dodging = false;
   private cold = false;
+  /** Целая поза (лист s28: сон, еда, питьё) поверх рига на время. */
+  private pose: Phaser.GameObjects.Image | null = null;
+  private poseLeft = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -271,6 +274,42 @@ export class HeroView {
     if (this.rig) this.updateRig(dt, base, s);
     else this.updateFallback(dt, s);
     if (s.sprinting && !this.dead) this.runDust(dt);
+    if (this.pose) {
+      this.poseLeft -= dt;
+      if (this.poseLeft <= 0 || this.dead) this.clearPose();
+      else {
+        this.displayObject.setVisible(false);
+        this.pose
+          .setPosition(x, y)
+          .setFlipX(this.facing < 0)
+          .setDepth(y);
+      }
+    }
+  }
+
+  /**
+   * Показать целую позу героя вместо рига на sec секунд (Infinity — до clearPose). Позы нарисованы
+   * лицом вправо, влево — отражение. Нет спрайта — false, риг остаётся.
+   */
+  showPose(id: string, sec: number): boolean {
+    if (this.dead || !getAssetInfo(id)) return false;
+    this.clearPose();
+    this.pose = spawnSprite(this.scene, this.x, this.y, id, { depth: this.y });
+    this.poseLeft = sec;
+    this.displayObject.setVisible(false);
+    return true;
+  }
+
+  /** Текущая целая поза (id спрайта) или null. */
+  get poseId(): string | null {
+    return this.pose ? this.pose.frame.name : null;
+  }
+
+  clearPose(): void {
+    if (!this.pose) return;
+    this.pose.destroy();
+    this.pose = null;
+    this.displayObject.setVisible(true);
   }
 
   private updateRig(dt: number, base: AnimName, s: HeroVisualState): void {
@@ -393,6 +432,7 @@ export class HeroView {
   }
 
   destroy(): void {
+    this.clearPose();
     this.rig?.destroy();
     this.fallback?.destroy();
     this.shadow.destroy();

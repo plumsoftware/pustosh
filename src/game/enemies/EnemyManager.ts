@@ -14,7 +14,16 @@ import {
 } from '../../core/systems/Combat';
 import { BloodNight, SpawnSystem } from '../../core/systems/Spawn';
 import { Rng } from '../../core/util/rng';
-import { LAYER_WATER, moveCircle, WALL_DOOR, WALL_NONE, type WorldObject } from '../../core/world';
+import {
+  edgeSolid,
+  LAYER_WATER,
+  moveCircle,
+  segmentHitsEdge,
+  WALL_DOOR,
+  WALL_NONE,
+  type EdgeRef,
+  type WorldObject,
+} from '../../core/world';
 import { getAssetInfo } from '../assets/AssetIndex';
 import { spawnSprite } from '../assets/spawnSprite';
 import { DEPTH } from '../render/ChunkView';
@@ -52,7 +61,7 @@ interface Area {
   r: number;
   until: number;
   dps: number;
-  kind: 'fire' | 'poison' | 'acid';
+  kind: 'fire' | 'poison' | 'acid' | 'rad' | 'ice';
   hitsEnemies: boolean;
   imgs: Phaser.GameObjects.GameObject[];
 }
@@ -120,41 +129,46 @@ export class EnemyManager {
 
   // ------------------------------------------------------------------ мир для ИИ
 
-  /** Клетка проходима для врага: суша/вода, без стен (двери игрока закрыты), без твёрдых объектов. */
+  /** Клетка проходима для врага: суша/вода, без стен префабов (двери проходимы), без твёрдых объектов. */
   passable = (tx: number, ty: number): boolean => {
     const w = this.scene.world;
     const c = w.cell(tx, ty);
     if (c.biome === 0 || !c.passable) return false;
-    if (c.wall !== WALL_NONE) {
-      if (c.wallKind !== WALL_DOOR) return false;
-      if (w.builtAt(tx, ty)?.leaf) return false;
-    }
+    if (c.wall !== WALL_NONE && c.wallKind !== WALL_DOOR) return false;
     return w.collidersAt(tx, ty).length === 0;
   };
 
+  /** Соседей разделяет стена игрока на ребре (дверь со створкой для врага закрыта). */
+  wallBetween = (ax: number, ay: number, bx: number, by: number): boolean => {
+    const bits = this.scene.world.edgeBetween(ax, ay, bx, by);
+    return bits !== 0 && edgeSolid(bits, true);
+  };
+
   /** Стена игрока с наименьшей прочностью у отрезка враг → цель (её ломают, когда путь закрыт). */
-  private wallToBreak(e: Enemy, gx: number, gy: number): { tx: number; ty: number } | null {
+  private wallToBreak(e: Enemy, gx: number, gy: number): EdgeRef | null {
     const R = this.reg.combat.enemy.wallSearchTiles;
     const w = this.scene.world;
-    let best: { tx: number; ty: number; hp: number } | null = null;
+    let best: { e: EdgeRef; score: number } | null = null;
     const steps = Math.ceil(Math.hypot(gx - e.x, gy - e.y)) + 1;
     const seen = new Set<string>();
     for (let i = 0; i <= Math.min(steps, 24); i++) {
       const px = e.x + ((gx - e.x) * i) / steps;
       const py = e.y + ((gy - e.y) * i) / steps;
-      for (let ty = Math.floor(py - R); ty <= Math.floor(py + R); ty++)
-        for (let tx = Math.floor(px - R); tx <= Math.floor(px + R); tx++) {
-          const k = `${tx},${ty}`;
-          if (seen.has(k)) continue;
-          seen.add(k);
-          const b = w.builtAt(tx, ty);
-          if (!b || b.wall === undefined || (b.kind === WALL_DOOR && !b.leaf)) continue;
-          const hp = b.hp ?? 0;
-          const d = Math.hypot(tx + 0.5 - e.x, ty + 0.5 - e.y);
-          if (!best || hp + d * 5 < best.hp) best = { tx, ty, hp: hp + d * 5 };
-        }
+      for (let ty = Math.floor(py - R); ty <= Math.floor(py + R) + 1; ty++)
+        for (let tx = Math.floor(px - R); tx <= Math.floor(px + R) + 1; tx++)
+          for (const side of ['n', 'w'] as const) {
+            const k = `${tx},${ty},${side}`;
+            if (seen.has(k)) continue;
+            seen.add(k);
+            const wall = w.edgeAt({ tx, ty, side });
+            if (!wall || (wall.kind === WALL_DOOR && !wall.leaf)) continue;
+            const mx = side === 'n' ? tx + 0.5 : tx;
+            const my = side === 'n' ? ty : ty + 0.5;
+            const score = wall.hp + Math.hypot(mx - e.x, my - e.y) * 5;
+            if (!best || score < best.score) best = { e: { tx, ty, side }, score };
+          }
     }
-    return best ? { tx: best.tx, ty: best.ty } : null;
+    return best?.e ?? null;
   }
 
   private lit(x: number, y: number): boolean {
@@ -174,7 +188,8 @@ export class EnemyManager {
   spawnEnemy(id: string, x: number, y: number, elite = false, toBase = false): Enemy | null {
     const def = this.reg.enemies.get(id);
     if (!def) return null;
-    const e = new Enemy(this.reg, def, `en${this.seq++}`, x, y, elite);
+    const biome = this.scene.world.layout.biomeAt(x, y);
+    const e = new Enemy(this.reg, def, `en${this.seq++}`, x, y, elite, biome);
     e.packAngle = (this.rng.next() - 0.5) * 2.4;
     this.enemies.push(e);
     if (toBase) this.toBase.add(e.id);
@@ -202,6 +217,7 @@ export class EnemyManager {
         now,
         dt,
         night: this.night,
+        days: s.dayNight.seconds / this.reg.balance.dayNight.fullDaySec,
         hero: h.pos,
         alive: this.alive.length,
         mobile: this.mobile,
@@ -220,11 +236,14 @@ export class EnemyManager {
       dt,
       night: this.night,
       nightSpeedMul: this.reg.balance.dayNight.nightEnemySpeedMul as number,
+      senseMul: this.scene.hero.weather.senseMul ?? 1,
       hero: { x: h.pos.x, y: h.pos.y, r: 0.22, alive: !h.dead },
       noises: this.noises,
       rng: () => this.rng.next(),
       inGrass: () => true,
       passable: this.passable,
+      wallBetween: this.wallBetween,
+      wallStands: (e) => !!s.world.edgeAt(e),
       move: (e, dx, dy) => moveCircle(s.world, e.x, e.y, e.r, dx, dy, 0.75, true),
       wallToBreak: (e, x, y) => this.wallToBreak(e, x, y),
       pack: () => [],
@@ -323,6 +342,7 @@ export class EnemyManager {
     }
     if (this.wasBloodNight && !d.bloodNight) {
       this.wasBloodNight = false;
+      if (!s.hero.dead) s.progress.count('bloodNights');
       s.game.events.emit(BLOOD_WAVE, 0, 0);
       this.supplyDrop();
     }
@@ -363,9 +383,9 @@ export class EnemyManager {
         break;
       }
       case 'wall': {
-        const r = s.world.damageWall(ev.tx, ev.ty, ev.damage);
-        if (r === 'destroyed') s.wallBroken(ev.tx, ev.ty);
-        else if (r) s.onBuilt([[ev.tx, ev.ty]], 'damage');
+        const r = s.world.damageEdge(ev.edge, ev.damage);
+        if (r === 'destroyed') s.wallBroken(ev.edge);
+        else if (r) s.onBuilt([ev.edge], 'damage');
         break;
       }
       case 'spit':
@@ -426,11 +446,13 @@ export class EnemyManager {
   /** Смерть: дроп предметами (элита ×dropMul), опыт. */
   private onDeath(e: Enemy): void {
     const s = this.scene;
-    s.onKill(e.def.id);
+    s.onKill(e.def.id, e.elite);
     const mul = e.elite ? ((e.def.elite?.['dropMul'] as number | undefined) ?? 2) : 1;
     const drops: WorldObject[] = [];
     for (const [id, [lo, hi]] of Object.entries(e.def.drops)) {
-      const n = Math.round((lo + Math.floor(this.rng.next() * (hi - lo + 1))) * mul);
+      // «Свежевание»: со зверя больше шкур и меха.
+      const extra = id === 'hide' || id === 'fur' ? Math.round(s.progress.effect('extraHide')) : 0;
+      const n = Math.round((lo + Math.floor(this.rng.next() * (hi - lo + 1))) * mul) + extra;
       if (n <= 0 || !this.reg.items.has(id)) continue;
       drops.push(
         s.world.dropItem(
@@ -490,7 +512,9 @@ export class EnemyManager {
       knock,
       backstabMul: H.backstabMul * (1 + 0.25 * (this.scene.skills['fighter_4'] ?? 0)),
       ignoreArmor: w.specials.includes('ignore_armor'),
+      stunnedMul: 1 + this.scene.progress.effect('stunnedDamage'),
     });
+    this.scene.progress.count('damageDealt', r.dmg);
     const p = this.posOf(e);
     this.sparks.explode(r.blocked ? 3 : 6, p.x, p.y - p.h * 0.55);
     if (e instanceof Enemy && e.def.family !== 'reptile') this.blood_.explode(4, p.x, p.y - p.h * 0.5);
@@ -535,9 +559,11 @@ export class EnemyManager {
       );
       return;
     }
-    const blocked = (x: number, y: number) => {
+    // Луч идёт на высоте груди (y − 0.3); стены на рёбрах проверяются у земли.
+    const blocked = (x: number, y: number, px: number, py: number) => {
       const c = s.world.cell(Math.floor(x), Math.floor(y));
-      return c.wall !== WALL_NONE && c.wallKind !== WALL_DOOR;
+      if (c.wall !== WALL_NONE && c.wallKind !== WALL_DOOR) return true;
+      return segmentHitsEdge(s.world, px, py + 0.3, x, y + 0.3);
     };
     for (let i = 0; i < w.pellets; i++) {
       const ang = faceDeg + (this.rng.next() - 0.5) * w.spreadDeg;
@@ -562,6 +588,9 @@ export class EnemyManager {
   }
 
   /** Огнемёт: конус перед героем, частицы пламени. */
+  private jetAt = 0;
+  private jetN = 0;
+
   flame(w: WeaponStats, faceDeg: number, dt: number): void {
     const h = this.scene.hero.pos;
     const S = this.reg.combat.specials;
@@ -571,6 +600,26 @@ export class EnemyManager {
         const p = this.posOf(e);
         this.number(p.x, p.y - p.h, r.dmg * 5, 'normal');
       }
+    }
+    // Струя огня (s32): два кадра поочерёдно от ствола по направлению взгляда.
+    const now = this.scene.time.now;
+    if (now >= this.jetAt) {
+      this.jetAt = now + 90;
+      Fx.burst(
+        this.scene,
+        `effects.flame_jet_${(this.jetN = (this.jetN % 2) + 1)}`,
+        h.x * TILE,
+        h.y * TILE - 34,
+        {
+          from: w.range * TILE * 0.7,
+          to: w.range * TILE,
+          ms: 160,
+          depth: DEPTH.glow,
+          add: true,
+          rotation: (faceDeg * Math.PI) / 180,
+          origin: [0, 0.5],
+        },
+      );
     }
     if (this.rng.next() < 0.6 && this.scene.anims.exists('fx-flame')) {
       const a = (faceDeg * Math.PI) / 180 + (this.rng.next() - 0.5) * 0.5;
@@ -689,6 +738,8 @@ export class EnemyManager {
       if (!arc) {
         const c = s.world.cell(Math.floor(p.x), Math.floor(p.y));
         if (c.wall !== WALL_NONE && c.wallKind !== WALL_DOOR) hit = true;
+        // Снаряд летит на высоте ~0.3 клетки над землёй; стены на рёбрах — у земли.
+        else if (segmentHitsEdge(s.world, p.x - p.vx * dt, p.y - p.vy * dt + 0.3, p.x, p.y + 0.3)) hit = true;
         if (p.owner === 'hero')
           for (const e of this.visible())
             if (Math.hypot(e.x - p.x, e.y - 0.4 - p.y) <= e.r + 0.15) {
@@ -770,13 +821,16 @@ export class EnemyManager {
       h.damage(armorReduce(damage * Math.max(0.25, 1 - dh / radius), h.inv.stat('armor')), x);
     s.explosionFx(x, y, radius, tint);
     s.audio.play('explosion', 'sfx');
-    for (let ty = Math.floor(y - radius); ty <= Math.floor(y + radius); ty++)
-      for (let tx = Math.floor(x - radius); tx <= Math.floor(x + radius); tx++) {
-        if (Math.hypot(tx + 0.5 - x, ty + 0.5 - y) > radius) continue;
-        const r = s.world.damageWall(tx, ty, damage * 0.5);
-        if (r === 'destroyed') s.wallBroken(tx, ty);
-        else if (r) s.onBuilt([[tx, ty]], 'damage');
-      }
+    for (let ty = Math.floor(y - radius); ty <= Math.floor(y + radius) + 1; ty++)
+      for (let tx = Math.floor(x - radius); tx <= Math.floor(x + radius) + 1; tx++)
+        for (const side of ['n', 'w'] as const) {
+          const d = side === 'n' ? Math.hypot(tx + 0.5 - x, ty - y) : Math.hypot(tx - x, ty + 0.5 - y);
+          if (d > radius) continue;
+          const e = { tx, ty, side };
+          const r = s.world.damageEdge(e, damage * 0.5);
+          if (r === 'destroyed') s.wallBroken(e);
+          else if (r) s.onBuilt([e], 'damage');
+        }
     this.noise(x, y, this.reg.combat.hero.noiseRadiusTiles);
   }
 
@@ -792,7 +846,16 @@ export class EnemyManager {
   ): void {
     const s = this.scene;
     const imgs: Phaser.GameObjects.GameObject[] = [];
-    const tint = kind === 'fire' ? 0x401000 : kind === 'poison' ? 0x40a020 : 0x80c020;
+    const tint =
+      kind === 'fire'
+        ? 0x401000
+        : kind === 'poison'
+          ? 0x40a020
+          : kind === 'rad'
+            ? 0x9aff30
+            : kind === 'ice'
+              ? 0xa0e0ff
+              : 0x80c020;
     imgs.push(
       s.add
         .image(x * TILE, y * TILE, TEX.shadow)
@@ -832,7 +895,14 @@ export class EnemyManager {
       }
       if (Math.hypot(h.pos.x - a.x, h.pos.y - a.y) <= a.r) {
         if (a.kind === 'poison') h.vitals.conditions.poison = Math.max(h.vitals.conditions.poison, 1);
-        else h.damage(a.dps * dt);
+        // Радиация: dps — единиц радиации в секунду, режется защитой (противогаз, костюм).
+        else if (a.kind === 'rad')
+          h.vitals.radiation += a.dps * dt * Math.max(0, 1 - h.inv.stat('radRes') / 100);
+        // Изморозь: урон и холод.
+        else if (a.kind === 'ice') {
+          h.damage(a.dps * dt);
+          h.vitals.temperature -= 1.5 * dt;
+        } else h.damage(a.dps * dt);
       }
       if (a.hitsEnemies)
         for (const e of this.enemies)

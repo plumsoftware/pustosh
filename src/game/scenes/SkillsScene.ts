@@ -2,8 +2,11 @@ import Phaser from 'phaser';
 import { t } from '../../core/i18n/i18n';
 import { freePoints, skillDef, xpToNext } from '../../core/systems/Progress';
 import { getAssetInfo } from '../assets/AssetIndex';
+import { spawnSprite } from '../assets/spawnSprite';
 import { ctx, registry } from '../GameContext';
 import { SceneKeys } from '../SceneKeys';
+import { rowFrame } from '../ui/Styled';
+import { panel as stylePanel } from '../ui/Styled';
 import { Button } from '../ui/Button';
 import { COLORS, FONT, TEXT_RES, uiScale } from '../ui/layout';
 import type { WorldScene } from './WorldScene';
@@ -92,10 +95,7 @@ export class SkillsScene extends Phaser.Scene {
     const ph = height - 20;
     const px = (width - pw) / 2;
     const py = 10;
-    const info = getAssetInfo('ui.panel_9slice')!;
-    this.root.add(
-      this.add.nineslice(px + pw / 2, py + ph / 2, info.group, info.frame, pw, ph, 22, 22, 22, 22),
-    );
+    this.root.add(stylePanel(this, px + pw / 2, py + ph / 2, pw, ph));
     const lv = g.lv;
     const pts = freePoints(reg, lv);
     this.root.add(
@@ -133,37 +133,58 @@ export class SkillsScene extends Phaser.Scene {
         const lvl = lv.skills[sk.id] ?? 0;
         const max = sk.levels as number;
         const sel = this.selected === sk.id;
-        const bg = this.add
-          .rectangle(cx, y, colW - 8 * k, rowH - 4 * k, sel ? 0x3a3024 : 0x1d1a16, 0.9)
+        const bg = rowFrame(this, cx, y, colW - 8 * k, rowH - 4 * k, sel)
           .setOrigin(0)
-          .setStrokeStyle(sel ? 2 : 1, sel ? 0xe0a040 : 0x5a4a35)
           .setInteractive({ useHandCursor: true });
         bg.on('pointerup', () => {
           this.selected = sk.id;
           this.build();
         });
-        const r = Math.min(rowH * 0.36, 16 * k);
-        const icon = this.add
-          .circle(cx + 6 * k + r, y + rowH / 2 - 2 * k, r, color, lvl ? 1 : 0.35)
-          .setStrokeStyle(1, 0x000000);
-        const letter = this.txt(icon.x, icon.y, (sk.name_ru as string)[0]!, 12, '#fff', true).setOrigin(0.5);
+        const art = `ui.skills.skill_${sk.id}`;
+        const hasArt = !!getAssetInfo(art);
+        // Иконка навыка (s25) почти во всю высоту строки; кружок с буквой — меньше.
+        const r = hasArt ? rowH * 0.42 : Math.min(rowH * 0.36, 16 * k);
+        const ix = cx + 6 * k + r;
+        const iy = y + rowH / 2 - 2 * k;
+        let icon: Phaser.GameObjects.GameObject & { x: number; y: number };
+        let letter: Phaser.GameObjects.GameObject | null = null;
+        if (hasArt) {
+          // Иконка навыка (s25); не изученный — приглушённый.
+          const im = spawnSprite(this, ix, iy, art, { depth: false });
+          im.setScale((r * 2) / Math.max(im.frame.width, im.frame.height));
+          if (!lvl) im.setTint(0xa0a0a0).setAlpha(0.8);
+          icon = im;
+        } else {
+          icon = this.add.circle(ix, iy, r, color, lvl ? 1 : 0.35).setStrokeStyle(1, 0x000000);
+          letter = this.txt(ix, iy, (sk.name_ru as string)[0]!, 12, '#fff', true).setOrigin(0.5);
+        }
+        // Название — одной строкой в верхней половине (длинное уменьшается по ширине), уровни — ниже.
+        const tx = icon.x + r + 6 * k;
+        const tw = cx + colW - 8 * k - tx - 12 * k;
+        const rowIn = rowH - 4 * k;
         const name = this.txt(
-          icon.x + r + 6 * k,
-          y + 3 * k,
+          tx,
+          y + rowIn * 0.32,
           sk.name_ru as string,
-          11,
+          13,
           lvl ? COLORS.text : COLORS.textDim,
           true,
-          colW - r * 2 - 22 * k,
-        );
+        ).setOrigin(0, 0.5);
+        // Длинное название — две строки по центру карточки, уровни — справа.
+        // Чуть длиннее — немного ужать; намного длиннее — две строки, уровни справа.
+        if (name.width > tw && name.width <= tw * 1.18) name.setScale(tw / name.width);
+        const long = name.width > tw * 1.18;
+        if (long) name.setWordWrapWidth(tw * 0.72).setY(y + rowIn * 0.5);
         const dots = this.txt(
-          icon.x + r + 6 * k,
-          y + rowH - 18 * k,
+          tx,
+          y + rowIn * 0.74,
           '●'.repeat(lvl) + '○'.repeat(Math.max(0, max - lvl)),
           10,
           '#e0c060',
-        );
-        this.root.add([bg, icon, letter, name, dots]);
+        ).setOrigin(0, 0.5);
+        if (long) dots.setOrigin(1, 0.5).setPosition(tx + tw + 4 * k, y + rowIn * 0.5);
+        this.root.add([bg, icon, name, dots]);
+        if (letter) this.root.add(letter);
       });
     });
     // Подвал: описание выбранного навыка и «Изучить».

@@ -1,6 +1,7 @@
 /**
  * A* по клеткам (TZ 8.3.3): 8 направлений без срезания углов, в квадрате radius вокруг старта.
- * passable(tx, ty) — клетка проходима. Возвращает путь клеток (без стартовой) или null.
+ * passable(tx, ty) — клетка проходима; wall(ax, ay, bx, by) — соседей по стороне разделяет стена
+ * на ребре (постройки игрока). Возвращает путь клеток (без стартовой) или null.
  */
 export function findPath(
   sx: number,
@@ -10,6 +11,7 @@ export function findPath(
   radius: number,
   passable: (tx: number, ty: number) => boolean,
   maxNodes = 1500,
+  wall: (ax: number, ay: number, bx: number, by: number) => boolean = () => false,
 ): [number, number][] | null {
   if (sx === gx && sy === gy) return [];
   const minX = sx - radius;
@@ -58,6 +60,16 @@ export function findPath(
         if (closed[ni]) continue;
         if (ni !== goal && !passable(nx, ny)) continue;
         if (dx && dy && (!passable(cx + dx, cy) || !passable(cx, cy + dy))) continue;
+        // По стороне — ребро между клетками; по диагонали — все четыре ребра вокруг угла.
+        if (!dx || !dy) {
+          if (wall(cx, cy, nx, ny)) continue;
+        } else if (
+          wall(cx, cy, cx + dx, cy) ||
+          wall(cx, cy, cx, cy + dy) ||
+          wall(cx + dx, cy, nx, ny) ||
+          wall(cx, cy + dy, nx, ny)
+        )
+          continue;
         const ng = g[cur.i]! + (dx && dy ? 1.41 : 1);
         if (ng >= g[ni]!) continue;
         g[ni] = ng;

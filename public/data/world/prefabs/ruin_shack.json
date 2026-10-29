@@ -12,6 +12,7 @@
   ],
   "objects": [
     { "at": [2.5, 2.3], "furniture": "random" },
-    { "at": [3.2, 3.8], "container": "random" }
+    { "at": [3.2, 3.8], "container": "random" },
+    { "at": [4.4, 5.8], "sprite": "assets/world/common/grave_marker.png", "kind": "decor" }
   ]
 }

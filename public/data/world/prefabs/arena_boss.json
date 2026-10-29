@@ -4,6 +4,8 @@
   "clearRadiusTiles": 9,
   "ring": { "radiusTiles": 10, "kind": "rock", "count": 16, "gapDeg": 30 },
   "objects": [
-    { "at": [0, 8.2], "station": "campfire", "state": "on" }
+    { "at": [0, 8.2], "station": "campfire", "state": "on" },
+    { "at": [-2.2, 8.0], "sprite": "assets/world/common/arena_hook_rack.png", "kind": "furniture" },
+    { "at": [2.0, 8.4], "sprite": "assets/world/common/campfire_spit.png", "kind": "decor" }
   ]
 }

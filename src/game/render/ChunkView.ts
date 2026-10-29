@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Registry } from '../../core/data/Registry';
-import type { WallPiece } from '../../core/data/schemas';
+import type { MaterialDef, WallPiece } from '../../core/data/schemas';
 import {
   LAYER_WATER,
   WALL_DOOR,
@@ -8,7 +8,12 @@ import {
   WALL_NONE,
   WALL_WINDOW,
   WALL_WINDOW_BOARDED,
+  EDGE_KIND,
+  EDGE_LEAF,
+  EDGE_T,
   type Chunk,
+  type EdgeWall,
+  type Side,
   type World,
   type WorldObject,
 } from '../../core/world';
@@ -86,6 +91,8 @@ export interface WallView {
   depth: number;
   tx: number;
   ty: number;
+  /** Стена игрока на ребре клетки (у стен префабов — нет). */
+  side?: Side;
   /** Створка двери (сжимается по X к петле, когда открыта). */
   door?: Phaser.GameObjects.Image;
   open?: boolean;
@@ -233,14 +240,168 @@ export class ChunkView {
           const m = mats[c.floor[i]! - 1]!;
           // Пол темнее верха стен — иначе комната из одного материала не читается.
           this.extra.push(
-            spawnSprite(this.scene, tx * TILE, ty * TILE, m.sprites.floor, { depth: DEPTH.floor }).setTint(
-              FLOOR_TINT,
-            ),
+            // У кадра пола прозрачная кайма ~2%: без неё между плитками видна трава.
+            this.strip(
+              m.sprites.floor,
+              [0.03, 0.03, 0.94, 0.94],
+              [tx * TILE, ty * TILE, TILE, TILE],
+              DEPTH.floor,
+            ).setTint(FLOOR_TINT),
           );
         }
         if (c.wall[i]) this.buildWall(tx, ty, c.wall[i]! - 1, c.wallKind[i]!, c.room[i]!);
+        if (c.edgeN[i] || c.edgeW[i]) {
+          const b = this.world.builtAt(tx, ty);
+          const n = b?.n ?? this.genWall(i, 'n');
+          const w = b?.w ?? this.genWall(i, 'w');
+          if (n) this.buildEdge(tx, ty, 'n', n);
+          if (w) this.buildEdge(tx, ty, 'w', w);
+        }
       }
     }
+  }
+
+  /** Стена дома мира на ребре (генерация): целая, двери со створкой. */
+  private genWall(i: number, side: Side): EdgeWall | null {
+    const c = this.chunk;
+    const bits = (side === 'n' ? c.genN : c.genW)[i]!;
+    if (!bits) return null;
+    const mat = (side === 'n' ? c.genMatN : c.genMatW)[i]! - 1;
+    const m = this.reg.building.materials[mat];
+    if (!m) return null;
+    return { mat, kind: bits & EDGE_KIND, hp: m.hp, leaf: (bits & EDGE_LEAF) !== 0 };
+  }
+
+  /**
+   * Кусок кадра: доля src (x, y, w, h от размера кадра) растянута в прямоугольник dst (px мира).
+   * Тонкие стены собираются из полос обычных спрайтов материала — без новых картинок.
+   */
+  private strip(
+    id: string,
+    src: readonly [number, number, number, number],
+    dst: readonly [number, number, number, number],
+    depth: number,
+  ): Phaser.GameObjects.Image {
+    const img = spawnSprite(this.scene, 0, 0, id, { depth }).setOrigin(0, 0);
+    const fw = img.frame.width;
+    const fh = img.frame.height;
+    const cx = src[0] * fw;
+    const cy = src[1] * fh;
+    const cw = Math.max(1, src[2] * fw);
+    const ch = Math.max(1, src[3] * fh);
+    const sx = dst[2] / cw;
+    const sy = dst[3] / ch;
+    return img
+      .setScale(sx, sy)
+      .setCrop(cx, cy, cw, ch)
+      .setPosition(dst[0] - cx * sx, dst[1] - cy * sy);
+  }
+
+  /**
+   * Стена игрока на ребре клетки (как в Last Day on Earth): полоса толщиной EDGE_T по линии между
+   * клетками. Северное ребро — лицо стены (стена, окно, проём с дверью) от линии вверх на высоту
+   * лица и узкий верх над ним; западное — узкий верх вдоль ребра, поднятый на высоту лица, и торец
+   * у южного конца. Забор — секции fence / fence_vertical.
+   */
+  private buildEdge(tx: number, ty: number, side: Side, w: EdgeWall): void {
+    const m = this.reg.building.materials[w.mat]!;
+    const T = EDGE_T * TILE;
+    const H = getAssetInfo(m.sprites.face)?.size[1] ?? TILE * 0.75;
+    const X = tx * TILE;
+    const Y = ty * TILE;
+    const imgs: Phaser.GameObjects.Image[] = [];
+    const lost = 1 - w.hp / m.hp;
+    const view: WallView = { imgs, room: -1, south: false, depth: 0, tx, ty, side };
+    const extra = (name: string) => {
+      const id = `building.walls.${m.id}_${name}`;
+      return getAssetInfo(id) ? id : null;
+    };
+    if (w.kind === WALL_FENCE) {
+      if (side === 'n') {
+        const fh = getAssetInfo(m.sprites.fence)?.size[1] ?? TILE / 2;
+        view.depth = Y + T / 2;
+        imgs.push(spawnSprite(this.scene, X, Y + T / 2 - fh, m.sprites.fence, { depth: view.depth }));
+      } else {
+        const id = extra('fence_vertical') ?? m.sprites.fence;
+        view.depth = Y + TILE + T / 2;
+        const img = spawnSprite(this.scene, X, view.depth, id, { depth: view.depth }).setOrigin(0.5, 1);
+        img.setDisplaySize(T, TILE + T / 2 + (getAssetInfo(m.sprites.fence)?.size[1] ?? TILE / 2) * 0.6);
+        imgs.push(img);
+      }
+      view.face = imgs[0];
+      this.walls.push(view);
+      return;
+    }
+    const piece: WallPiece =
+      w.kind === WALL_WINDOW
+        ? 'window'
+        : w.kind === WALL_WINDOW_BOARDED
+          ? 'window_boarded'
+          : w.kind === WALL_DOOR
+            ? 'door_opening'
+            : 'face';
+    const cracked = lost >= this.reg.build.crackedFaceFrom;
+    if (side === 'n') {
+      const base = Y + T / 2;
+      view.depth = base;
+      const faceId =
+        piece === 'face' && cracked ? (extra('face_cracked') ?? m.sprites.face) : m.sprites[piece];
+      view.face = spawnSprite(this.scene, X, base - H, faceId, { depth: base - 0.1 }).setDisplaySize(TILE, H);
+      imgs.push(view.face);
+      // Верх стены: средняя полоса top_cap толщиной T над лицом.
+      imgs.push(this.strip(m.sprites.top_cap, [0, 0.4, 1, 0.2], [X, base - H - T, TILE, T], base - 0.2));
+      if (w.kind === WALL_DOOR && w.leaf) {
+        const door = spawnSprite(this.scene, X + TILE / 2, base, m.sprites.door, { depth: base });
+        const k = (H * 0.94) / door.frame.height;
+        door.setOrigin(0.5, 1).setScale(k);
+        view.door = door;
+        imgs.push(door);
+      }
+      if (!cracked && lost >= this.reg.build.damageOverlayFrom) {
+        view.overlay = spawnSprite(this.scene, X, base - H, m.sprites.damage_overlay, { depth: base - 0.05 })
+          .setDisplaySize(TILE, H)
+          .setAlpha(Math.min(1, lost));
+        imgs.push(view.overlay);
+      }
+    } else {
+      const base = Y + TILE + T / 2;
+      view.depth = base;
+      const top = extra('top_vertical') ?? m.sprites.top_cap;
+      const x0 = X - T / 2;
+      const y0 = Y - T / 2 - H;
+      const len = TILE + T;
+      if (w.kind === WALL_DOOR) {
+        // Проём: столбы по концам, между ними створка (закрыта) или пусто.
+        const post = len * 0.2;
+        imgs.push(this.strip(top, [0.4, 0, 0.2, 0.2], [x0, y0, T, post], base - 0.2));
+        imgs.push(this.strip(top, [0.4, 0.8, 0.2, 0.2], [x0, y0 + len - post, T, post], base - 0.2));
+        if (w.leaf) {
+          view.door = this.strip(
+            m.sprites.door,
+            [0.4, 0.1, 0.2, 0.8],
+            [x0 + 2, y0 + post, T - 4, len - 2 * post],
+            base - 0.15,
+          );
+          imgs.push(view.door);
+        }
+      } else {
+        imgs.push(this.strip(top, [0.4, 0, 0.2, 1], [x0, y0, T, len], base - 0.2));
+        if (piece === 'window' || piece === 'window_boarded')
+          imgs.push(
+            this.strip(
+              m.sprites[piece],
+              [0.45, 0.3, 0.1, 0.4],
+              [x0 + 2, y0 + len * 0.25, T - 4, len * 0.5],
+              base - 0.15,
+            ),
+          );
+      }
+      // Торец у южного конца: узкая полоса лица.
+      view.face = this.strip(m.sprites.face, [0.45, 0, 0.1, 1], [x0, base - H, T, H], base - 0.1);
+      imgs.push(view.face);
+      if (cracked) for (const img of imgs) if (img !== view.door) img.setTint(0xb8a890);
+    }
+    this.walls.push(view);
   }
 
   /** Стена: top_cap в клетке + лицо под ней, если южнее не стена (assembly_rules). */
@@ -273,9 +434,6 @@ export class ChunkView {
       tx,
       ty,
     };
-    const c = this.chunk;
-    const i = (ty - c.cy * c.n) * c.n + (tx - c.cx * c.n);
-    const built = (c.built[i]! & 1) === 1;
     if (hasFace) {
       const piece: WallPiece =
         kind === WALL_WINDOW
@@ -285,28 +443,43 @@ export class ChunkView {
             : kind === WALL_DOOR
               ? 'door_opening'
               : 'face';
-      view.face = spawnSprite(this.scene, tx * TILE, (ty + 1) * TILE, m.sprites[piece], {
+      view.face = spawnSprite(this.scene, tx * TILE, (ty + 1) * TILE, this.faceSprite(m, piece, tx, ty), {
         depth: baseY - 0.1,
       });
       imgs.push(view.face);
-      // Дверь префаба есть всегда; у игрока — только если её повесили в проём.
-      if (kind === WALL_DOOR && (!built || c.leaf[i])) {
+      // Дверь префаба есть всегда (двери игрока — на рёбрах, buildEdge).
+      if (kind === WALL_DOOR) {
         view.door = spawnSprite(this.scene, tx * TILE, (ty + 1) * TILE, m.sprites.door, { depth: baseY });
         imgs.push(view.door);
       }
     }
-    // Повреждение: трещины поверх лица (или верха) с альфой 1 − hp/max, видно с damageOverlayFrom урона.
-    if (built) {
-      const lost = 1 - c.hp[i]! / m.hp;
-      if (lost >= this.reg.build.damageOverlayFrom) {
-        const y = hasFace ? (ty + 1) * TILE : ty * TILE;
-        view.overlay = spawnSprite(this.scene, tx * TILE, y, m.sprites.damage_overlay, {
-          depth: baseY - 0.05,
-        }).setAlpha(Math.min(1, lost));
-        imgs.push(view.overlay);
-      }
-    }
     this.walls.push(view);
+  }
+
+  /**
+   * Лицо стены префаба из дополнительного листа s26: треснувшее — каждая 5-я стена руин; на концах
+   * горизонтальной стены — лицо со столбом.
+   */
+  private faceSprite(m: MaterialDef, piece: WallPiece, tx: number, ty: number): string {
+    const base = m.sprites[piece];
+    if (piece !== 'face') return base;
+    const extra = (name: string) => {
+      const id = `building.walls.${m.id}_${name}`;
+      return getAssetInfo(id) ? id : null;
+    };
+    const cracked = Math.abs((tx * 73856093) ^ (ty * 19349663)) % 5 === 0;
+    if (cracked) return extra('face_cracked') ?? base;
+    // Сосед с лицом: стена (не забор), под которой пусто или проём.
+    const faced = (x: number) => {
+      const n = this.world.cell(x, ty);
+      if (n.wall === WALL_NONE || n.wallKind === WALL_FENCE) return false;
+      return this.world.cell(x, ty + 1).wall === WALL_NONE || n.wallKind === WALL_DOOR;
+    };
+    const left = !faced(tx - 1);
+    const right = !faced(tx + 1);
+    if (left && !right) return extra('face_end_left') ?? base;
+    if (right && !left) return extra('face_end_right') ?? base;
+    return base;
   }
 
   /** Перестроить пол и стены чанка (постройка, улучшение, урон, снос) — синхронно. */
@@ -322,14 +495,33 @@ export class ChunkView {
     }
   }
 
-  wallAt(tx: number, ty: number): WallView | undefined {
-    return this.walls.find((w) => w.tx === tx && w.ty === ty);
+  /** Вид стены: на ребре (side) или стены префаба в клетке. */
+  wallAt(tx: number, ty: number, side?: Side): WallView | undefined {
+    return this.walls.find((w) => w.tx === tx && w.ty === ty && w.side === side);
   }
 
   /** Открыть/закрыть дверь: сжатие по X к петле за 0.15 с. */
   setDoorOpen(w: WallView, open: boolean): void {
     if (!w.door || w.open === open) return;
     w.open = open;
+    // Дверь в западном ребре видна сверху узкой полосой — открытая просто убирается.
+    if (w.side === 'w') {
+      w.door.setVisible(open ? false : this.visible);
+      return;
+    }
+    // Открытая дверь из листа s26 (створка ребром у петли); без неё — сжатие закрытой по X.
+    const closedFrame = (w.door.getData('closedFrame') as string | undefined) ?? w.door.frame.name;
+    w.door.setData('closedFrame', closedFrame);
+    const openInfo = getAssetInfo(closedFrame.replace(/_door$/, '_door_open'));
+    if (openInfo) {
+      w.door.setFrame(open ? openInfo.frame : closedFrame);
+      this.scene.tweens.killTweensOf(w.door);
+      const sx = (w.door.getData('sx') as number | undefined) ?? w.door.scaleX;
+      w.door.setData('sx', sx);
+      w.door.setScale(sx * 0.7, w.door.scaleY);
+      this.scene.tweens.add({ targets: w.door, scaleX: sx, duration: DOOR_MS });
+      return;
+    }
     const base = w.door.getData('sx') as number | undefined;
     const sx = base ?? w.door.scaleX;
     if (base === undefined) w.door.setData('sx', sx);

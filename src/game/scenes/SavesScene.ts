@@ -6,9 +6,10 @@ import { SaveError, SaveUserError, type SlotMeta } from '../../core/save';
 import { AdsController } from '../AdsController';
 import { ctx, registry } from '../GameContext';
 import { SceneKeys } from '../SceneKeys';
+import { rowFrame } from '../ui/Styled';
 import { Button } from '../ui/Button';
 import { confirmDialog, promptText } from '../ui/Dialogs';
-import { COLORS, FONT, TEXT_RES, uiScale } from '../ui/layout';
+import { COLORS, FONT, TEXT_RES, uiScale, TITLE_FONT } from '../ui/layout';
 
 /**
  * Экран сохранений: список игр (название, день, биом, уровень, время игры), новая игра с названием,
@@ -59,7 +60,7 @@ export class SavesScene extends Phaser.Scene {
 
     this.add
       .text(pad, pad, t('saves.title'), {
-        fontFamily: FONT,
+        fontFamily: TITLE_FONT,
         resolution: TEXT_RES,
         fontSize: `${Math.round(40 * k)}px`,
         color: COLORS.text,
@@ -128,7 +129,7 @@ export class SavesScene extends Phaser.Scene {
   }
 
   private addRow(s: SlotMeta, x: number, y: number, w: number, h: number, k: number): void {
-    const bg = this.add.rectangle(x, y, w, h, 0x221e19).setOrigin(0).setStrokeStyle(2, 0x5a4a35);
+    const bg = rowFrame(this, x, y, w, h).setOrigin(0);
     bg.setInteractive({ useHandCursor: true }).on('pointerup', (p: Phaser.Input.Pointer) => {
       if (p.getDistance() < 10) void this.play(s.id);
     });

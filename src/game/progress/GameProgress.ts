@@ -46,7 +46,32 @@ export interface MapState {
   visited: string[];
   deaths: [number, number][];
   pois: string[];
+  /** Метки игрока. */
+  pins?: MapPin[];
+  /** Отслеживаемая метка (стрелка в HUD): id метки игрока или авто-метки. */
+  tracked?: { x: number; y: number; label: string; color: string } | null;
+  /** Скрытые на карте группы меток. */
+  hidden?: string[];
 }
+
+/** Метка игрока на карте. */
+export interface MapPin {
+  id: string;
+  x: number;
+  y: number;
+  /** Тип из progression.json → map.pins.types. */
+  type: string;
+  label: string;
+}
+
+export interface PinType {
+  icon: string;
+  color: string;
+  name_ru: string;
+}
+
+/** Событие: метки изменились (карта, мини-карта, HUD). */
+export const PINS_CHANGED = 'pins-changed';
 
 /**
  * Прогресс игрока (шаг 9): опыт и уровни, навыки, задания (ежедневные и записки главной линии),
@@ -124,6 +149,7 @@ export class GameProgress {
     this.notify({ kind: 'level', text: t('prog.level_up', { n: this.lv.level }) });
     this.scene.audio.play('level_up', 'ui');
     this.levelFx();
+    this.tip('skills');
   }
 
   private levelFx(): void {
@@ -135,6 +161,14 @@ export class GameProgress {
       .setDepth(DEPTH.glow + 2)
       .setBlendMode(Phaser.BlendModes.ADD);
     s.tweens.add({ targets: ring, scale: 4, alpha: 0, duration: 700, onComplete: () => ring.destroy() });
+    // Золотые лучи (s32).
+    Fx.burst(s, 'effects.levelup_burst', x, y, {
+      from: 40,
+      to: 150,
+      ms: 800,
+      depth: DEPTH.glow + 2,
+      add: true,
+    });
     const sp = Fx.particles(s, ['effects.sparkle_1', 'effects.sparkle_2'], {
       tint: 0xffe070,
       lifespan: 900,
@@ -168,6 +202,10 @@ export class GameProgress {
       this.count('crafted', 'n' in ev ? ev.n : 1);
     } else if (ev.type === 'kill') {
       this.count('kills', 1);
+      const fam = 'enemy' in ev ? reg.enemies.get(ev.enemy as string)?.family : undefined;
+      if (fam) this.count(`kills_${fam}`, 1);
+    } else if (ev.type === 'moved') {
+      this.count(this.scene.vehicles?.driving ? 'driven' : 'walked', ev.tiles);
     }
     if (ev.type === 'gather' || ev.type === 'craft' || (ev.type === 'kill' && 'enemy' in ev)) {
       const qev =
@@ -185,8 +223,64 @@ export class GameProgress {
     if (tutorialEvent(reg, this.tutorial, tev)) this.scene.onTutorialStep();
   }
 
-  private count(k: string, n: number): void {
+  /** Счётчик статистики (stats в сохранении). */
+  count(k: string, n = 1): void {
+    if (!n) return;
     this.stats[k] = (this.stats[k] ?? 0) + n;
+    if (k.startsWith('kills'))
+      this.stats['lifeKills'] = (this.stats['lifeKills'] ?? 0) + (k === 'kills' ? n : 0);
+  }
+
+  /** Рекорд: stats[k] = max(stats[k], v). */
+  record(k: string, v: number): void {
+    if (v > (this.stats[k] ?? 0)) this.stats[k] = v;
+  }
+
+  // ------------------------------------------------------------------ метки на карте
+
+  get pinTypes(): Record<string, PinType> {
+    return ((this.reg.prog.map['pins'] as { types?: Record<string, PinType> } | undefined)?.types ??
+      {}) as Record<string, PinType>;
+  }
+
+  get pins(): MapPin[] {
+    return (this.map.pins ??= []);
+  }
+
+  /** Новая метка; null — достигнут лимит. */
+  addPin(x: number, y: number, type: string, label: string): MapPin | null {
+    const max = (this.reg.prog.map['pins'] as { max?: number } | undefined)?.max ?? 100;
+    if (this.pins.length >= max) return null;
+    const pin: MapPin = { id: `p${Date.now().toString(36)}${this.pins.length}`, x, y, type, label };
+    this.pins.push(pin);
+    this.count('pinsPlaced');
+    this.scene.game.events.emit(PINS_CHANGED);
+    return pin;
+  }
+
+  removePin(id: string): void {
+    const p = this.pins.find((x) => x.id === id);
+    this.map.pins = this.pins.filter((x) => x.id !== id);
+    if (p && this.map.tracked && this.map.tracked.x === p.x && this.map.tracked.y === p.y)
+      this.map.tracked = null;
+    this.scene.game.events.emit(PINS_CHANGED);
+  }
+
+  /** Вести к точке (стрелка в HUD) или перестать (null). */
+  setTracked(target: MapState['tracked']): void {
+    this.map.tracked = target;
+    this.scene.game.events.emit(PINS_CHANGED);
+  }
+
+  isHidden(group: string): boolean {
+    return (this.map.hidden ?? []).includes(group);
+  }
+
+  toggleHidden(group: string): void {
+    const h = new Set(this.map.hidden ?? []);
+    if (h.has(group)) h.delete(group);
+    else h.add(group);
+    this.map.hidden = [...h];
   }
 
   private taskDone(task: DailyTask): void {
@@ -267,6 +361,19 @@ export class GameProgress {
   }
 
   // ------------------------------------------------------------------ обучение
+
+  /**
+   * Подсказка по ходу игры (tip.<id> в ru.json): один раз за игру, после основного обучения,
+   * если игрок их не отключил. Показывает WorldScene, когда не открыто другое окно.
+   */
+  tip(id: string): void {
+    const T = this.tutorial;
+    if (!T.done || T.tipsOff) return;
+    T.tips ??= [];
+    if (T.tips.includes(id)) return;
+    T.tips.push(id);
+    this.scene.queueTip(id);
+  }
 
   get tutorialStep(): { id: string; event: string; n: number; items?: string[] } | null {
     return currentStep(this.reg, this.tutorial);

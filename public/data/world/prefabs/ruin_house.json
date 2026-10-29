@@ -18,6 +18,7 @@
     { "at": [6.0, 2.3], "furniture": "stove" },
     { "at": [7.4, 2.2], "furniture": "kitchen_sink" },
     { "at": [6.5, 4.8], "furniture": "random" },
-    { "at": [2.0, 4.8], "container": "random" }
+    { "at": [2.0, 4.8], "container": "random" },
+    { "at": [7.6, 7.6], "sprite": "assets/world/common/sat_dish_broken.png", "kind": "decor" }
   ]
 }

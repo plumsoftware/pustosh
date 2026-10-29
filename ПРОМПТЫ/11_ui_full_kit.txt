@@ -1,0 +1,74 @@
+ЛИСТ 11 — ВЕСЬ ИНТЕРФЕЙС НА ОДНОМ ЛИСТЕ (UI-КИТ + КУРСОР)
+Файл листа: s34_ui_kit.png      Папка нарезки: ui/kit/
+Зачем: сейчас кнопки, вкладки, панели и полосы собраны из нескольких старых деталей
+(button_plate, panel_9slice, slot, bar_frame) — у кнопок нет состояний «нажата/неактивна»,
+нет ползунков громкости, флажков, полос прокрутки, вкладок, курсора. Один лист — единый стиль.
+Приложить: 1) source_sheets/s23_ui.png (стиль: ржавый металл, заклёпки, мешковина),
+2) скриншот игры (любой, с HUD) — чтобы цвета сочетались с картой.
+Размеры в игре: кнопки 9-slice (тянутся), иконки 64×64, курсор 32×32.
+
+ВАЖНО для 9-slice: у всех плашек и панелей углы с заклёпками, а середина и края — РОВНЫЕ,
+без рисунка по центру, чтобы их можно было растягивать.
+
+===== PROMPT =====
+TWO ATTACHED IMAGES: image 1 = the UI style reference of this game (riveted rusty metal plates, burlap panels, round metal buttons). Image 2 = a screenshot of the game for color harmony.
+
+ART STYLE — follow image 1 strictly. A complete user-interface kit for a mobile post-apocalyptic survival game: painted semi-realistic look, worn rusty steel with rivets, olive and dark-brown painted metal, burlap/canvas inlays, chipped paint, scratches. Warm muted palette: olive green, rust orange, dark brown, bone white, with small accents of warm amber (active/selected) and dull red (danger). Soft light from the top-left. All elements flat-on, seen straight from the front, no perspective.
+
+9-SLICE RULE — critical: every plate, panel, bar frame and tab must have decorated CORNERS (rivets, bolts, bent metal) but PLAIN, EVEN, UNIFORM edges and center (no logos, no big scratches or patterns in the middle) so they can be stretched in the game without visible distortion.
+
+BACKGROUND AND EDGES — critical: perfectly flat solid magenta #FF00FF. No shadow on the background. Hard, clean, fully opaque edges. Every element separate, none touching.
+
+FORBIDDEN: text, letters, numbers, words on buttons, logos, real brands, watermark, grid lines, labels.
+
+SHEET FORMAT: one square image, invisible grid of 6 columns and 6 rows of equal cells, one element per cell, centered, at least 10% empty margin, elements never touch. Fill left to right, top to bottom:
+Row 1 — buttons (wide rectangles, 3:1, plain center):
+1. button NORMAL — olive painted metal plate, 4 rivets in the corners
+2. button HOVER — the same, slightly brighter, a thin warm amber edge glow painted on the rim
+3. button PRESSED — the same, darker, looks pushed in (inner shadow on top edge)
+4. button DISABLED — the same, grey desaturated, dusty
+5. button PRIMARY — rust-orange painted metal plate with rivets (main action)
+6. button DANGER — dull red painted metal plate with rivets
+Row 2 — panels and frames:
+7. large window panel — dark brown burlap center in a riveted steel frame, square
+8. small popup panel — the same style, wider than tall (2:1)
+9. tooltip frame — thin dark metal frame, dark center, small, wider than tall
+10. title banner — a riveted metal plaque for a window title, wide (5:1)
+11. notification plaque — dark metal strip with a small amber lamp on the left end, wide (6:1)
+12. list row frame — a thin wide (6:1) dark slot with riveted ends, for list items
+Row 3 — tabs, toggles, sliders:
+13. tab ACTIVE — a short plate with a rounded top, warm amber painted, glowing rim painted
+14. tab INACTIVE — the same shape, dark olive, dull
+15. checkbox EMPTY — square riveted metal box, empty
+16. checkbox CHECKED — the same box with a bold bone-white check mark painted inside
+17. slider TRACK — a long horizontal groove in a metal strip (8:1)
+18. slider KNOB — a round riveted metal knob with a grip notch
+Row 4 — bars and scrolling:
+19. progress bar FRAME — long riveted metal frame (8:1) with a dark empty groove
+20. progress bar FILL green — a smooth glowing-painted green liquid strip (no frame), long 8:1
+21. progress bar FILL gold — the same, golden-yellow (experience)
+22. progress bar FILL blue — the same, cold blue (stamina / cold)
+23. scrollbar TRACK — a long vertical groove in a metal strip (1:6)
+24. scrollbar THUMB — a short vertical riveted metal grip (1:2.5)
+Row 5 — small buttons and icons (round riveted metal buttons like image 1, symbol painted bone-white):
+25. round button with a PLUS symbol
+26. round button with a MINUS symbol
+27. round button with an ARROW pointing LEFT (back)
+28. round button with an ARROW pointing RIGHT (next)
+29. round button with a small TV screen with a play triangle (watch an ad for a reward)
+30. round button with a HOUSE symbol (home / main menu)
+Row 6 — cursor and HUD details:
+31. mouse cursor NORMAL — a rusty metal arrow pointer with a bone-white edge, tip pointing to the top-left, small
+32. mouse cursor ACTIVE — the same arrow, glowing amber painted edge, slightly bigger (hover over a clickable thing)
+33. mouse cursor PRESSED / GRAB — a gloved hand (fingerless glove like the game hero) grabbing, seen from the front
+34. round minimap frame — a thick riveted steel ring, empty transparent-looking center painted as solid dark grey disk
+35. small separator — a thin horizontal riveted metal bar (10:1)
+36. coin of the wasteland — a bottle cap with a stamped star (generic, no brand)
+
+CELL NAMES (порядок нарезки):
+btn_normal btn_hover btn_pressed btn_disabled btn_primary btn_danger
+panel_large panel_popup tooltip_frame title_banner notify_plaque row_frame
+tab_active tab_inactive checkbox_off checkbox_on slider_track slider_knob
+bar_frame_long bar_fill_green bar_fill_gold bar_fill_blue scroll_track scroll_thumb
+btn_round_plus btn_round_minus btn_round_back btn_round_next btn_round_ad btn_round_home
+cursor_normal cursor_active cursor_grab minimap_frame separator bottlecap

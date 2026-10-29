@@ -25,6 +25,30 @@ export interface SpawnCtx {
   inBase(x: number, y: number): boolean;
   base: { x: number; y: number; r: number } | null;
   rng(): number;
+  /** Игровые сутки с начала (дробные): от них плотность врагов (combat.json → spawn.byDay). */
+  days?: number;
+}
+
+/** combat.json → spawn.byDay: спокойные первые дни, затем рост каждые stepEveryDays. */
+interface SpawnByDay {
+  calmDays: number;
+  startMul: number;
+  calmEndMul: number;
+  stepEveryDays: number;
+  stepMul: number;
+  maxMul: number;
+}
+
+/**
+ * Множитель плотности врагов по прожитым суткам (плавно, без скачков): первые calmDays — от
+ * startMul до calmEndMul, дальше +stepMul за каждые stepEveryDays, не выше maxMul.
+ */
+export function spawnDayMul(reg: Registry, days: number): number {
+  const D = reg.combat.spawn['byDay'] as SpawnByDay | undefined;
+  if (!D) return 1;
+  const d = Math.max(0, days);
+  if (d < D.calmDays) return D.startMul + ((D.calmEndMul - D.startMul) * d) / D.calmDays;
+  return Math.min(D.maxMul, D.calmEndMul + (D.stepMul * (d - D.calmDays)) / D.stepEveryDays);
 }
 
 /** Взвешенный выбор врага биома (combat.json → spawn.weights); звери — только днём. */
@@ -71,11 +95,13 @@ export class SpawnSystem {
   tick(ctx: SpawnCtx): SpawnRequest[] {
     const S = this.reg.combat.spawn;
     this.acc += ctx.dt;
-    const every = S.everySec * (ctx.night ? S.nightEveryMul : 1);
+    // Плотность по дням: реже появляются и меньше живых одновременно в первые дни.
+    const mul = ctx.days === undefined ? 1 : spawnDayMul(this.reg, ctx.days);
+    const every = (S.everySec * (ctx.night ? S.nightEveryMul : 1)) / mul;
     if (this.acc < every) return [];
     this.acc = 0;
-    const room =
-      Math.min(this.limit(ctx.night, ctx.mobile), ctx.night ? S.limitNight : S.limitDay) - ctx.alive;
+    const cap = Math.min(this.limit(ctx.night, ctx.mobile), ctx.night ? S.limitNight : S.limitDay);
+    const room = Math.max(2, Math.round(cap * mul)) - ctx.alive;
     if (room <= 0) return [];
     const p = this.point(ctx);
     if (!p) return [];

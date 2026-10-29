@@ -147,7 +147,8 @@ describe('Сохранения', () => {
     const a = await m.create('Сжатая', start, 1);
     const w = new World(reg, { sizeOf });
     w.cell(500, 960);
-    w.setBuilt(500, 960, placePiece(reg, null, 'wall', 0));
+    const floor = placePiece(reg, null, 'floor', 0, { tx: 500, ty: 960, side: 'c' });
+    w.setBuilt(500, 960, placePiece(reg, floor, 'wall', 0, { tx: 500, ty: 960, side: 'n' }));
     w.dropItem({ id: 'stone', count: 5 }, 501, 961, 10);
     const st = new Stations(reg);
     const wb = {
@@ -179,7 +180,8 @@ describe('Сохранения', () => {
     expect({ ...back, updatedAt: 0 }).toEqual({ ...full, saveVersion: 2, updatedAt: 0 });
     const w2 = new World(reg, { sizeOf });
     w2.importDelta(back.world as never);
-    expect(w2.cell(500, 960).wall).toBe(1);
+    expect(w2.edgeBits(500, 960, 'n')).toBe(1);
+    expect(w2.cell(500, 960).floor).toBe(1);
     expect(new Stations(reg, back.craft!.stations as never).get('pl9')!.queue.length).toBe(1);
     expect(new PlayerInventory(reg, back.hero['inventory'] as never).count('wood')).toBe(17);
     expect(raw.length).toBeLessThan(200 * 1024);

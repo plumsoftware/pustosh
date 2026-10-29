@@ -1,3 +1,4 @@
+import type { WeatherFx } from '../render/Weather';
 import type { Registry } from '../../core/data/Registry';
 import type { PlatformConfig } from '../../core/config/PlatformConfig';
 import { createMoveState, stepMovement, type MoveState } from '../../core/systems/Movement';
@@ -78,6 +79,8 @@ export interface HeroEvents {
   onHint(key: string, params?: Record<string, string | number>): void;
   /** «Собрать» без цели: машина рядом, ворота… true — действие обработано. */
   onFreeAction?(): boolean;
+  /** Герой получил урон (для статистики). */
+  onDamaged?(amount: number): void;
 }
 
 /** Анимация добычи по типу инструмента (ANIMATIONS §1). */
@@ -106,6 +109,8 @@ export class HeroController {
   rootedUntil = 0;
   /** Сидит в машине: не ходит и не бьёт, не рисуется; команды уходят WorldScene. */
   inVehicle = false;
+  /** Погода вокруг (ставит WorldScene; в укрытии — пусто): температура, жажда, радиация, скорость. */
+  weather: WeatherFx = {};
   combat: HeroCombat | null = null;
   /** Патроны в магазине по id оружия (перезарядка — reloadSec). */
   private mags = new Map<string, number>();
@@ -116,6 +121,9 @@ export class HeroController {
   private aimPoint: { x: number; y: number } | null = null;
   private facing: 1 | -1 = 1;
   private moving = false;
+  get isMoving(): boolean {
+    return this.moving;
+  }
   private sprinting = false;
   private dodging = false;
   private readonly baseHp: number;
@@ -230,9 +238,13 @@ export class HeroController {
     const r = stepMovement(
       this.move,
       { x: mv.x, y: mv.y, sprint: input.sprint, dodge },
-      reg.balance.player,
+      // «Ловкость»: перекат дешевле по выносливости.
+      {
+        ...reg.balance.player,
+        dodgeStamina: reg.balance.player.dodgeStamina * Math.max(0, 1 + this.skill('dodgeStamina')),
+      },
       reg.survival.movement,
-      terrain * survivalSpeedMul(reg.survival, this.vitals),
+      terrain * survivalSpeedMul(reg.survival, this.vitals) * (this.weather.speedMul ?? 1),
       this.vitals.thirst > 0,
       dt,
     );
@@ -260,6 +272,9 @@ export class HeroController {
         coldRes: this.inv.stat('coldRes') + this.skill('tempRes'),
         heatRes: this.inv.stat('heatRes') + this.skill('tempRes'),
         radRes: Math.min(0.95, this.inv.stat('radRes') / 100 - this.skill('radPoison')),
+        weather: this.weather,
+        // «Выносливый желудок»: голод и жажда медленнее.
+        needsMul: Math.max(0, 1 + this.skill('needsRate')),
       },
       dt,
     );
@@ -640,6 +655,7 @@ export class HeroController {
     const k = this.reg.survival.movement.hurtKnockbackTiles;
     this.pos = moveCircle(this.world, this.pos.x, this.pos.y, this.radius, dir * k, 0, this.faceDepth);
     this.view.hurt();
+    this.events.onDamaged?.(amount);
     if (applyDamage(this.vitals, amount)) this.die();
   }
 

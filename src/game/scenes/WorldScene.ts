@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
+import { autoFps } from '../render/Quality';
 import { t } from '../../core/i18n/i18n';
+import { pickHealItem, useItem } from '../../core/systems/Consumables';
+import { Rng } from '../../core/util/rng';
 import { log } from '../../core/util/Log';
 import { DayNightSystem, type DayNightState } from '../../core/systems/DayNight';
 import { GameClock } from '../../core/util/GameClock';
@@ -8,13 +11,21 @@ import type { SaveGame } from '../../core/save';
 import { atlasGroups, getAssetInfo } from '../assets/AssetIndex';
 import { AssetLoader } from '../assets/AssetLoader';
 import { ctx, registry } from '../GameContext';
-import { ChunkView, DEPTH, OCCLUDE_ALPHA, OCCLUDE_MS, ROOM_SOUTH_ALPHA } from '../render/ChunkView';
-import { cameraShake, ensureFlameAnim, popIn, ripple, shake } from '../render/Fx';
+import {
+  ChunkView,
+  DEPTH,
+  OCCLUDE_ALPHA,
+  OCCLUDE_MS,
+  ROOM_SOUTH_ALPHA,
+  type WallView,
+} from '../render/ChunkView';
+import { burst, cameraShake, ensureFlameAnim, popIn, ripple, shake } from '../render/Fx';
 import { buildGroundTileset, TILE, type GroundTileset } from '../render/GroundTiles';
 import type { LightSource } from '../render/Lighting';
 import type { WorldOverlayScene } from './WorldOverlayScene';
 import { ensureFxTextures } from '../render/textures';
 import { SceneKeys } from '../SceneKeys';
+import { outOfComfort } from '../../core/systems/Survival';
 import { AdsController } from '../AdsController';
 import { HeroController, type HeroSave } from '../hero/HeroController';
 import { fallbackForced, setFallbackForced } from '../hero/HeroView';
@@ -23,7 +34,7 @@ import { Highlight } from '../render/Highlight';
 import { WorldFx } from '../world/WorldFx';
 import { makeStack } from '../../core/inventory';
 import type { HitResult } from '../../core/systems/Harvest';
-import type { ItemStack, WorldObject } from '../../core/world';
+import type { BuildSlot, EdgeRef, ItemStack, WorldObject } from '../../core/world';
 import { Inventory } from '../../core/inventory';
 import {
   blueprintRecipe,
@@ -60,7 +71,7 @@ import {
   type DefenseEvent,
   type Target,
 } from '../../core/systems/Defense';
-import { enclosure, fullRepairCost } from '../../core/world';
+import { edgeKey, edgeRect, enclosure, fullRepairCost } from '../../core/world';
 import { canSleep, nextMorning } from '../../core/systems/DayNight';
 import type { MenuData, MenuItem } from './MenuScene';
 import { spawnSprite } from '../assets/spawnSprite';
@@ -75,6 +86,19 @@ const RIPPLE_EVERY_MS = 250;
 export const SAVE_REQUEST = 'save-request';
 export const GAME_SAVED = 'game-saved';
 /** Короткое сообщение в HUD (строка). */
+/** Рыбалка (harvest.json → fishing). */
+interface FishingDef {
+  baseSec: number;
+  chance: number;
+  item: string;
+  waterTiles: string[];
+  reachTiles: number;
+  wear: number;
+  xp: number;
+}
+
+/** Погода сменилась или герой вошёл/вышел из укрытия: { kind, icon, sheltered } — для HUD. */
+export const WEATHER = 'weather-changed';
 export const TOAST = 'toast';
 /** Режим строительства включён/выключен (boolean) — HUD прячет кнопки. */
 export const BUILD_MODE = 'build-mode';
@@ -188,6 +212,7 @@ export class WorldScene extends Phaser.Scene {
       onOpenContainer: (o) => this.openContainer(o),
       onHint: (key, params) => this.game.events.emit(TOAST, t(key, params)),
       onFreeAction: () => this.freeAction(),
+      onDamaged: (n) => this.progress?.count('damageTaken', n),
     });
     this.fx = new WorldFx(this, reg);
     this.stationViews = new StationViews(this, reg, this.stations);
@@ -290,7 +315,7 @@ export class WorldScene extends Phaser.Scene {
     this.scale.off(Phaser.Scale.Events.RESIZE, this.applyZoom, this);
   }
 
-  /** Базовый зум: в кадре ~16×9 клеток на ПК и ~11×6 на телефоне; колесо — 0.75…1.25 от него. */
+  /** Базовый зум: в кадре ~13.5×7.6 клетки на ПК и ~9.4×5.1 на телефоне (worldgen.json → camera); колесо — 0.75…1.25 от него. */
   private applyZoom(): void {
     const c = registry().worldgen.camera;
     const view = ctx().platform.device === 'desktop' ? c.viewTilesDesktop : c.viewTilesMobile;
@@ -398,6 +423,9 @@ export class WorldScene extends Phaser.Scene {
       case 'craft':
         this.openCraft(null);
         break;
+      case 'heal':
+        this.quickHeal();
+        break;
       case 'build':
         if (this.build.active) this.exitBuild();
         else this.enterBuild();
@@ -413,6 +441,9 @@ export class WorldScene extends Phaser.Scene {
     const { clock } = ctx();
     clock.advance(delta, () => this.tick());
     this.dayState = this.dayNight.state;
+    // «Авто» качество графики меряет FPS живого мира (в паузе кадр другой — замер заново).
+    if (clock.isPaused) autoFps.reset();
+    else autoFps.tick(delta, ctx().platform.device === 'desktop');
 
     // Интерполяция героя между тиками
     const { x: hx, y: hy } = this.hero.render(delta / 1000, clock.alpha);
@@ -441,6 +472,27 @@ export class WorldScene extends Phaser.Scene {
     this.build.update(time, delta / 1000);
     this.updateDoors(hx, hy);
     this.overlay.lighting?.update(this.dayState, this.collectLights(hx, hy));
+    this.heroFx(hx, hy);
+    this.tickFishing();
+    // Погода: под крышей (в комнате) не действует ни на героя, ни на видимость.
+    const wx = this.overlay.weather;
+    if (wx) {
+      const cam = this.cameras.main;
+      const sheltered = this.world.cell(Math.floor(this.hero.pos.x), Math.floor(this.hero.pos.y)).room >= 0;
+      wx.update(
+        this.world.layout.biomeAt(this.hero.pos.x, this.hero.pos.y),
+        this.dayNight.seconds,
+        (hx - cam.worldView.x) * cam.zoom,
+        (hy - 40 - cam.worldView.y) * cam.zoom,
+        TILE * cam.zoom,
+        sheltered,
+      );
+      this.hero.weather = sheltered ? {} : wx.effects;
+      if (sheltered !== this.sheltered) {
+        this.sheltered = sheltered;
+        this.game.events.emit(WEATHER, { kind: wx.current, icon: wx.icon, sheltered });
+      }
+    }
     if (this.debugOn) this.drawDebug();
   }
 
@@ -751,10 +803,20 @@ export class WorldScene extends Phaser.Scene {
     }
     const room = this.world.roomAt(this.hero.pos.x, this.hero.pos.y);
     this.updatePlayerRoom();
+    // Стена на ребре полупрозрачна, если это южная стена комнаты героя или герой стоит прямо за ней.
+    const T = TILE * 0.2;
+    const behind = (w: WallView) =>
+      w.side === 'n' &&
+      hx > w.tx * TILE - T &&
+      hx < (w.tx + 1) * TILE + T &&
+      hy < w.depth &&
+      hy > w.depth - this.faceDepth * TILE - T;
     for (const v of this.visibleViews()) {
       for (const w of v.walls) {
         const a =
-          (room && w.south && w.room === room.id) || this.playerSouth.has(`${w.tx},${w.ty}`)
+          (room && w.south && w.room === room.id) ||
+          (w.side && this.playerSouth.has(edgeKey({ tx: w.tx, ty: w.ty, side: w.side }))) ||
+          behind(w)
             ? ROOM_SOUTH_ALPHA
             : 1;
         if (w.imgs[0] && w.imgs[0].alpha !== a) for (const i of w.imgs) i.setAlpha(a);
@@ -770,17 +832,23 @@ export class WorldScene extends Phaser.Scene {
     if (key === this.roomKey) return;
     this.roomKey = key;
     const r = enclosure(this.world, tx, ty, registry().build.roomFillLimit);
-    this.playerSouth = r?.southWalls ?? new Set();
+    this.playerSouth = r?.southEdges ?? new Set();
   }
 
   /** Двери открываются, когда герой рядом (сжатие к петле за 0.15 с), и закрываются за ним. */
   private updateDoors(hx: number, hy: number): void {
+    // Открыта, пока герой ближе doorOpenRadiusTiles к самой двери (полоса ребра; у префаба — клетка
+    // проёма + фасад под ней); отошёл дальше — закрывается.
     const R = registry().build.doorOpenRadiusTiles * TILE;
+    const fd = this.faceDepth * TILE;
     for (const v of this.visibleViews()) {
       for (const w of v.walls) {
         if (!w.door) continue;
-        const dx = (w.tx + 0.5) * TILE - hx;
-        const dy = (w.ty + 1) * TILE - hy;
+        const r = w.side
+          ? edgeRect(w.tx, w.ty, w.side)
+          : { x0: w.tx, y0: w.ty, x1: w.tx + 1, y1: w.ty + 1 + fd / TILE };
+        const dx = Math.max(r.x0 * TILE - hx, 0, hx - r.x1 * TILE);
+        const dy = Math.max(r.y0 * TILE - hy, 0, hy - r.y1 * TILE);
         v.setDoorOpen(w, Math.hypot(dx, dy) <= R);
       }
     }
@@ -905,6 +973,16 @@ export class WorldScene extends Phaser.Scene {
     const mat = registry().harvest.particles[o.kind] ?? 'wood';
     this.audio.play(mat === 'stone' ? 'hit_stone' : mat === 'metal' ? 'hit_metal' : 'hit_wood', 'sfx', 0.8);
     if (!finished) return;
+    // Статистика добычи по виду объекта.
+    const sk =
+      o.kind === 'tree'
+        ? 'trees'
+        : o.kind === 'rock' || o.kind === 'deposit'
+          ? 'rocks'
+          : o.kind === 'bush'
+            ? 'bushes'
+            : 'harvested';
+    this.progress.count(sk);
     if (v && o.kind === 'tree') this.fx.treeFall(v, this.heroDrawX);
     if (o.kind === 'rock' || o.kind === 'deposit') this.fx.rockCrack(o);
     cv?.refreshObject(o);
@@ -929,7 +1007,159 @@ export class WorldScene extends Phaser.Scene {
       this.vehicles.openMenu(v);
       return true;
     }
+    if (this.tryFish()) return true;
+    // Стол с картой и доска заданий у бункера (s31) открывают карту и журнал.
+    const h = this.hero.pos;
+    for (const o of this.objectsNear(h.x, h.y, 1.6)) {
+      if (o.sprite === 'world.common.map_table') return this.openWindow(SceneKeys.Map);
+      if (o.sprite === 'world.common.quest_board') return this.openWindow(SceneKeys.Journal);
+    }
     return false;
+  }
+
+  private heroFxAt: Record<string, number> = {};
+  private sheltered = false;
+
+  /**
+   * Эффекты состояния героя (лист s32): капли при кровотечении, пузыри при отравлении, круги на
+   * воде при ходьбе, «завитки» во сне. hx, hy — точка ног героя на экране мира, px.
+   */
+  private heroFx(hx: number, hy: number): void {
+    const now = this.time.now;
+    const every = (key: string, ms: number) => {
+      if (now < (this.heroFxAt[key] ?? 0)) return false;
+      this.heroFxAt[key] = now + ms;
+      return true;
+    };
+    const h = this.hero;
+    const c = h.vitals.conditions;
+    const top = hy - 70;
+    if (h.dead) return;
+    if (c.bleeding && every('bleed', 800))
+      burst(this, 'effects.bleed_drops', hx + 6, hy - 40, {
+        from: 40,
+        to: 42,
+        ms: 800,
+        depth: hy + 1,
+        rise: -18,
+      });
+    if (c.poison > 0 && every('poison', 900))
+      burst(this, 'effects.poison_bubbles', hx - 4, top, {
+        from: 26,
+        to: 34,
+        ms: 900,
+        depth: hy + 1,
+        rise: 22,
+      });
+    const tile = this.world.cell(Math.floor(h.pos.x), Math.floor(h.pos.y)).tile;
+    const wet = this.world.tileNames[tile] === 'water_shallow' || this.world.tileNames[tile] === 'swamp_mud';
+    if (wet && h.isMoving && every('ripple', 380))
+      burst(this, 'effects.ripple', hx, hy, {
+        from: 14,
+        to: 40,
+        ms: 700,
+        depth: DEPTH.shadow + 1,
+        alpha: 0.8,
+      });
+    if (h.view.poseId === 'characters.hero.hero_pose_sleep' && every('sleep', 1100))
+      burst(this, 'effects.sleep_curls', hx + 18, hy - 36, {
+        from: 14,
+        to: 24,
+        ms: 1300,
+        depth: hy + 2,
+        rise: 26,
+      });
+  }
+
+  /** Рыбалка: идёт, если не null; until — игровые секунды улова. */
+  private fishing: { until: number; x: number; y: number; sx: number; sy: number } | null = null;
+
+  /** «Собрать» с удочкой у воды — заброс (harvest.json → fishing; навык «Рыбак» ускоряет). */
+  private tryFish(): boolean {
+    const F = registry().harvest['fishing'] as FishingDef | undefined;
+    const held = this.hero.inv.held;
+    if (!F || !held || registry().items.get(held.id)?.toolType !== 'fishing') return false;
+    if (this.fishing) return true;
+    if (held.durability !== undefined && held.durability <= 0) {
+      this.game.events.emit(
+        TOAST,
+        t('hint.tool_broken', { name: registry().items.require(held.id).name_ru }),
+      );
+      return true;
+    }
+    const h = this.hero.pos;
+    let spot: { x: number; y: number } | null = null;
+    const R = Math.ceil(F.reachTiles);
+    for (let dy = -R; dy <= R && !spot; dy++)
+      for (let dx = -R; dx <= R && !spot; dx++) {
+        const tx = Math.floor(h.x) + dx;
+        const ty = Math.floor(h.y) + dy;
+        if (Math.hypot(tx + 0.5 - h.x, ty + 0.5 - h.y) > F.reachTiles) continue;
+        if (F.waterTiles.includes(this.world.tileNames[this.world.cell(tx, ty).tile] ?? ''))
+          spot = { x: tx + 0.5, y: ty + 0.5 };
+      }
+    if (!spot) {
+      this.game.events.emit(TOAST, t('fish.no_water'));
+      return true;
+    }
+    const sec = F.baseSec / (1 + this.progress.effect('fishingSpeed'));
+    this.fishing = { until: this.dayNight.seconds + sec, x: h.x, y: h.y, sx: spot.x, sy: spot.y };
+    this.hero.view.showPose('characters.hero.hero_pose_kneel', Infinity);
+    this.game.events.emit(TOAST, t('fish.cast'));
+    return true;
+  }
+
+  /** Кадр рыбалки: поплавок кругами, улов по времени, отмена при движении. */
+  private tickFishing(): void {
+    const f = this.fishing;
+    if (!f) return;
+    const F = registry().harvest['fishing'] as FishingDef;
+    const h = this.hero;
+    if (h.dead || Math.hypot(h.pos.x - f.x, h.pos.y - f.y) > 0.3) {
+      this.fishing = null;
+      h.view.clearPose();
+      this.game.events.emit(TOAST, t('fish.cancel'));
+      return;
+    }
+    const now = this.time.now;
+    if (now >= (this.heroFxAt['bobber'] ?? 0)) {
+      this.heroFxAt['bobber'] = now + 900;
+      burst(this, 'effects.ripple', f.sx * TILE, f.sy * TILE, {
+        from: 10,
+        to: 34,
+        ms: 800,
+        depth: DEPTH.shadow + 1,
+      });
+    }
+    if (this.dayNight.seconds < f.until) return;
+    this.fishing = null;
+    h.view.clearPose();
+    const held = h.inv.held;
+    if (held?.durability !== undefined) held.durability = Math.max(0, held.durability - F.wear);
+    if (Math.random() < F.chance) {
+      this.give({ id: F.item, count: 1 });
+      this.progress.count('fish');
+      const item = registry().items.get(F.item);
+      this.progress.notify({
+        kind: 'item',
+        text: t('fish.caught', { name: item?.name_ru ?? F.item }),
+        icon: item?.icon,
+      });
+      this.progress.track({ type: 'gather', item: F.item, n: 1 });
+      this.progress.xp(F.xp);
+      burst(this, 'effects.water_splash', f.sx * TILE, f.sy * TILE - 10, {
+        from: 20,
+        to: 44,
+        ms: 500,
+        depth: f.sy * TILE + 1,
+        add: true,
+      });
+    } else this.game.events.emit(TOAST, t('fish.miss'));
+  }
+
+  private openWindow(key: string): boolean {
+    if (!this.scene.isActive(key)) this.scene.launch(key);
+    return true;
   }
 
   /**
@@ -976,6 +1206,53 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Инвентарь игрока (Tab/I, кнопка рюкзака). */
+  /** Поза еды/питья у героя, с. */
+  private static readonly POSE_SEC = 1.2;
+
+  /** Предмет для кнопки «Аптечка» (лекарство или еда; null — лечить нечем или не нужно). */
+  healItem(): string | null {
+    const h = this.hero;
+    return pickHealItem(registry(), (id) => h.inv.count(id), h.vitals, 1 + this.progress.effect('healing'));
+  }
+
+  /** Кнопка «Аптечка» (H на ПК): применить лучшее для лечения из рюкзака и пояса. */
+  quickHeal(): void {
+    const h = this.hero;
+    if (h.dead) return;
+    const id = this.healItem();
+    if (!id) {
+      const any = registry().items.all.some(
+        (it) => (it.category === 'medicine' || it.category === 'food') && h.inv.count(it.id) > 0,
+      );
+      this.game.events.emit(TOAST, t(any ? 'heal.full' : 'heal.none'));
+      return;
+    }
+    const r = useItem(
+      registry(),
+      id,
+      h.vitals,
+      h.move,
+      new Rng((Math.random() * 2 ** 32) >>> 0),
+      1 + this.progress.effect('healing'),
+    );
+    if (r !== 'used') return;
+    h.inv.consume({ [id]: 1 });
+    const def = registry().items.require(id);
+    if (def.category === 'food') {
+      const drink = Number(def['thirst'] ?? 0) > Number(def['hunger'] ?? 0);
+      h.view.showPose(`characters.hero.hero_pose_${drink ? 'drink' : 'eat'}`, WorldScene.POSE_SEC);
+    }
+    burst(this, 'effects.heal_plus', h.pos.x * TILE, h.pos.y * TILE - 80, {
+      from: 24,
+      to: 34,
+      ms: 900,
+      depth: DEPTH.glow + 2,
+      add: true,
+      rise: 30,
+    });
+    this.game.events.emit(TOAST, t('heal.used', { name: def.name_ru }));
+  }
+
   openInventory(): void {
     if (this.hero.dead || this.scene.isActive(SceneKeys.Inventory)) return;
     this.scene.launch(SceneKeys.Inventory, { mode: 'player' });
@@ -1015,6 +1292,7 @@ export class WorldScene extends Phaser.Scene {
 
   /** Контейнер открыт впервые: смена спрайта с отскоком. */
   containerOpened(o: WorldObject): void {
+    this.progress.count('containers');
     const cv = this.viewOf(o);
     cv?.refreshObject(o);
     this.fx.containerOpen(cv?.findView(o.uid));
@@ -1060,7 +1338,95 @@ export class WorldScene extends Phaser.Scene {
   private stepAcc = 0;
 
   /** Прогресс по тикам: путь (обучение), посещённые чанки, точки интереса, утро, шаги и петли звука. */
+  /** Подсказки, ждущие свободного экрана. */
+  private tipQueue: string[] = [];
+  private tipCheckAt = 0;
+
+  queueTip(id: string): void {
+    this.tipQueue.push(id);
+  }
+
+  /**
+   * Подсказки по ходу игры: раз в секунду — условия (враг рядом, ночь, голод, холод, радиация,
+   * ранение, скоро кровавая ночь, арена, непогода, удочка в руке); показ — окном MenuScene,
+   * когда не открыто другое окно.
+   */
+  private tickTips(): void {
+    const now = this.time.now;
+    if (now < this.tipCheckAt) return;
+    this.tipCheckAt = now + 1000;
+    const g = this.progress;
+    const h = this.hero;
+    if (g.tutorial.done && !g.tutorial.tipsOff && !h.dead) {
+      const v = h.vitals;
+      const s = registry().survival;
+      if (
+        this.enemies.alive.some(
+          (e) => !e.passive && !e.hidden && Math.hypot(e.x - h.pos.x, e.y - h.pos.y) < 9,
+        )
+      )
+        g.tip('enemy');
+      if (this.dayState.phase === 'NIGHT') g.tip('night');
+      if (v.hunger < s.needs.max * 0.4 || v.thirst < s.needs.max * 0.4) g.tip('needs');
+      if (outOfComfort(s, v)) g.tip('temperature');
+      if (v.radiation > 5) g.tip('radiation');
+      if (v.hp < h.maxHp * 0.6) g.tip('heal');
+      const dn = registry().balance.dayNight;
+      const bd = Math.ceil(this.dayState.day / dn.bloodNightEvery) * dn.bloodNightEvery;
+      if (
+        !this.dayState.bloodNight &&
+        (bd - 1) * dn.fullDaySec + dn.daySec - this.dayNight.seconds < dn.fullDaySec
+      )
+        g.tip('blood_night');
+      if (
+        this.world.layout.prefabs.some(
+          (p) => p.kind === 'arena' && Math.hypot(p.x - h.pos.x, p.y - h.pos.y) < 16,
+        )
+      )
+        g.tip('boss');
+      if (Object.keys(h.weather).length) g.tip('weather');
+      const held = h.inv.held;
+      if (held && registry().items.get(held.id)?.toolType === 'fishing') g.tip('fishing');
+      // Инструмент или оружие в руке износились на 70% — как починить.
+      const hd = held ? registry().items.get(held.id)?.durability : undefined;
+      if (held?.durability !== undefined && hd && held.durability < hd * 0.3) g.tip('repair');
+    }
+    // Показ: только когда не открыто другое окно.
+    const busy = [
+      SceneKeys.Menu,
+      SceneKeys.Inventory,
+      SceneKeys.Craft,
+      SceneKeys.Build,
+      SceneKeys.Pause,
+      SceneKeys.Map,
+      SceneKeys.Skills,
+      SceneKeys.Journal,
+      SceneKeys.Death,
+    ].some((k) => this.scene.isActive(k));
+    const id = this.tipQueue[0];
+    if (!id || busy || h.dead) return;
+    this.tipQueue.shift();
+    this.scene.launch(SceneKeys.Menu, {
+      title: t(`tip.${id}.title`),
+      subtitle: t(`tip.${id}.text`),
+      modal: true,
+      items: [
+        { label: t('tip.ok'), fn: () => undefined },
+        {
+          label: t('tip.off'),
+          fn: () => {
+            g.tutorial.tipsOff = true;
+            this.tipQueue.length = 0;
+          },
+        },
+      ],
+    } satisfies MenuData);
+  }
+
   private tickProgress(dt: number): void {
+    this.tickTips();
+    this.progress.count('playSec', dt);
+    this.progress.record('maxDay', this.dayState.day);
     const h = this.hero.pos;
     const d = Math.hypot(h.x - this.lastHeroPos.x, h.y - this.lastHeroPos.y);
     this.lastHeroPos = { ...h };
@@ -1109,6 +1475,7 @@ export class WorldScene extends Phaser.Scene {
     this.hero.inv.setBonusSlots(Math.round(this.progress.effect('inventorySlots')));
     this.hero.bonusHp = this.progress.effect('maxHp');
     this.highlight.bonusTiles = this.progress.effect('highlightRadius');
+    this.world.buildDamageMul = 1 / (1 + this.progress.effect('buildHp'));
   }
 
   /** Шаг обучения пройден — HUD перерисует подсказку; на шаге «бой» — бродяга у забора. */
@@ -1137,8 +1504,10 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Убит враг: опыт, задания, обучение, статистика. */
-  onKill(enemyId: string): void {
+  onKill(enemyId: string, elite = false): void {
     this.progress.track({ type: 'kill', enemy: enemyId, night: this.dayState.phase === 'NIGHT' });
+    if (elite) this.progress.count('kills_elite');
+    if (this.dayState.phase === 'NIGHT') this.progress.count('kills_night');
   }
 
   // ------------------------------------------------------------------ крафт и станки
@@ -1343,27 +1712,38 @@ export class WorldScene extends Phaser.Scene {
     this.game.events.emit(BUILD_MODE, false);
   }
 
-  /** Перерисовать стены чанков клеток (и чанка севернее — лицо стены над клеткой) и пересчитать комнату. */
-  private rebuildCells(cells: readonly [number, number][]): void {
+  /** Перерисовать полы и стены чанков мест и пересчитать комнату. */
+  private rebuildCells(slots: readonly BuildSlot[]): void {
     const keys = new Set<string>();
     const n = this.world.chunkTiles;
-    for (const [x, y] of cells)
-      for (const yy of [y, y - 1]) keys.add(World.key(Math.floor(x / n), Math.floor(yy / n)));
+    for (const { tx, ty } of slots) keys.add(World.key(Math.floor(tx / n), Math.floor(ty / n)));
     for (const k of keys) this.views.get(k)?.rebuildWalls();
     this.roomKey = '';
   }
 
+  /** Точка места постройки в клетках: центр клетки или середина ребра. */
+  private slotPoint(s: BuildSlot): { x: number; y: number } {
+    return s.side === 'c'
+      ? { x: s.tx + 0.5, y: s.ty + 0.5 }
+      : s.side === 'n'
+        ? { x: s.tx + 0.5, y: s.ty }
+        : { x: s.tx, y: s.ty + 0.5 };
+  }
+
   /** После постройки, улучшения, починки, разбора: перерисовка и эффекты (ANIMATIONS §7). */
   onBuilt(
-    cells: readonly [number, number][],
+    slots: readonly BuildSlot[],
     kind: 'place' | 'upgrade' | 'repair' | 'disassemble' | 'undo' | 'damage',
   ): void {
-    this.rebuildCells(cells);
-    for (const [x, y] of cells) {
+    this.rebuildCells(slots);
+    for (const sl of slots) {
+      const x = sl.tx;
+      const y = sl.ty;
       const cv = this.viewOf({ x: x + 0.5, y: y + 0.5 });
-      const w = cv?.wallAt(x, y);
-      const px = (x + 0.5) * TILE;
-      const py = (y + 1) * TILE;
+      const w = sl.side === 'c' ? undefined : cv?.wallAt(x, y, sl.side);
+      const pt = this.slotPoint(sl);
+      const px = pt.x * TILE;
+      const py = pt.y * TILE;
       if (kind === 'place') {
         if (w) for (const img of w.imgs) popIn(this, img);
         this.defenseViews.dustAt(px, py + 8, 6);
@@ -1380,8 +1760,8 @@ export class WorldScene extends Phaser.Scene {
             ref: { type: 'prefab', id: '' },
             kind: 'scrap',
             sprite: '',
-            x: x + 0.5,
-            y: y + 1,
+            x: pt.x,
+            y: pt.y,
             biome: 1,
             collider: null,
             state: 'intact',
@@ -1394,30 +1774,33 @@ export class WorldScene extends Phaser.Scene {
         if (w?.face) shake(this, w.face, 1);
         this.defenseViews.dustAt(px, py + 4, 4);
       } else if (kind === 'disassemble') {
-        this.rubble(x, y);
+        this.rubble(pt.x, pt.y);
       }
     }
     if (kind !== 'damage') void this.saveNow();
   }
 
-  /** Обломки на rubbleSec + пыль (разрушение, разбор). */
-  private rubble(tx: number, ty: number): void {
+  /** Обломки на rubbleSec + пыль (разрушение, разбор); x, y — точка места в клетках. */
+  private rubble(x: number, y: number): void {
     const reg = registry();
     const mat = reg.building.materials[0]!;
-    const img = spawnSprite(this, tx * TILE, (ty + 0.4) * TILE, mat.sprites.rubble, {
-      depth: (ty + 1) * TILE,
+    const img = spawnSprite(this, (x - 0.5) * TILE, (y - 0.5) * TILE, mat.sprites.rubble, {
+      depth: (y + 0.1) * TILE,
     });
-    this.defenseViews.dustAt((tx + 0.5) * TILE, (ty + 1) * TILE, 14);
+    this.defenseViews.dustAt(x * TILE, (y + 0.1) * TILE, 14);
     this.time.delayedCall(reg.build.rubbleSec * 1000, () =>
       this.tweens.add({ targets: img, alpha: 0, duration: 600, onComplete: () => img.destroy() }),
     );
   }
 
   /** Стена разрушена (взрыв, враги): обломки нужного материала, тряска камеры. */
-  private wallDestroyed(tx: number, ty: number, mat: number): void {
+  private wallDestroyed(e: EdgeRef, mat: number): void {
     const m = registry().building.materials[mat] ?? registry().building.materials[0]!;
-    const img = spawnSprite(this, tx * TILE, (ty + 0.4) * TILE, m.sprites.rubble, { depth: (ty + 1) * TILE });
-    this.defenseViews.dustAt((tx + 0.5) * TILE, (ty + 1) * TILE, 18);
+    const { x, y } = this.slotPoint(e);
+    const img = spawnSprite(this, (x - 0.5) * TILE, (y - 0.5) * TILE, m.sprites.rubble, {
+      depth: (y + 0.1) * TILE,
+    });
+    this.defenseViews.dustAt(x * TILE, (y + 0.1) * TILE, 18);
     cameraShake(this, 200, 0.006);
     this.time.delayedCall(registry().build.rubbleSec * 1000, () =>
       this.tweens.add({ targets: img, alpha: 0, duration: 600, onComplete: () => img.destroy() }),
@@ -1425,9 +1808,9 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** Стена игрока разрушена (враги, взрыв): обломки, перерисовка. */
-  wallBroken(tx: number, ty: number): void {
-    this.wallDestroyed(tx, ty, 0);
-    this.rebuildCells([[tx, ty]]);
+  wallBroken(e: EdgeRef): void {
+    this.wallDestroyed(e, 0);
+    this.rebuildCells([e]);
   }
 
   /** Дроп врага появился на земле. */
@@ -1451,6 +1834,7 @@ export class WorldScene extends Phaser.Scene {
 
   /** Поставлен станок или защита: вид, отскок, пыль. */
   onObjectPlaced(o: WorldObject): void {
+    this.progress.count('placed');
     this.progress.track({ type: 'place', item: o.ref.id });
     this.audio.play('build', 'sfx');
     if (o.ref.type === 'station') {
@@ -1540,6 +1924,7 @@ export class WorldScene extends Phaser.Scene {
       items.push({
         label: t('base.sleep'),
         fn: () => void this.sleep(),
+        icon: 'ui.icon_sleep',
         disabled: !canSleep(this.dayNight.seconds, cfg),
       });
     }
@@ -1565,6 +1950,12 @@ export class WorldScene extends Phaser.Scene {
           fn: () => {
             if (!consumeFrom(this.craftSources(o), up.cost)) return;
             (st as { level?: number }).level = up.level;
+            // Вид тотема по уровню (лист s31); спрайт хранится в объекте — сохраняется вместе с ним.
+            const art = `world.common.base_core_${up.level}`;
+            if (getAssetInfo(art)) {
+              o.sprite = art as typeof o.sprite;
+              this.viewOf(o)?.refreshObject(o);
+            }
             this.progress.notify({ kind: 'info', text: t('base.upgraded', { r: this.baseRadius() }) });
             void this.saveNow();
           },
@@ -1611,6 +2002,10 @@ export class WorldScene extends Phaser.Scene {
 
   /** Телепорт к тотему/аванпосту: межстраничная реклама teleport, затемнение. */
   async teleportTo(x: number, y: number): Promise<void> {
+    if (this.bosses.fighting) {
+      this.game.events.emit(TOAST, t('boss.no_teleport'));
+      return;
+    }
     await AdsController.interstitial('teleport');
     this.cameras.main.fadeOut(250, 0, 0, 0);
     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
@@ -1637,6 +2032,8 @@ export class WorldScene extends Phaser.Scene {
     }
     const cfg = { ...reg.balance.dayNight, transitionSec: reg.worldgen.dayNight.transitionSec };
     const cam = this.cameras.main;
+    // Герой ложится (лист s28) и встаёт через секунду после рассвета.
+    this.hero.view.showPose('characters.hero.hero_pose_sleep', Infinity);
     cam.fadeOut(reg.build.sleep.fadeMs, 0, 0, 0);
     await new Promise<void>((r) => cam.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => r()));
     await AdsController.interstitial('sleep');
@@ -1648,6 +2045,7 @@ export class WorldScene extends Phaser.Scene {
     this.dayState = this.dayNight.state;
     this.stations.update(this.dayNight.seconds, this.skills);
     cam.fadeIn(reg.build.sleep.fadeMs);
+    this.time.delayedCall(reg.build.sleep.fadeMs + 1000, () => this.hero.view.clearPose());
     this.game.events.emit(TOAST, t('base.morning', { n: this.dayState.day }));
     void this.saveNow();
   }
@@ -1679,18 +2077,22 @@ export class WorldScene extends Phaser.Scene {
     void src;
     let fixed = 0;
     let short = false;
-    const cells: [number, number][] = [];
+    const cells: EdgeRef[] = [];
     for (const { tx, ty, cell } of [...this.world.builtCells()]) {
-      if (Math.hypot(tx + 0.5 - core.x, ty + 0.5 - core.y) > R || cell.wall === undefined) continue;
-      const cost = fullRepairCost(reg, cell);
-      if (Object.keys(cost).length === 0) continue;
-      if (!consumeFrom(all, cost)) {
-        short = true;
-        continue;
+      if (Math.hypot(tx + 0.5 - core.x, ty + 0.5 - core.y) > R) continue;
+      for (const side of ['n', 'w'] as const) {
+        const w = cell[side];
+        if (!w) continue;
+        const cost = fullRepairCost(reg, w);
+        if (Object.keys(cost).length === 0) continue;
+        if (!consumeFrom(all, cost)) {
+          short = true;
+          continue;
+        }
+        this.world.setEdge({ tx, ty, side }, { ...w, hp: reg.building.materials[w.mat]!.hp });
+        cells.push({ tx, ty, side });
+        fixed++;
       }
-      this.world.setBuilt(tx, ty, { ...cell, hp: reg.building.materials[cell.wall]!.hp });
-      cells.push([tx, ty]);
-      fixed++;
     }
     for (const o of this.objectsNear(core.x, core.y, R)) {
       const def = o.ref.type === 'defense' ? reg.defense.get(o.ref.id) : undefined;
@@ -1815,7 +2217,10 @@ export class WorldScene extends Phaser.Scene {
     this.defenseViews.event(ev, views);
     if (ev.type === 'hit') {
       if (ev.target.hero) this.hero.damage(ev.damage);
-      else ev.target.hp -= ev.damage;
+      // «Оружейник»: турели бьют сильнее.
+      else
+        ev.target.hp -=
+          ev.damage * (ev.o.ref.id.startsWith('turret') ? 1 + this.progress.effect('turretDamage') : 1);
     } else if (ev.type === 'alert') {
       this.enemies.noise(ev.o.x, ev.o.y, ev.radius);
     } else if (ev.type === 'trap') {
@@ -1827,11 +2232,9 @@ export class WorldScene extends Phaser.Scene {
         if (tg.hero) this.hero.damage(damage);
         else tg.hp -= damage;
       }
-      const damaged = r.walls
-        .filter((w) => w.result === 'damaged')
-        .map((w) => [w.tx, w.ty] as [number, number]);
-      for (const w of r.walls.filter((x) => x.result === 'destroyed')) this.wallDestroyed(w.tx, w.ty, 0);
-      this.rebuildCells(r.walls.map((w) => [w.tx, w.ty]));
+      const damaged = r.walls.filter((w) => w.result === 'damaged').map((w) => w.e);
+      for (const w of r.walls.filter((x) => x.result === 'destroyed')) this.wallDestroyed(w.e, 0);
+      this.rebuildCells(r.walls.map((w) => w.e));
       if (damaged.length) this.onBuilt(damaged, 'damage');
     }
   }
@@ -1899,6 +2302,15 @@ export class WorldScene extends Phaser.Scene {
    */
   private onHeroDeath(): void {
     this.deathPos = { ...this.hero.pos };
+    // Статистика: смерть, причина, длина этой жизни (рекорд).
+    const g = this.progress;
+    const days =
+      (this.dayNight.seconds - (g.stats['lifeStartSec'] ?? 0)) / registry().balance.dayNight.fullDaySec;
+    g.count('deaths');
+    g.count(`death_${this.deathCause()}`);
+    g.record('bestLifeDays', days);
+    g.stats['lastLifeDays'] = days;
+    g.stats['lastLifeKills'] = g.stats['lifeKills'] ?? 0;
     this.progress.death(this.hero.pos.x, this.hero.pos.y);
     if (this.vehicles.driving) this.vehicles.exit();
     this.controls.clear();
@@ -1909,8 +2321,26 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  /** Причина смерти по состоянию тела: голод/жажда, холод/жара, радиация, яд, кровь, иначе — враги. */
+  private deathCause(): string {
+    const v = this.hero.vitals;
+    const s = registry().survival;
+    if (this.bosses.fighting) return 'boss';
+    if (v.hunger <= 0 || v.thirst <= 0) return 'hunger';
+    if (outOfComfort(s, v)) return v.temperature < 0 ? 'cold' : 'heat';
+    if (v.radiation >= s.radiation.max * 0.9) return 'radiation';
+    if (v.conditions.poison > 0) return 'poison';
+    if (v.conditions.bleeding) return 'bleeding';
+    return 'enemy';
+  }
+
   /** Возрождение: на месте (реклама) или у кровати/бункера; рюкзак погибшего остаётся на месте смерти. */
   respawnHero(inPlace: boolean): void {
+    // Новая жизнь (не возрождение на месте): счётчики жизни с нуля.
+    if (!inPlace) {
+      this.progress.stats['lifeStartSec'] = this.dayNight.seconds;
+      this.progress.stats['lifeKills'] = 0;
+    }
     const at = this.deathPos ?? this.hero.pos;
     if (!inPlace) {
       // Всё, кроме экипировки — в рюкзак погибшего на месте смерти (GDD §4).

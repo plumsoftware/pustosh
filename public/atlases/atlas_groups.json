@@ -8,8 +8,8 @@
    "images": [
     "ui.png"
    ],
-   "bytes": 367611,
-   "frames": 50
+   "bytes": 891514,
+   "frames": 110
   },
   "icons": {
    "load": "start",
@@ -18,8 +18,8 @@
    "images": [
     "icons.png"
    ],
-   "bytes": 909878,
-   "frames": 141
+   "bytes": 974794,
+   "frames": 148
   },
   "tiles": {
    "load": "start",
@@ -38,8 +38,8 @@
    "images": [
     "walls.png"
    ],
-   "bytes": 507072,
-   "frames": 50
+   "bytes": 1002525,
+   "frames": 115
   },
   "interior": {
    "load": "start",
@@ -48,8 +48,8 @@
    "images": [
     "interior.png"
    ],
-   "bytes": 1024102,
-   "frames": 85
+   "bytes": 1360016,
+   "frames": 110
   },
   "biome1": {
    "load": "start",
@@ -118,8 +118,8 @@
    "images": [
     "hero.png"
    ],
-   "bytes": 360594,
-   "frames": 16
+   "bytes": 630496,
+   "frames": 32
   },
   "enemies": {
    "load": "start",
@@ -128,8 +128,8 @@
    "images": [
     "enemies.png"
    ],
-   "bytes": 297916,
-   "frames": 63
+   "bytes": 710842,
+   "frames": 91
   },
   "animals": {
    "load": "start",
@@ -138,8 +138,8 @@
    "images": [
     "animals.png"
    ],
-   "bytes": 320763,
-   "frames": 74
+   "bytes": 594567,
+   "frames": 101
   },
   "bosses": {
    "load": "lazy",
@@ -168,8 +168,8 @@
    "images": [
     "effects.png"
    ],
-   "bytes": 152657,
-   "frames": 27
+   "bytes": 256265,
+   "frames": 52
   }
  }
 }

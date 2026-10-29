@@ -28,6 +28,9 @@ import { spawnSprite } from '../assets/spawnSprite';
 import { registry } from '../GameContext';
 import { SceneKeys } from '../SceneKeys';
 import { UI_FONT } from '../ui/BitmapFont';
+import { chip as styledChip } from '../ui/Styled';
+import { rowFrame } from '../ui/Styled';
+import { panel as stylePanel } from '../ui/Styled';
 import { Button } from '../ui/Button';
 import { promptText } from '../ui/Dialogs';
 import { COLORS, FONT, TEXT_RES, uiScale } from '../ui/layout';
@@ -222,10 +225,7 @@ export class CraftScene extends Phaser.Scene {
     const ph = height - 20;
     const px = (width - pw) / 2;
     const py = 10;
-    const panel = getAssetInfo('ui.panel_9slice')!;
-    this.root.add(
-      this.add.nineslice(px + pw / 2, py + ph / 2, panel.group, panel.frame, pw, ph, 22, 22, 22, 22),
-    );
+    this.root.add(stylePanel(this, px + pw / 2, py + ph / 2, pw, ph));
     const close = spawnSprite(this, px + pw - 28 * k, py + 28 * k, 'ui.btn_close', { depth: false });
     close
       .setScale((38 * k) / Math.max(close.frame.width, close.frame.height))
@@ -234,7 +234,7 @@ export class CraftScene extends Phaser.Scene {
     this.root.add(close);
 
     // Вкладки: иконка станка (уменьшенный спрайт), выбранная — в рамке.
-    const tabSize = Math.round(46 * k);
+    const tabSize = Math.round(Math.max(46 * k, 44));
     let tx = px + 18 * k;
     const ty = py + 16 * k;
     for (const id of this.tabs()) {
@@ -277,27 +277,22 @@ export class CraftScene extends Phaser.Scene {
     );
 
     // Фильтры: «Можно сделать», категории, поиск.
-    const fy = ty + tabSize + 8 * k;
-    const fh = Math.round(28 * k);
-    let fx = px + 18 * k;
+    let fy = ty + tabSize + 8 * k;
+    const fh = Math.round(Math.max(28 * k, 26));
+    const fx0 = px + 18 * k;
+    const fxMax = px + pw - 18 * k;
+    let fx = fx0;
+    // Вкладки не влезают в строку — перенос на следующую.
     const chip = (label: string, on: boolean, fn: () => void) => {
-      const txt = this.add.text(0, 0, label, {
-        fontFamily: FONT,
-        resolution: TEXT_RES,
-        fontSize: `${Math.round(12 * k + 2)}px`,
-        color: on ? '#1d1a16' : COLORS.text,
-        fontStyle: '600',
-      });
-      const w = txt.width + 16 * k;
-      const r = this.add
-        .rectangle(fx, fy, w, fh, on ? COLORS.accent : 0x2a251f)
-        .setOrigin(0)
-        .setStrokeStyle(1, COLORS.panelBorder)
-        .setInteractive({ useHandCursor: true });
-      r.on('pointerup', fn);
-      txt.setPosition(fx + 8 * k, fy + fh / 2).setOrigin(0, 0.5);
-      this.root.add([r, txt]);
-      fx += w + 4 * k;
+      let c = styledChip(this, fx, fy, label, on, fh, fn);
+      if (fx > fx0 && fx + c.width > fxMax) {
+        for (const o of c.objs) o.destroy();
+        fx = fx0;
+        fy += fh + 4 * k;
+        c = styledChip(this, fx, fy, label, on, fh, fn);
+      }
+      this.root.add(c.objs);
+      fx += c.width + 4 * k;
     };
     chip(t('craft.filter.ready'), this.filter.ready, () => {
       this.filter.ready = !this.filter.ready;
@@ -358,7 +353,8 @@ export class CraftScene extends Phaser.Scene {
     const reg = registry();
     const a = this.listArea;
     const k = this.k;
-    const cell = Math.round(54 * k);
+    // Ячейки рецептов не меньше 64 px (на телефоне k ≈ 0.75 — было 40).
+    const cell = Math.round(Math.max(54 * k, 64));
     const gap = Math.round(6 * k);
     const cols = Math.max(3, Math.floor((a.w + gap) / (cell + gap)));
     const src = this.sources();
@@ -440,7 +436,9 @@ export class CraftScene extends Phaser.Scene {
   private renderRight(): void {
     const area = this.detailsArea;
     const st = this.stationState;
-    const stationH = st && this.station ? Math.min(area.h * 0.5, 150 * this.k) : 0;
+    // Очередь рук видна на вкладке «Руки», пока в ней что-то есть (иначе непонятно, почему делается не то).
+    const hands = this.tab === HANDS && this.world.stations.hands.length > 0;
+    const stationH = (st && this.station) || hands ? Math.min(area.h * 0.5, 150 * this.k) : 0;
     const dSig = this.detailsSignature();
     if (dSig !== this.detailsSig) {
       this.detailsSig = dSig;
@@ -452,7 +450,17 @@ export class CraftScene extends Phaser.Scene {
         this.stationSig = sSig;
         this.renderStation(st, area.x, area.y + area.h - stationH, area.w, stationH);
       }
-    } else if (this.stationBox.length) this.stationBox.removeAll(true);
+    } else if (hands) {
+      const hSig = this.handsSignature();
+      if (hSig !== this.stationSig) {
+        this.stationSig = hSig;
+        this.renderHands(area.x, area.y + area.h - stationH, area.w, stationH);
+      }
+    } else if (this.stationBox.length) {
+      this.stationBox.removeAll(true);
+      this.stationSig = '';
+      this.detailsSig = '';
+    }
   }
 
   private detailsSignature(): string {
@@ -460,6 +468,83 @@ export class CraftScene extends Phaser.Scene {
     if (!r) return 'none';
     const src = this.sources();
     return [r.id, this.status(r, src), ...Object.keys(r.inputs).map((id) => totalCount(src, id))].join('|');
+  }
+
+  private handsSignature(): string {
+    const q = this.world.stations.hands;
+    const head = q[0];
+    return [
+      'hands',
+      q.map((j) => j.recipe).join(','),
+      head ? Math.floor((1 - head.left / head.total) * 40) : -1,
+    ].join('|');
+  }
+
+  /** Очередь крафта руками: задания по порядку, у первого — прогресс; тап по заданию — отменить. */
+  private renderHands(x: number, y: number, w: number, h: number): void {
+    this.stationBox.removeAll(true);
+    const reg = registry();
+    const k = this.k;
+    const pad = 8 * k;
+    const q = this.world.stations.hands;
+    this.stationBox.add(rowFrame(this, x, y, w, h).setOrigin(0));
+    const cell = Math.round(Math.max(34 * k, 44));
+    const label = this.text(
+      x + pad,
+      y + pad,
+      t('craft.hands_queue', { n: q.length }),
+      11,
+      COLORS.textDim,
+      w - 2 * pad,
+    );
+    this.stationBox.add(label);
+    const cy = y + pad + label.height + 2;
+    const fit = Math.max(1, Math.floor((w - 2 * pad) / (cell + 4 * k)));
+    q.slice(0, fit).forEach((j, i) => {
+      const cx = x + pad + cell / 2 + i * (cell + 4 * k);
+      const bg = spawnSprite(this, cx, cy + cell / 2, 'ui.slot', { depth: false })
+        .setDisplaySize(cell, cell)
+        .setInteractive({ useHandCursor: true });
+      bg.on('pointerup', () => this.cancelHands(i));
+      this.stationBox.add(bg);
+      const r = reg.recipes.get(j.recipe);
+      const def = r ? reg.items.get(r.output) : undefined;
+      if (i === 0)
+        this.stationBox.add(
+          this.add
+            .rectangle(cx - cell / 2 + 3, cy + cell - 3, (cell - 6) * (1 - j.left / j.total), 4 * k, 0x7ed957)
+            .setOrigin(0, 1),
+        );
+      if (def) {
+        const ic = spawnSprite(this, cx, cy + cell / 2, def.icon, { depth: false }).setOrigin(0.5);
+        ic.setScale((cell * 0.7) / Math.max(ic.frame.width, ic.frame.height)).setAlpha(i === 0 ? 1 : 0.6);
+        this.stationBox.add(ic);
+      }
+      // Крестик отмены в углу.
+      this.stationBox.add(
+        this.add
+          .bitmapText(cx + cell / 2 - 3, cy + 2, UI_FONT, '×', Math.round(12 * k + 4))
+          .setOrigin(1, 0)
+          .setTint(0xff7060),
+      );
+    });
+    if (q.length > fit)
+      this.stationBox.add(this.text(x + pad, cy + cell + 4 * k, `+${q.length - fit}`, 11, COLORS.textDim));
+    this.stationBox.add(
+      this.text(x + pad, y + h - pad - 14 * k, t('craft.hands_cancel'), 10, COLORS.textDim, w - 2 * pad),
+    );
+  }
+
+  /** Отменить задание рук: ингредиенты — обратно в рюкзак (не влезло — на землю). */
+  private cancelHands(i: number): void {
+    const r = this.world.stations.cancelJob(this.world.stations.hands, i);
+    if (!r) return;
+    for (const [id, n] of Object.entries(inputsOf(r))) this.world.give({ id, count: n });
+    this.toast(t('craft.cancelled', { name: registry().items.get(r.output)?.name_ru ?? r.output }));
+    this.stationSig = '';
+    this.detailsSig = '';
+    this.buildList();
+    this.renderRight();
   }
 
   private stationSignature(s: StationState): string {
@@ -486,7 +571,8 @@ export class CraftScene extends Phaser.Scene {
     return this.add.text(x, y, s, {
       fontFamily: FONT,
       resolution: TEXT_RES,
-      fontSize: `${Math.round(size * this.k + 2)}px`,
+      // Текст описания крупнее на телефоне: не меньше size + 2 px.
+      fontSize: `${Math.round(Math.max(size * this.k + 2, size + 2))}px`,
       color,
       fontStyle: bold ? '700' : '400',
       wordWrap: wrap ? { width: wrap } : undefined,
@@ -551,7 +637,7 @@ export class CraftScene extends Phaser.Scene {
     }
 
     // Ингредиенты: есть/нужно, недостающее красным; тап — «где добыть».
-    const row = Math.round(30 * k);
+    const row = Math.round(Math.max(30 * k, 40));
     const colW = (w - 2 * pad) / 2;
     Object.entries(r.inputs).forEach(([id, need], i) => {
       const have = totalCount(src, id);
@@ -583,7 +669,7 @@ export class CraftScene extends Phaser.Scene {
     if (src.length > 1) this.details.add(this.text(x + pad, cy, t('craft.chests'), 11, COLORS.textDim));
 
     // Кнопки: Создать, ×5, Макс; без станка рядом — подсказка.
-    const bh = Math.round(34 * k);
+    const bh = Math.round(Math.max(34 * k, 40));
     const byy = y + h - bh / 2 - 8 * k;
     const near = this.tab === HANDS || !!this.stationObjFor(this.tab);
     if (!near) {
@@ -714,10 +800,8 @@ export class CraftScene extends Phaser.Scene {
     const k = this.k;
     const pad = 8 * k;
     const stations = this.world.stations;
-    this.stationBox.add(
-      this.add.rectangle(x, y, w, h, 0x0e0c0a, 0.7).setOrigin(0).setStrokeStyle(1, COLORS.panelBorder),
-    );
-    const cell = Math.round(34 * k);
+    this.stationBox.add(rowFrame(this, x, y, w, h).setOrigin(0));
+    const cell = Math.round(Math.max(34 * k, 44));
     let cy = y + pad;
     // Очередь: первое задание с заливкой прогресса.
     const label = this.text(
@@ -802,7 +886,7 @@ export class CraftScene extends Phaser.Scene {
     cy += cell + 6 * k;
     // Выход станка + «Забрать».
     const out = s.output;
-    const oc = Math.round(28 * k);
+    const oc = Math.round(Math.max(28 * k, 36));
     const ol = this.text(x + pad, cy, t('craft.output'), 11, COLORS.textDim);
     this.stationBox.add(ol);
     const ox = x + pad + ol.width + 6 * k;
@@ -841,7 +925,7 @@ export class CraftScene extends Phaser.Scene {
       this.stationBox.add(this.text(x + pad, cy, why, 11, RED, w - 2 * pad));
     }
     // Кнопки внизу: Забрать, реклама instant_craft, Разобрать.
-    const bh = Math.round(28 * k);
+    const bh = Math.round(Math.max(28 * k, 36));
     const byy = y + h - bh / 2 - 6 * k;
     const buttons: [string, () => void][] = [];
     if (out.length) buttons.push([t('craft.collect'), () => this.collect(s)]);

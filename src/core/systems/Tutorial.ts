@@ -5,6 +5,9 @@ export interface TutorialState {
   step: number;
   count: number;
   done: boolean;
+  /** Показанные подсказки по ходу игры (id) и «больше не показывать». */
+  tips?: string[];
+  tipsOff?: boolean;
 }
 
 export type TutorialEvent =

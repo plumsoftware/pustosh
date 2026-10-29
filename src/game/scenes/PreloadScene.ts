@@ -8,7 +8,8 @@ import { queueGroup } from '../assets/AssetLoader';
 import { ctx } from '../GameContext';
 import { SceneKeys } from '../SceneKeys';
 import { setRigTuning, type RigTuning } from '../rig/RigDef';
-import { COLORS, FONT, TEXT_RES } from '../ui/layout';
+import { COLORS, FONT, TEXT_RES, TITLE_FONT } from '../ui/layout';
+import { LOADING_ART } from './BootScene';
 
 const INDEX_KEY = 'asset_index';
 const GROUPS_KEY = 'atlas_groups';
@@ -24,6 +25,9 @@ const RIGS_INDEX_KEY = 'rigs_tuned.index';
 export class PreloadScene extends Phaser.Scene {
   private bar!: Phaser.GameObjects.Graphics;
   private label!: Phaser.GameObjects.Text;
+  private barX = 0;
+  private barY = 0;
+  private barW = 0;
 
   constructor() {
     super(SceneKeys.Preload);
@@ -32,18 +36,41 @@ export class PreloadScene extends Phaser.Scene {
   preload(): void {
     const { width, height } = this.scale;
     this.cameras.main.setBackgroundColor('#000000');
+    // Картина «ночная стоянка» целиком слева, за ней — она же, размытая на весь экран; логотип справа.
+    let tx = width / 2;
+    let ty = height * 0.2;
+    let ts = Math.min(110, width / 7);
+    if (this.textures.exists(LOADING_ART)) {
+      const bg = this.add.image(width / 2, height / 2, LOADING_ART).setAlpha(0.4);
+      bg.setScale(Math.max(width / bg.width, height / bg.height) * 1.05);
+      bg.preFX?.addBlur(1, 2, 2, 1.4);
+      const wide = width / height > 1.3;
+      const fg = this.add.image(wide ? 0 : width / 2, height / 2, LOADING_ART).setOrigin(wide ? 0 : 0.5, 0.5);
+      fg.setScale(Math.min(height / fg.height, (wide ? width * 0.55 : width) / fg.width));
+      if (wide) {
+        tx = fg.displayWidth + (width - fg.displayWidth) / 2;
+        ty = height * 0.36;
+        ts = Math.min(96, (width - fg.displayWidth) / 6.5);
+      }
+    }
     this.add
-      .text(width / 2, height / 2 - 60, t('game.title'), {
-        fontFamily: FONT,
+      .text(tx, ty, t('game.title'), {
+        fontFamily: TITLE_FONT,
         resolution: TEXT_RES,
-        fontSize: '48px',
-        color: COLORS.text,
-        fontStyle: '700',
+        fontSize: `${Math.round(ts)}px`,
+        color: '#f0d9a8',
+        stroke: '#140e08',
+        strokeThickness: Math.round(ts / 9),
       })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setShadow(0, 5, '#000', 12, true, true);
+    // Полоса и подпись — под логотипом.
+    this.barX = tx;
+    this.barY = ty + ts * 0.9;
+    this.barW = Math.min(520, (tx === width / 2 ? width : (width - tx) * 2) * 0.7);
     this.bar = this.add.graphics();
     this.label = this.add
-      .text(width / 2, height / 2 + 40, t('ui.loading', { percent: 0 }), {
+      .text(this.barX, this.barY + 34, t('ui.loading', { percent: 0 }), {
         fontFamily: FONT,
         resolution: TEXT_RES,
         fontSize: '18px',
@@ -138,10 +165,9 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private drawBar(v: number): void {
-    const { width, height } = this.scale;
-    const w = Math.min(520, width * 0.7);
-    const x = (width - w) / 2;
-    const y = height / 2 + 8;
+    const w = this.barW;
+    const x = this.barX - w / 2;
+    const y = this.barY;
     this.bar.clear();
     this.bar.fillStyle(0x2a2520, 1).fillRoundedRect(x, y, w, 14, 7);
     this.bar.fillStyle(COLORS.accent, 1).fillRoundedRect(x, y, Math.max(14, w * v), 14, 7);

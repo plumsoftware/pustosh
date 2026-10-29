@@ -132,12 +132,27 @@ export class DefenseViews {
             h.img.setTint(Phaser.Display.Color.GetColor(200 + 55 * Math.abs(Math.sin(time / 300)), 230, 255));
         }
         // Электрозабор: редкие искры между столбами.
-        if (o.ref.id === 'electric_fence' && v.img.visible && Math.random() < 0.02)
+        if (o.ref.id === 'electric_fence' && v.img.visible && Math.random() < 0.02) {
           this.sparks.explode(
             2,
             v.img.x + (Math.random() - 0.5) * v.img.displayWidth,
             v.img.y - v.img.displayHeight * 0.6,
           );
+          // Дуга между столбами (s32): один из трёх кадров, вспышкой.
+          Fx.burst(
+            this.scene,
+            `effects.arc_${1 + Math.floor(Math.random() * 3)}`,
+            v.img.x,
+            v.img.y - v.img.displayHeight * 0.55,
+            {
+              from: v.img.displayWidth * 0.9,
+              to: v.img.displayWidth,
+              ms: 160,
+              depth: v.img.depth + 0.3,
+              add: true,
+            },
+          );
+        }
       }
     }
     for (const [uid, h] of this.heads)

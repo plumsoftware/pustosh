@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadGameData } from '../src/core/data';
 import { dayNightAt } from '../src/core/systems/DayNight';
-import { moveCircle, World, WALL_SOLID } from '../src/core/world';
+import { EDGE_GEN, EDGE_KIND, EDGE_T, moveCircle, World, WALL_DOOR } from '../src/core/world';
 import { readAssetCatalog, readRawData, ROOT } from '../tools/readGameFiles';
 
 const reg = loadGameData(readRawData(), readAssetCatalog()).registry!;
@@ -75,7 +75,7 @@ describe('World: генерация по сиду', () => {
     }
   });
 
-  it('префабы: бункер, 6 арен, 8–12 руин на биом, ворота на дорогах', () => {
+  it('префабы: стоянка, 6 арен, руины на каждый биом; ворот нет (мягкая граница)', () => {
     const w = new World(reg, { sizeOf });
     const p = w.layout.prefabs;
     expect(p.filter((x) => x.kind === 'bunker')).toHaveLength(1);
@@ -86,7 +86,7 @@ describe('World: генерация по сиду', () => {
       expect(n, `руины биома ${b}`).toBeGreaterThanOrEqual(lo);
       expect(n).toBeLessThanOrEqual(hi);
     }
-    expect(p.filter((x) => x.kind === 'gate').length).toBeGreaterThanOrEqual(5);
+    expect(p.filter((x) => x.kind === 'gate')).toHaveLength(0);
   });
 
   it('у бункера есть горящий костёр со светом', () => {
@@ -134,20 +134,26 @@ describe('World: дельта', () => {
 });
 
 describe('Коллизии', () => {
-  it('стена бункера не пропускает, вдоль неё — скольжение', () => {
+  it('стена дома мира тонкая (на ребре), не пропускает, вдоль неё — скольжение', () => {
     const w = new World(reg, { sizeOf });
     const n = reg.balance.world.chunkTiles;
     w.getChunk(Math.floor(w.start.x / n), Math.floor(w.start.y / n));
-    // Ищем сплошную стену с открытой землёй сверху.
+    // Северная стена комнаты — на ребре между кольцом стен плана (земля) и полом.
     const room = w.rooms[0]!;
     const tx = room.x0 + 1;
-    const ty = room.y0;
-    expect(w.cell(tx, ty).wallKind).toBe(WALL_SOLID);
+    const ty = room.y0 + 1;
+    w.cell(tx, ty);
+    expect(w.cell(tx, room.y0).wall).toBe(0);
+    expect(w.edgeBits(tx, ty, 'n') & EDGE_GEN).toBe(EDGE_GEN);
+    expect(w.edgeBits(tx, ty, 'n') & EDGE_KIND).not.toBe(WALL_DOOR);
     const r = 0.22;
     const from = { x: tx + 0.5, y: ty - 1.5 };
     const p = moveCircle(w, from.x, from.y, r, 0.3, 3, FACE);
-    expect(p.y).toBeLessThanOrEqual(ty - r + 1e-6);
+    expect(p.y).toBeLessThanOrEqual(ty - EDGE_T / 2 - r + 1e-6);
+    expect(p.y).toBeGreaterThan(ty - 1);
     expect(p.x).toBeGreaterThan(from.x + 0.2);
+    // Внутри комнаты пол, у стены можно стоять.
+    expect(w.cell(tx, ty).floor).toBeGreaterThan(0);
   });
 
   it('объект с коллайдером выталкивает', () => {
@@ -194,10 +200,10 @@ describe('Скорость генерации', () => {
   });
 });
 
-describe('Забор между кольцами', () => {
-  it('без ворот из кольца 1 не попасть в кольцо 2', () => {
+describe('Граница между кольцами', () => {
+  it('мягкая: забора нет, из кольца 1 можно дойти до кольца 2', () => {
     const w = new World(reg, { sizeOf });
-    expect(w.layout.fenceCells).toBeGreaterThan(500);
+    expect(w.layout.fenceCells).toBe(0);
     const N = w.size;
     // Клетки, закрытые коллайдерами ворот.
     const gate = new Uint8Array(N * N);
@@ -242,7 +248,7 @@ describe('Забор между кольцами', () => {
         q.push(j);
       }
     }
-    expect(reachedRing2, `дыра у ${leak}`).toBe(false);
+    expect(reachedRing2, `не дошли: ${leak}`).toBe(true);
   });
 });
 

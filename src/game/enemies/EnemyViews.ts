@@ -57,7 +57,15 @@ interface View {
   swell: number;
   dying: boolean;
   runPose: boolean;
+  /** Кадры поз (листы s29/s30): префикс id, масштаб поз, масштаб idle и текущий кадр. */
+  poses?: { pfx: string; k: number; idleK: number; idle: string; cur: string };
 }
+
+/** Виды анимаций врага, при которых показывается поза атаки. */
+const ATTACK_KINDS = new Set(['attack', 'leap', 'spit', 'throw', 'charge', 'tongue']);
+/** Сколько держится поза атаки и боли, с. */
+const ATTACK_POSE_SEC = 0.35;
+const HURT_POSE_MS = 220;
 
 /**
  * Враги и звери целым спрайтом (`<id>_idle`, запасной режим ригов — TZ 8.3.2) с процедурной анимацией
@@ -94,9 +102,24 @@ export class EnemyViews {
       .image(0, 0, TEX.shadow)
       .setDisplaySize(img.displayWidth * 0.7, Math.max(8, img.displayWidth * 0.22))
       .setDepth(DEPTH.shadow);
+    // Позы шага/бега/атаки/боли: масштаб — чтобы поза совпадала с idle (люди — по росту позы шага,
+    // звери — по длине собранной позы бега).
+    const pfx = sprite.replace(/_idle$/, '');
+    const quad = QUAD.has(id);
+    const ref = getAssetInfo(`${pfx}_${quad ? 'run_b' : 'walk_a'}`);
+    let poses: View['poses'];
+    if (ref) {
+      const refImg = spawnSprite(this.scene, 0, 0, `${pfx}_${quad ? 'run_b' : 'walk_a'}`);
+      const k = quad
+        ? (img.frame.width * base) / refImg.frame.width
+        : (e.def.targetHeightPx / refImg.frame.height) * (e.elite ? (e.def.elite?.scale ?? 1) : 1);
+      refImg.destroy();
+      poses = { pfx, k, idleK: base, idle: sprite, cur: sprite };
+    }
     const v: View = {
       e,
       img,
+      poses,
       base,
       shadow,
       phase: Math.random() * 10,
@@ -226,8 +249,29 @@ export class EnemyViews {
       }
       if ((id === 'deer' || id === 'hare') && e.moving) offY -= Math.abs(Math.sin(t * 8 + v.phase)) * 10;
       if (id === 'bloated') lean += Math.sin(t * 1.5 + v.phase) * 4;
-      // Бегун на полной скорости — поза бега.
-      const runPose = id === 'sprinter' && e.moving && e.state === 'chase';
+      // Кадр позы: боль → атака → шаг/бег (две фазы) → покой.
+      if (v.poses) {
+        const P = v.poses;
+        let key = P.idle;
+        const has = (n: string) => (getAssetInfo(`${P.pfx}_${n}`) ? `${P.pfx}_${n}` : null);
+        if (time < v.flashUntil + HURT_POSE_MS && has('hurt')) key = has('hurt')!;
+        else if (ATTACK_KINDS.has(e.anim.kind) && animAge < ATTACK_POSE_SEC && has('attack'))
+          key = has('attack')!;
+        else if (e.moving) {
+          const step = Math.floor(t * (quad ? 4 + speed : 3.2) + v.phase) % 2 === 0;
+          key = has(quad ? (step ? 'run_a' : 'run_b') : step ? 'walk_a' : 'walk_b') ?? P.idle;
+        }
+        if (key !== P.cur) {
+          P.cur = key;
+          const info = getAssetInfo(key)!;
+          img.setTexture(info.group, info.frame);
+          v.base = key === P.idle ? P.idleK : P.k;
+        }
+        // Поза сама передаёт наклон и шаг — процедурный наклон убираем.
+        if (key !== P.idle) lean = 0;
+      }
+      // Бегун на полной скорости — поза бега (если нет кадров шага).
+      const runPose = !v.poses && id === 'sprinter' && e.moving && e.state === 'chase';
       if (runPose !== v.runPose && getAssetInfo('characters.enemies.sprinter_run_pose')) {
         v.runPose = runPose;
         const info = getAssetInfo(
@@ -236,8 +280,10 @@ export class EnemyViews {
         img.setTexture(info.group, info.frame);
         v.base = (e.def.targetHeightPx / img.frame.height) * (e.elite ? (e.def.elite?.scale ?? 1) : 1);
       }
+      const kx = v.base;
+      const ky = v.base * (sy / sx);
       img
-        .setScale(sx, sy)
+        .setScale(kx, ky)
         .setPosition(x + offX, y - bob + offY)
         .setAngle(lean)
         .setDepth(y);

@@ -4,6 +4,8 @@ import { getAssetInfo } from '../assets/AssetIndex';
 import { spawnSprite } from '../assets/spawnSprite';
 import { ctx, registry } from '../GameContext';
 import { SceneKeys } from '../SceneKeys';
+import { rowFrame } from '../ui/Styled';
+import { panel as stylePanel } from '../ui/Styled';
 import { Button } from '../ui/Button';
 import { COLORS, FONT, TEXT_RES, uiScale } from '../ui/layout';
 import type { WorldScene } from './WorldScene';
@@ -75,10 +77,7 @@ export class JournalScene extends Phaser.Scene {
     const ph = height - 20;
     const px = (width - pw) / 2;
     const py = 10;
-    const info = getAssetInfo('ui.panel_9slice')!;
-    this.root.add(
-      this.add.nineslice(px + pw / 2, py + ph / 2, info.group, info.frame, pw, ph, 22, 22, 22, 22),
-    );
+    this.root.add(stylePanel(this, px + pw / 2, py + ph / 2, pw, ph));
     const bh = 40 * k;
     (['quests', 'notes'] as const).forEach((tab, i) => {
       const b = new Button(
@@ -103,16 +102,15 @@ export class JournalScene extends Phaser.Scene {
     const top = py + 62 * k;
     if (this.tab === 'quests') {
       this.root.add(this.txt(px + 24 * k, top, t('journal.daily'), 15, COLORS.textDim, true));
+      // Две строки (название и прогресс) не меньше 13 px — строка не ниже 44 px.
+      const rowH = Math.max(46 * k, 44);
       g.quests.daily.forEach((task, i) => {
-        const y = top + 30 * k + i * (52 * k);
+        const y = top + 30 * k + i * (rowH + 6 * k);
         const done = task.done >= task.n;
-        const bg = this.add
-          .rectangle(px + 20 * k, y, pw - 40 * k, 46 * k, 0x1d1a16, 0.9)
-          .setOrigin(0)
-          .setStrokeStyle(1, done ? 0x8fd46a : 0x5a4a35);
+        const bg = rowFrame(this, px + 20 * k, y, pw - 40 * k, rowH, done).setOrigin(0);
         const name = this.txt(
           px + 34 * k,
-          y + 6 * k,
+          y + rowH * 0.08,
           g.taskName(task),
           14,
           done ? '#8fd46a' : COLORS.text,
@@ -120,7 +118,7 @@ export class JournalScene extends Phaser.Scene {
         );
         const prog = this.txt(
           px + 34 * k,
-          y + 26 * k,
+          y + rowH * 0.52,
           `${task.done}/${task.n} · ${t('journal.reward')}: ${reg.items.get(task.reward.id)?.name_ru ?? task.reward.id} ×${task.reward.count}`,
           12,
           COLORS.textDim,
@@ -128,7 +126,9 @@ export class JournalScene extends Phaser.Scene {
         this.root.add([bg, name, prog]);
         const icon = reg.items.get(task.reward.id)?.icon;
         if (icon && getAssetInfo(icon)) {
-          const ic = spawnSprite(this, px + pw - 200 * k, y + 23 * k, icon, { depth: false }).setOrigin(0.5);
+          const ic = spawnSprite(this, px + pw - 200 * k, y + rowH / 2, icon, { depth: false }).setOrigin(
+            0.5,
+          );
           ic.setScale((34 * k) / Math.max(ic.frame.width, ic.frame.height));
           this.root.add(ic);
         }
@@ -151,7 +151,7 @@ export class JournalScene extends Phaser.Scene {
           this.root.add(this.txt(px + pw - 140 * k, y + 14 * k, t('journal.claimed'), 12, '#8fd46a'));
       });
       if (!g.quests.extraTaken) {
-        const y = top + 30 * k + g.quests.daily.length * 52 * k + 10 * k;
+        const y = top + 30 * k + g.quests.daily.length * (rowH + 6 * k) + 10 * k;
         this.root.add(
           new Button(
             this,
@@ -176,8 +176,7 @@ export class JournalScene extends Phaser.Scene {
     read.forEach((n, i) => {
       const y = top + i * 30 * k;
       const sel = this.note === n.id;
-      const r = this.add
-        .rectangle(px + 20 * k, y, lw, 26 * k, sel ? 0x3a3024 : 0x1d1a16, 0.9)
+      const r = rowFrame(this, px + 20 * k, y, lw, 26 * k, sel)
         .setOrigin(0)
         .setInteractive({ useHandCursor: true });
       r.on('pointerup', () => {

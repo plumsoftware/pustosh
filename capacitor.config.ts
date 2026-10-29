@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
-// appId — временный, окончательный выбирает владелец (ТЗ шаг 1.6: ru.<владелец>.pustosh).
+// appId выбран владельцем (ТЗ шаг 1.6: ru.<владелец>.pustosh). После публикации не менять.
 const config: CapacitorConfig = {
-  appId: 'ru.pustosh.game',
+  appId: 'ru.plumsoftware.pustosh',
   appName: 'Пустошь',
   webDir: 'dist-android',
   android: {

@@ -24,7 +24,23 @@ export type BossEvent =
   | { type: 'stun'; sec: number }
   | { type: 'summon'; id: string; n: number }
   | { type: 'phase'; n: number }
-  | { type: 'pools'; pts: [number, number][]; r: number; sec: number; dps: number }
+  | {
+      type: 'pools';
+      pts: [number, number][];
+      r: number;
+      sec: number;
+      dps: number;
+      /** poison — яд (по умолчанию), rad — радиация в секунду, ice — холод и урон. */
+      kind?: 'poison' | 'rad' | 'ice';
+    }
+  /** Холод по герою: температура падает на deg (ледяное дыхание). */
+  | { type: 'chill'; deg: number }
+  /** Удар не прошёл через щит «Мороза». */
+  | { type: 'blocked' }
+  /** Отпадают пластины брони (Пожиратель, фаза 2). */
+  | { type: 'plates' }
+  /** Снаряд босса (камень, сфера) — для отрисовки полёта. */
+  | { type: 'shot'; attack: string; x0: number; y0: number; x1: number; y1: number; sec: number }
   | { type: 'charge'; x0: number; y0: number; x1: number; y1: number }
   | { type: 'dive'; on: boolean }
   | { type: 'roar' }
@@ -70,7 +86,9 @@ interface AttackSpec {
 /**
  * Босс (TZ 9.2): спит до входа героя на арену, затем бой — движение к герою внутри арены, атаки с
  * красной зоной за 0.8–1.2 с (progression.json → bosses.telegraphSec), фазы по порогам HP, призыв,
- * щит «Мороза» (снимает электричество), подземный Пожиратель (уязвим 2 с после выхода).
+ * щит «Мороза» (снимает электричество, во 2-й фазе ядро открыто — урон ×2), Пожиратель (бугром под
+ * землёй к герою → выход → атаки с поверхности, в броне уязвим только после выхода), Пациент Ноль
+ * (щупальца из труб, сферы радиации, облучение секторов, 3 фазы).
  */
 export class Boss {
   readonly def: BossDef;
@@ -87,6 +105,8 @@ export class Boss {
   /** Для защиты (Target). */
   rootedUntil = 0;
   slowUntil = 0;
+  /** Оглушение босса (кастет-шокер) — для «Добивания». */
+  stunUntilFor = 0;
   slowMul = 1;
   deadAt = 0;
   /** Последняя атака (для анимации частей): id и время. */
@@ -96,6 +116,10 @@ export class Boss {
   private telSeq = 1;
   private vulnerableUntil = 0;
   private shieldOffUntil = 0;
+  /** Пожиратель: атак с поверхности с последнего выхода. */
+  private surfaced = 0;
+  /** Атака сама задала время следующей (уход под землю). */
+  private holdNext = false;
   private ctx: BossCtx | null = null;
   readonly p: Params;
 
@@ -136,18 +160,28 @@ export class Boss {
     amount: number,
     fromX: number,
     fromY: number,
-    opts: { melee: boolean; specials?: readonly string[]; now: number },
+    opts: { melee: boolean; specials?: readonly string[]; now: number; stunnedMul?: number },
   ): { dmg: number; back: boolean; blocked: boolean } {
     if (!this.alive || this.state === 'sleep') return { dmg: 0, back: false, blocked: true };
     const sp = opts.specials ?? [];
     if (this.hidden) return { dmg: 0, back: false, blocked: true };
-    if (this.def.id === 'devourer' && opts.now > this.vulnerableUntil) amount *= 0.2;
+    // Пожиратель в броне: полный урон только сразу после выхода; во 2-й фазе пластины отпали.
+    if (this.def.id === 'devourer' && opts.now > this.vulnerableUntil)
+      amount *= this.phase >= 2 ? this.n('armorMulPhase2', 0.5) : this.n('armorMul', 0.2);
     if (this.shield && opts.now >= this.shieldOffUntil) {
       if (sp.includes('shock_breaks_shield') || sp.includes('stun')) {
-        this.shieldOffUntil = opts.now + 5;
+        this.shieldOffUntil = opts.now + this.n('shieldOffSec', 5);
         this.ctx?.emit({ type: 'shield', on: false });
-      } else return { dmg: 0, back: false, blocked: true };
+      } else {
+        this.ctx?.emit({ type: 'blocked' });
+        return { dmg: 0, back: false, blocked: true };
+      }
     }
+    // «Мороз» во 2-й фазе: ядро открыто — урон ×coreDamageMul.
+    if (this.def.id === 'frost' && this.phase >= 2) amount *= this.n('coreDamageMul', 1);
+    if (opts.now < this.stunUntilFor) amount *= opts.stunnedMul ?? 1;
+    // Оглушающее оружие — короткое окно «Добивания» и по боссу.
+    if (sp.includes('stun')) this.stunUntilFor = opts.now + this.n('stunSec', 1.5);
     const back = Math.abs(angleDelta(this.faceDeg, angleOf(this.x, this.y, fromX, fromY))) > 110;
     const dmg = amount * (back && opts.melee ? 1.25 : 1);
     this.hp -= dmg;
@@ -189,12 +223,15 @@ export class Boss {
         this.anim = { kind: pd.spec.id, at: now, data: pd.shapes[0] };
         pd.spec.resolve(pd.shapes);
         const [a, b] = this.reg.prog.bosses.attackPauseSec;
-        this.nextAt = now + (a + ctx.rng() * (b - a)) / this.speed;
+        if (this.holdNext) this.holdNext = false;
+        else this.nextAt = now + (a + ctx.rng() * (b - a)) / this.speed;
       }
       return;
     }
-    // Ближе к герою (внутри арены), затем следующая атака.
-    if (d > 2.2 && !this.hidden) this.step(h.x - this.x, h.y - this.y, this.speed * ctx.dt);
+    // Ближе к герою (внутри арены), затем следующая атака. Пожиратель под землёй ползёт бугром быстрее.
+    if (this.hidden && this.def.id === 'devourer') {
+      if (d > 0.4) this.step(h.x - this.x, h.y - this.y, this.speed * this.n('moundSpeedMul', 1.6) * ctx.dt);
+    } else if (d > 2.2 && !this.hidden) this.step(h.x - this.x, h.y - this.y, this.speed * ctx.dt);
     if (now < this.nextAt || !h.alive) return;
     const list = this.attacks().filter((a) => !a.ok || a.ok(d));
     if (!list.length) return;
@@ -239,6 +276,7 @@ export class Boss {
         this.shield = false;
         ctx.emit({ type: 'shield', on: false });
       }
+      if (this.def.id === 'devourer') ctx.emit({ type: 'plates' });
       this.summon(ctx, 'phase2Summon');
       if (this.def.id === 'queen') ctx.emit({ type: 'summon', id: 'spitter', n: this.n('tadpoles', 3) });
       if (this.def.id === 'zero') this.summon(ctx, 'summon');
@@ -466,64 +504,168 @@ export class Boss {
           },
         },
       ];
-    if (id === 'devourer')
+    if (id === 'devourer') {
+      // Цикл: под землёй бугор ползёт к герою → выход (уязвим vulnerableSec) → 1–2 атаки с поверхности → снова вниз.
+      const shot = (len: number) => this.line(len, n('spitWidth', 1), this.faceDeg);
       return [
         {
           id: 'emerge',
-          make: () => {
-            this.hidden = true;
-            c.emit({ type: 'dive', on: true });
-            return { shapes: [circleAtHero(n('emergeRadius', 2.5))], sec: this.telSec(0.8) };
-          },
+          ok: () => this.hidden,
+          make: () => ({ shapes: [circleAtHero(n('emergeRadius', 2.5))], sec: this.telSec(0.8) }),
           resolve: (s) => {
             const z = s[0] as Extract<ZoneShape, { kind: 'circle' }>;
             this.x = z.x;
             this.y = z.y;
             this.hidden = false;
+            this.surfaced = 0;
             this.vulnerableUntil = c.now + n('vulnerableSec', 2);
             c.emit({ type: 'dive', on: false });
-            this.hit('emerge', n('emergeDamage', 35), s);
+            this.hit('emerge', n('emergeDamage', 45), s);
           },
         },
-      ];
-    if (id === 'frost')
-      return [
         {
-          id: 'shards',
-          make: () => {
-            const k = n('shardCount', 7);
-            const shapes: ZoneShape[] = [];
-            for (let i = 0; i < k; i++) shapes.push(this.line(7, 0.6, this.faceDeg + (i - (k - 1) / 2) * 12));
-            return { shapes, sec: this.telSec(0.6) };
-          },
-          resolve: (s) => void this.hit('shards', n('shardDamage', 14), s),
-        },
-        {
-          id: 'breath',
-          ok: (d) => d <= n('coneRange', 5),
+          id: 'sweep',
+          ok: (d) => !this.hidden && d <= n('sweepRange', 3.2) + 0.5,
           make: () => ({
             shapes: [
               {
                 kind: 'cone',
                 x: this.x,
                 y: this.y,
-                r: n('coneRange', 5),
+                r: n('sweepRange', 3.2),
                 dir: this.faceDeg,
-                deg: n('coneDeg', 50),
+                deg: n('sweepDeg', 200),
               },
             ],
-            sec: this.telSec(0.7),
+            sec: this.telSec(0.5),
           }),
-          resolve: (s) => void this.hit('breath', n('coneDps', 20), s),
+          resolve: (s) => {
+            this.surfaced++;
+            this.hit('sweep', n('sweepDamage', 38), s);
+          },
+        },
+        {
+          id: 'spit',
+          ok: (d) => !this.hidden && d > 2,
+          make: () => ({ shapes: [shot(n('spitRange', 8))], sec: this.telSec(0.4) }),
+          resolve: (s) => {
+            this.surfaced++;
+            const z = s[0] as Extract<ZoneShape, { kind: 'line' }>;
+            c.emit({ type: 'shot', attack: 'spit', x0: z.x0, y0: z.y0, x1: z.x1, y1: z.y1, sec: 0.35 });
+            this.hit('spit', n('spitDamage', 32), s);
+          },
+        },
+        {
+          id: 'burrow',
+          ok: () => !this.hidden && this.surfaced >= (this.phase >= 2 ? 1 : 2),
+          make: () => ({ shapes: [{ kind: 'circle', x: this.x, y: this.y, r: 1.2 }], sec: this.telSec(0) }),
+          resolve: () => {
+            this.hidden = true;
+            c.emit({ type: 'dive', on: true });
+            // Под землёй — undergroundSec (во 2-й фазе короче), затем выход.
+            this.nextAt = c.now + n(this.phase >= 2 ? 'undergroundSecPhase2' : 'undergroundSec', 2.5);
+            this.holdNext = true;
+          },
         },
       ];
-    // zero
+    }
+    if (id === 'frost') {
+      const cone = (): ZoneShape => ({
+        kind: 'cone',
+        x: this.x,
+        y: this.y,
+        r: n('coneRange', 5),
+        dir: this.faceDeg,
+        deg: n('coneDeg', 50),
+      });
+      return [
+        {
+          id: 'shards',
+          make: () => {
+            const k = n('shardCount', 5);
+            const shapes: ZoneShape[] = [];
+            for (let i = 0; i < k; i++) shapes.push(this.line(7, 0.6, this.faceDeg + (i - (k - 1) / 2) * 14));
+            return { shapes, sec: this.telSec(0.6) };
+          },
+          resolve: (s) => void this.hit('shards', n('shardDamage', 24), s),
+        },
+        {
+          id: 'breath',
+          ok: (d) => d <= n('coneRange', 5),
+          make: () => ({ shapes: [cone()], sec: this.telSec(0.7) }),
+          resolve: (s) => {
+            if (this.hit('breath', n('breathDamage', 30), s))
+              c.emit({ type: 'chill', deg: n('chillDeg', 4) });
+            // Изморозь на земле: холодная площадь в середине конуса.
+            const z = s[0] as Extract<ZoneShape, { kind: 'cone' }>;
+            const a = (z.dir * Math.PI) / 180;
+            c.emit({
+              type: 'pools',
+              pts: [[z.x + Math.cos(a) * z.r * 0.55, z.y + Math.sin(a) * z.r * 0.55]],
+              r: z.r * 0.35,
+              sec: n('iceSec', 3),
+              dps: n('iceDps', 6),
+              kind: 'ice',
+            });
+          },
+        },
+        {
+          id: 'stomp',
+          ok: (d) => d <= n('stompRadius', 3) + 1,
+          make: () => ({
+            shapes: [{ kind: 'circle', x: this.x, y: this.y, r: n('stompRadius', 3) }],
+            sec: this.telSec(0.6),
+          }),
+          resolve: (s) => void this.hit('stomp', n('stompDamage', 36), s),
+        },
+      ];
+    }
+    // zero: щупальца из труб по краю арены, хлыст, радиоактивные сферы, облучение секторов (фаза ≥ 2).
+    const ar = this.arena;
     return [
       {
         id: 'whip',
         ok: (d) => d <= n('whipRange', 5),
         make: () => ({ shapes: [this.line(n('whipRange', 5), 0.9)], sec: this.telSec(0.4) }),
-        resolve: (s) => void this.hit('whip', n('whipDamage', 25), s),
+        resolve: (s) => void this.hit('whip', n('whipDamage', 45), s),
+      },
+      {
+        id: 'tentacles',
+        make: () => {
+          const k = n('tentacleCount', 2) + (this.phase >= 3 ? 1 : 0);
+          const shapes: ZoneShape[] = [];
+          for (let i = 0; i < k; i++) {
+            const a = c.rng() * Math.PI * 2;
+            const x0 = ar.x + Math.cos(a) * ar.r;
+            const y0 = ar.y + Math.sin(a) * ar.r;
+            // Из трубы на краю арены — к герою и чуть дальше.
+            const dx = h.x - x0;
+            const dy = h.y - y0;
+            const l = Math.hypot(dx, dy) || 1;
+            const len = l + 1.5;
+            shapes.push({ kind: 'line', x0, y0, x1: x0 + (dx / l) * len, y1: y0 + (dy / l) * len, w: 0.9 });
+          }
+          return { shapes, sec: this.telSec(0.7) };
+        },
+        resolve: (s) => void this.hit('tentacles', n('tentacleDamage', 40), s),
+      },
+      {
+        id: 'orb',
+        ok: (d) => d > 2,
+        make: () => ({ shapes: [circleAtHero(n('orbRadius', 1.5))], sec: this.telSec(0.9) }),
+        resolve: (s) => {
+          const z = s[0] as Extract<ZoneShape, { kind: 'circle' }>;
+          c.emit({ type: 'shot', attack: 'orb', x0: this.x, y0: this.y, x1: z.x, y1: z.y, sec: 0.3 });
+          this.hit('orb', n('orbDamage', 35), s);
+          c.emit({
+            type: 'pools',
+            pts: [[z.x, z.y]],
+            r: z.r,
+            sec: n('orbSec', 5),
+            dps: n('orbRad', 3),
+            kind: 'rad',
+          });
+        },
       },
       {
         id: 'sectors',
@@ -532,15 +674,16 @@ export class Boss {
           const a0 = c.rng() * 360;
           const shapes: ZoneShape[] = [0, 180].map((o) => ({
             kind: 'cone',
-            x: this.arena.x,
-            y: this.arena.y,
-            r: this.arena.r,
+            x: ar.x,
+            y: ar.y,
+            r: ar.r,
             dir: a0 + o,
             deg: 90,
           }));
           return { shapes, sec: this.telSec(1) };
         },
-        resolve: (s) =>
+        resolve: (s) => {
+          this.hit('sectors', n('sectorDamage', 20), s);
           c.emit({
             type: 'pools',
             pts: s.map((z) => {
@@ -548,10 +691,12 @@ export class Boss {
               const a = (cz.dir * Math.PI) / 180;
               return [cz.x + Math.cos(a) * cz.r * 0.5, cz.y + Math.sin(a) * cz.r * 0.5] as [number, number];
             }),
-            r: this.arena.r * 0.45,
-            sec: 4,
-            dps: n('sectorDps', 8),
-          }),
+            r: ar.r * 0.45,
+            sec: n('sectorSec', 4),
+            dps: n('sectorRad', 4),
+            kind: 'rad',
+          });
+        },
       },
     ];
   }
@@ -565,6 +710,8 @@ export class Boss {
     this.pending = null;
     this.hidden = false;
     this.shield = this.def.id === 'frost';
+    this.surfaced = 0;
+    this.holdNext = false;
     this.x = this.arena.x;
     this.y = this.arena.y - 2;
   }

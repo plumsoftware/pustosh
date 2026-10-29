@@ -7,7 +7,8 @@ import { log } from '../../core/util/Log';
 import type { BackButtonSource, DeviceType, PlatformServices, SaveService } from '../PlatformServices';
 import { browserLanguage } from '../common/device';
 import { LogAnalytics } from '../common/LogAnalytics';
-import { StubAds } from '../common/StubAds';
+import { RuledAds, StubAds } from '../common/StubAds';
+import { yandexMobileAds } from './YandexMobileAds';
 import { StubPurchases } from '../common/StubPurchases';
 
 const SAVE_PREFIX = 'pustosh.save.';
@@ -34,15 +35,15 @@ class PreferencesSaves implements SaveService {
 }
 
 /**
- * RuStore / Android (Capacitor). Шаг 1: сохранения, жизненный цикл (сворачивание → пауза),
- * кнопка «Назад» → пауза, скрытая строка состояния. Реклама и покупки — заглушки до шага 10.
+ * RuStore / Android (Capacitor): сохранения, жизненный цикл (сворачивание → пауза), кнопка «Назад» →
+ * пауза, скрытая строка состояния, реклама РСЯ (YandexMobileAds). Покупки — заглушка до шага 10.
  */
 export class AndroidPlatform implements PlatformServices, BackButtonSource {
   readonly id = 'android' as const;
   readonly device: DeviceType = Math.min(screen.width, screen.height) >= 600 ? 'tablet' : 'mobile';
   readonly language = browserLanguage();
   readonly purchases: StubPurchases;
-  readonly ads: StubAds;
+  readonly ads: RuledAds;
   readonly saves = new PreferencesSaves();
   readonly analytics = new LogAnalytics();
   private pauseHandlers: { onPause: () => void; onResume: () => void } | null = null;
@@ -50,7 +51,11 @@ export class AndroidPlatform implements PlatformServices, BackButtonSource {
 
   constructor(config: PlatformConfig, iap: readonly string[]) {
     this.purchases = new StubPurchases(iap);
-    this.ads = new StubAds(config.ads, () => this.purchases.has('remove_interstitials'));
+    const adFree = () => this.purchases.has('remove_interstitials');
+    // В приложении — реклама РСЯ (флейвор ruStore), в браузере (отладка) — заглушка.
+    this.ads = Capacitor.isNativePlatform()
+      ? new RuledAds(config.ads, adFree, yandexMobileAds)
+      : new StubAds(config.ads, adFree);
   }
 
   async init(): Promise<void> {

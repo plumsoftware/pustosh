@@ -6,8 +6,10 @@ import { BOSS_BAR } from '../bosses/BossManager';
 import { registry } from '../GameContext';
 import { NOTIFY, type Notice } from '../progress/GameProgress';
 import { TILE } from '../render/GroundTiles';
-import type { WorldScene } from '../scenes/WorldScene';
+import { WEATHER, type WorldScene } from '../scenes/WorldScene';
 import { UI_FONT } from './BitmapFont';
+import { SceneKeys } from '../SceneKeys';
+import { notifyPlaque, panel } from './Styled';
 import { uiScale } from './layout';
 
 const NOTICE_MS = 2500;
@@ -27,11 +29,15 @@ export class HudExtras {
   private queue: Notice[] = [];
   private showing: Phaser.GameObjects.Container | null = null;
   private bossBox: Phaser.GameObjects.Container;
-  private bossFill: Phaser.GameObjects.Rectangle;
+  private bossFill: Phaser.GameObjects.Image;
   private bossName: Phaser.GameObjects.BitmapText;
   private bossW: number;
   private bloodText: Phaser.GameObjects.BitmapText;
   private clockArrow: Phaser.GameObjects.Image | null = null;
+  /** Значок текущей погоды слева от часов (в укрытии — бледный). */
+  private weatherIcon: Phaser.GameObjects.Image | null = null;
+  private weatherKind = '';
+  private shelterTold = false;
   private mini: Phaser.Textures.CanvasTexture;
   private miniImg: Phaser.GameObjects.Image;
   private miniBase: ImageData | null = null;
@@ -60,8 +66,15 @@ export class HudExtras {
     ev.on(NOTIFY, onNotify);
     // Полоса HP босса.
     this.bossW = Math.min(width * 0.5, 520 * k);
-    const bg = ui.add.rectangle(0, 0, this.bossW + 4, 16 * k, 0x000000, 0.75).setOrigin(0.5);
-    this.bossFill = ui.add.rectangle(-this.bossW / 2, 0, this.bossW, 12 * k, 0xc02a1a).setOrigin(0, 0.5);
+    // Рамка и заливка — те же, что у полосы HP героя (атлас ui).
+    const bh = 26 * k;
+    const bg = spawnSprite(ui, 0, 0, 'ui.bar_frame', { depth: false }).setDisplaySize(
+      this.bossW + 24 * k,
+      bh,
+    );
+    this.bossFill = spawnSprite(ui, -this.bossW / 2, 0, 'ui.bar_fill_red', { depth: false })
+      .setOrigin(0, 0.5)
+      .setDisplaySize(this.bossW, bh * 0.5);
     this.bossName = ui.add
       .bitmapText(0, -16 * k, UI_FONT, '', Math.round(15 * k + 4))
       .setOrigin(0.5, 1)
@@ -70,13 +83,53 @@ export class HudExtras {
       .container(width / 2, 64 * k, [bg, this.bossFill, this.bossName])
       .setDepth(70)
       .setVisible(false);
+    if (getAssetInfo('ui.icon_boss_arena')) {
+      // Щит с черепом слева от полосы.
+      const bi = spawnSprite(ui, -this.bossW / 2 - 18 * k, 0, 'ui.icon_boss_arena', { depth: false });
+      bi.setScale((30 * k) / Math.max(bi.frame.width, bi.frame.height));
+      this.bossBox.add(bi);
+    }
     const onBoss = (b: { name: string; frac: number; phase: number } | null) => {
       this.bossBox.setVisible(!!b);
       if (!b) return;
       this.bossName.setText(`${b.name}${b.phase > 1 ? ` · ${t('boss.phase_n', { n: b.phase })}` : ''}`);
-      ui.tweens.add({ targets: this.bossFill, width: Math.max(0, this.bossW * b.frac), duration: 250 });
+      ui.tweens.add({
+        targets: this.bossFill,
+        displayWidth: Math.max(0, this.bossW * b.frac),
+        duration: 250,
+      });
     };
     ev.on(BOSS_BAR, onBoss);
+    // Погода: значок у часов, при смене — плашка с тем, как она действует.
+    const onWeather = (w: { kind: string; icon: string | null; sheltered: boolean }) => {
+      const info = w.icon ? getAssetInfo(w.icon) : null;
+      if (!info) this.weatherIcon?.setVisible(false);
+      else {
+        if (!this.weatherIcon)
+          this.weatherIcon = ui.add.image(0, clockText.y, info.group, info.frame).setDepth(60);
+        this.weatherIcon.setTexture(info.group, info.frame).setVisible(true);
+        this.weatherIcon.setScale(
+          (26 * k) / Math.max(this.weatherIcon.frame.width, this.weatherIcon.frame.height),
+        );
+        this.weatherIcon.setAlpha(w.sheltered ? 0.35 : 1);
+      }
+      if (w.kind !== this.weatherKind) {
+        const first = this.weatherKind === '';
+        this.weatherKind = w.kind;
+        this.shelterTold = false;
+        if (!(first && w.kind === 'clear'))
+          this.world.progress.notify({
+            kind: 'info',
+            text: t(`weather.${w.kind}`),
+            icon: w.icon ?? undefined,
+          });
+      } else if (w.sheltered && w.icon && !this.shelterTold) {
+        // Про укрытие — один раз за непогоду.
+        this.shelterTold = true;
+        this.world.progress.notify({ kind: 'info', text: t('weather.shelter'), icon: w.icon });
+      }
+    };
+    ev.on(WEATHER, onWeather);
     // Счётчик кровавой ночи — под часами.
     this.bloodText = ui.add
       .bitmapText(
@@ -105,7 +158,17 @@ export class HudExtras {
     this.miniImg = ui.add
       .image(mx, my, key)
       .setDisplaySize(MINIMAP_PX * k, MINIMAP_PX * k)
-      .setDepth(55);
+      .setDepth(55)
+      .setInteractive({ useHandCursor: true });
+    // Рамка мини-карты из кита (s34) — кольцо с заклёпками под картой.
+    if (getAssetInfo('ui.kit.minimap_frame')) {
+      const fr = spawnSprite(ui, mx, my, 'ui.kit.minimap_frame', { depth: false }).setDepth(54);
+      fr.setScale((MINIMAP_PX * k * 1.2) / Math.max(fr.frame.width, fr.frame.height));
+    }
+    // Тап по мини-карте — полная карта (прокрутка и зум).
+    this.miniImg.on('pointerup', () => {
+      if (!ui.scene.isActive(SceneKeys.Map)) ui.scene.launch(SceneKeys.Map);
+    });
     // Круг — прозрачностью в самой текстуре (drawMinimap): маска-трафарет на телефоне стоит ~10 мс кадра.
     // Обучение: панель сверху, стрелка, «Пропустить».
     // Между строкой состояний слева и мини-картой справа, ниже отсчёта до кровавой ночи.
@@ -119,8 +182,7 @@ export class HudExtras {
       .setOrigin(0.5)
       .setMaxWidth(tw - skipW - 24 * k);
     // Фон и «Пропустить» — из атласа ui и BitmapText: Graphics/Text рвут пакет отрисовки (~1.5 мс на телефоне).
-    const pi = getAssetInfo('ui.panel_9slice')!;
-    const tbg = ui.add.nineslice(0, 0, pi.group, pi.frame, tw, th, 14, 14, 14, 14).setTint(0xffd9a0);
+    const tbg = panel(ui, 0, 0, tw, th, true);
     const skip = ui.add
       .bitmapText(tw / 2 - skipW / 2 - 6 * k, 0, UI_FONT, t('tut.skip'), Math.round(12 * k + 4))
       .setOrigin(0.5)
@@ -140,6 +202,7 @@ export class HudExtras {
     ui.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       ev.off(NOTIFY, onNotify);
       ev.off(BOSS_BAR, onBoss);
+      ev.off(WEATHER, onWeather);
       ev.off('tutorial-step', onStep);
     });
   }
@@ -179,8 +242,11 @@ export class HudExtras {
             : n.kind === 'note'
               ? 0x5ab4ff
               : 0xe0a040;
-    const bg = ui.add.rectangle(0, 0, w, 40 * k, 0x1d1a16, 0.95).setStrokeStyle(2, color);
-    const parts: Phaser.GameObjects.GameObject[] = [bg];
+    // Плашка — панель из атласа ui, цвет вида уведомления — тонкой полосой слева.
+    // Плашка кита с лампочкой слева; лампочка — цветом вида уведомления.
+    const bg = notifyPlaque(ui, 0, 0, w + 26 * k, 44 * k);
+    const stripe = ui.add.circle(-w / 2 - 13 * k + 16 * k, 0, 5 * k, color).setAlpha(0.55);
+    const parts: Phaser.GameObjects.GameObject[] = [bg, stripe];
     let x = -w / 2 + 14 * k;
     if (hasIcon) {
       const ic = spawnSprite(ui, x + 14 * k, 0, n.icon!, { depth: false }).setOrigin(0.5);
@@ -289,6 +355,7 @@ export class HudExtras {
     this.clockArrow
       ?.setX(this.clockText.x - this.clockText.width - 22 * this.k)
       .setRotation(((w.dayNight.seconds % dn.fullDaySec) / dn.fullDaySec) * Math.PI * 2);
+    this.weatherIcon?.setX(this.clockText.x - this.clockText.width - (this.clockArrow ? 62 : 26) * this.k);
     // До кровавой ночи (каждая bloodNightEvery-я): пульс красным за игровой час.
     const every = dn.bloodNightEvery;
     const day = w.dayState.day;
@@ -319,6 +386,7 @@ export class HudExtras {
       }
       this.drawMiniDots(Math.floor(h.x) + 0.5, Math.floor(h.y) + 0.5);
     }
+    this.updateTracking(time);
     // Стрелка обучения к цели в мире покачивается.
     const tg = this.tutorialTarget();
     const cam = w.cameras.main;
@@ -328,6 +396,71 @@ export class HudExtras {
       this.arrow.setVisible(true).setPosition(sx - 11 * this.k, sy - 22 * this.k);
     } else this.arrow.setVisible(false);
   }
+
+  /**
+   * Отслеживаемая метка (как в BOTW/Valheim): цель на экране — покачивающийся значок над ней,
+   * за экраном — стрелка у края в её сторону; под ними — расстояние. Дошёл — метка снимается.
+   */
+  private updateTracking(time: number): void {
+    const w = this.world;
+    const tr = w.progress.map.tracked;
+    if (!tr) {
+      this.trackArrow?.setVisible(false);
+      this.trackText?.setVisible(false);
+      return;
+    }
+    const k = this.k;
+    const ui = this.ui;
+    if (!this.trackArrow) {
+      this.trackArrow = ui.add.triangle(0, 0, 0, -12, 24, 0, 0, 12).setStrokeStyle(2, 0x000000).setDepth(66);
+      this.trackText = ui.add
+        .bitmapText(0, 0, UI_FONT, '', Math.max(14, Math.round(13 * k + 3)))
+        .setOrigin(0.5, 0)
+        .setDepth(66);
+    }
+    const h = w.hero.pos;
+    const dist = Math.hypot(tr.x - h.x, tr.y - h.y);
+    const reach = (registry().prog.map['pins'] as { reachTiles?: number } | undefined)?.reachTiles ?? 3;
+    if (dist <= reach) {
+      w.progress.setTracked(null);
+      w.progress.notify({ kind: 'info', text: t('pin.reached', { name: tr.label }), icon: 'ui.marker_pin' });
+      return;
+    }
+    const cam = w.cameras.main;
+    const sx = (tr.x * TILE - cam.worldView.x) * cam.zoom;
+    const sy = (tr.y * TILE - cam.worldView.y) * cam.zoom;
+    const { width, height } = ui.scale;
+    const m = 48 * k;
+    const col = Phaser.Display.Color.HexStringToColor(tr.color).color;
+    const a = this.trackArrow!;
+    const txt = this.trackText!;
+    a.setFillStyle(col).setVisible(true);
+    txt.setText(`${tr.label} · ${Math.round(dist)} м`).setVisible(true);
+    if (sx > m && sx < width - m && sy > m && sy < height - m) {
+      // На экране — стрелка вниз над точкой, покачивается.
+      a.setPosition(sx, sy - 30 - Math.abs(Math.sin(time / 250)) * 8).setRotation(Math.PI / 2);
+      txt.setPosition(sx, sy - 22);
+    } else {
+      // За экраном — у края, остриём к цели.
+      const cx = width / 2;
+      const cy = height / 2;
+      const ang = Math.atan2(sy - cy, sx - cx);
+      const kx = (width / 2 - m) / Math.abs(Math.cos(ang) || 1e-6);
+      const ky = (height / 2 - m) / Math.abs(Math.sin(ang) || 1e-6);
+      const r = Math.min(kx, ky);
+      const ex = cx + Math.cos(ang) * r;
+      const ey = cy + Math.sin(ang) * r;
+      a.setPosition(ex, ey).setRotation(ang);
+      const hw = txt.width / 2 + 8;
+      txt.setPosition(
+        Phaser.Math.Clamp(ex - Math.cos(ang) * 30, hw, width - hw),
+        Phaser.Math.Clamp(ey - Math.sin(ang) * 30 - 8, 8, height - 30),
+      );
+    }
+  }
+
+  private trackArrow: Phaser.GameObjects.Triangle | null = null;
+  private trackText: Phaser.GameObjects.BitmapText | null = null;
 
   private drawMinimap(hx: number, hy: number): ImageData {
     const w = this.world;
@@ -379,6 +512,31 @@ export class HudExtras {
     if (core) dot(core.x, core.y, '#ff5040', 3);
     for (const o of w.outposts()) dot(o.x, o.y, '#40c0ff', 3);
     for (const e of w.enemies.alive) if (!e.hidden && !e.passive) dot(e.x, e.y, '#ff3030', 1.6);
+    // Метки игрока (цвет типа) и оставленный транспорт.
+    const types = w.progress.pinTypes;
+    for (const p of w.progress.pins) dot(p.x, p.y, types[p.type]?.color ?? '#ffffff', 2.4);
+    for (const v of w.vehicles.list) if (v !== w.vehicles.driving) dot(v.s.x, v.s.y, '#9ad0ff', 2.2);
+    // Отслеживаемая точка: внутри — кольцо, снаружи — засечка на краю в её сторону.
+    const tr = w.progress.map.tracked;
+    if (tr) {
+      const dx = (tr.x - hx) / MINIMAP_STEP;
+      const dy = (tr.y - hy) / MINIMAP_STEP;
+      const d = Math.hypot(dx, dy);
+      c.strokeStyle = '#ffffff';
+      c.lineWidth = 2;
+      c.beginPath();
+      if (d <= R - 5) c.arc(R + dx, R + dy, 4, 0, Math.PI * 2);
+      else {
+        const a = Math.atan2(dy, dx);
+        c.fillStyle = tr.color;
+        c.moveTo(R + Math.cos(a) * (R - 2), R + Math.sin(a) * (R - 2));
+        c.lineTo(R + Math.cos(a + 0.25) * (R - 10), R + Math.sin(a + 0.25) * (R - 10));
+        c.lineTo(R + Math.cos(a - 0.25) * (R - 10), R + Math.sin(a - 0.25) * (R - 10));
+        c.closePath();
+        c.fill();
+      }
+      c.stroke();
+    }
     for (const b of w.bosses.bosses)
       if (b.alive && Math.hypot(b.x - hx, b.y - hy) < 60) dot(b.x, b.y, '#ffd040', 3);
     const h = w.hero.pos;

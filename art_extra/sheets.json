@@ -5,16 +5,645 @@
       "file": "s24_ui_extra.png",
       "folder": "ui",
       "key": "magenta",
-      "grid": [5, 5],
+      "grid": [
+        5,
+        5
+      ],
       "scaleMode": "fit_box",
       "targetPx": 64,
       "pivot": "center",
       "names": [
-        "icon_bleeding", "icon_poison", "icon_infection", "icon_fracture", "icon_lock",
-        "icon_hands", "icon_craft_book", "icon_skills", "icon_journal", "icon_map",
-        "icon_settings", "icon_pause", "icon_sprint", "icon_vehicle_enter", "icon_vehicle_exit",
-        "icon_refuel", "icon_repair", "icon_trunk", "icon_level_up", "icon_task_done",
-        "icon_note", "icon_xp", "icon_sleep", "btn_teleport", "icon_boss_arena"
+        "icon_bleeding",
+        "icon_poison",
+        "icon_infection",
+        "icon_fracture",
+        "icon_lock",
+        "icon_hands",
+        "icon_craft_book",
+        "icon_skills",
+        "icon_journal",
+        "icon_map",
+        "icon_settings",
+        "icon_pause",
+        "icon_sprint",
+        "icon_vehicle_enter",
+        "icon_vehicle_exit",
+        "icon_refuel",
+        "icon_repair",
+        "icon_trunk",
+        "icon_level_up",
+        "icon_task_done",
+        "icon_note",
+        "icon_xp",
+        "icon_sleep",
+        "btn_teleport",
+        "icon_boss_arena"
+      ]
+    },
+    {
+      "file": "s25_skills.png",
+      "folder": "ui/skills",
+      "key": "magenta",
+      "grid": [
+        4,
+        6
+      ],
+      "scaleMode": "fit_box",
+      "targetPx": 64,
+      "pivot": "center",
+      "names": [
+        "skill_fighter_1",
+        "skill_fighter_2",
+        "skill_fighter_3",
+        "skill_fighter_4",
+        "skill_fighter_5",
+        "skill_fighter_6",
+        "skill_gatherer_1",
+        "skill_gatherer_2",
+        "skill_gatherer_3",
+        "skill_gatherer_4",
+        "skill_gatherer_5",
+        "skill_gatherer_6",
+        "skill_engineer_1",
+        "skill_engineer_2",
+        "skill_engineer_3",
+        "skill_engineer_4",
+        "skill_engineer_5",
+        "skill_engineer_6",
+        "skill_survivor_1",
+        "skill_survivor_2",
+        "skill_survivor_3",
+        "skill_survivor_4",
+        "skill_survivor_5",
+        "skill_survivor_6"
+      ]
+    },
+    {
+      "file": "s26_walls_extra.png",
+      "folder": "building/walls",
+      "key": "magenta",
+      "grid": [
+        5,
+        8
+      ],
+      "scaleMode": "special",
+      "targetPx": 64,
+      "pivot": "see building.json",
+      "overrides": [
+        {
+          "match": ".*_door_open",
+          "scaleMode": "height",
+          "targetPx": 96,
+          "pivot": "top_left"
+        }
+      ],
+      "names": [
+        "wood_top_end_left",
+        "wood_top_end_right",
+        "wood_top_vertical",
+        "wood_top_corner",
+        "wood_face_end_left",
+        "wood_face_end_right",
+        "wood_door_open",
+        "wood_face_cracked",
+        "logs_top_end_left",
+        "logs_top_end_right",
+        "logs_top_vertical",
+        "logs_top_corner",
+        "logs_face_end_left",
+        "logs_face_end_right",
+        "logs_door_open",
+        "logs_face_cracked",
+        "brick_top_end_left",
+        "brick_top_end_right",
+        "brick_top_vertical",
+        "brick_top_corner",
+        "brick_face_end_left",
+        "brick_face_end_right",
+        "brick_door_open",
+        "brick_face_cracked",
+        "steel_top_end_left",
+        "steel_top_end_right",
+        "steel_top_vertical",
+        "steel_top_corner",
+        "steel_face_end_left",
+        "steel_face_end_right",
+        "steel_door_open",
+        "steel_face_cracked",
+        "concrete_top_end_left",
+        "concrete_top_end_right",
+        "concrete_top_vertical",
+        "concrete_top_corner",
+        "concrete_face_end_left",
+        "concrete_face_end_right",
+        "concrete_door_open",
+        "concrete_face_cracked"
+      ]
+    },
+    {
+      "file": "s27_fences_gates.png",
+      "folder": "building/walls",
+      "key": "magenta",
+      "grid": [
+        6,
+        5
+      ],
+      "scaleMode": "height",
+      "targetPx": 64,
+      "pivot": "bottom_center",
+      "pxScale": 0.366,
+      "overrides": [
+        {
+          "match": "road_gate_.*|arena_.*",
+          "folder": "world/common",
+          "pxScale": 0.64
+        },
+        {
+          "match": "road_gate_lock",
+          "folder": "world/common",
+          "pxScale": null,
+          "scaleMode": "fit_box",
+          "targetPx": 64,
+          "pivot": "center"
+        }
+      ],
+      "names": [
+        "wood_fence_post",
+        "wood_fence_vertical",
+        "wood_fence_corner",
+        "wood_fence_gate_closed",
+        "wood_fence_gate_open",
+        "logs_fence_post",
+        "logs_fence_vertical",
+        "logs_fence_corner",
+        "logs_fence_gate_closed",
+        "logs_fence_gate_open",
+        "brick_fence_post",
+        "brick_fence_vertical",
+        "brick_fence_corner",
+        "brick_fence_gate_closed",
+        "brick_fence_gate_open",
+        "steel_fence_post",
+        "steel_fence_vertical",
+        "steel_fence_corner",
+        "steel_fence_gate_closed",
+        "steel_fence_gate_open",
+        "concrete_fence_post",
+        "concrete_fence_vertical",
+        "concrete_fence_corner",
+        "concrete_fence_gate_closed",
+        "concrete_fence_gate_open",
+        "road_gate_closed",
+        "road_gate_open",
+        "road_gate_lock",
+        "arena_stone",
+        "arena_chain"
+      ]
+    },
+    {
+      "file": "s28_hero_extra.png",
+      "folder": "characters/hero",
+      "key": "magenta",
+      "grid": [
+        4,
+        4
+      ],
+      "scaleMode": "rig",
+      "targetPx": 96,
+      "pivot": "rig",
+      "overrides": [
+        {
+          "match": "hero_pose_.*",
+          "pxScale": 0.33,
+          "pivot": "bottom_center"
+        }
+      ],
+      "names": [
+        "hero_pose_drive",
+        "hero_pose_sleep",
+        "hero_pose_kneel",
+        "hero_pose_eat",
+        "hero_pose_drink",
+        "hero_pose_down",
+        "hero_pose_carry",
+        "hero_pose_hammer",
+        "forearm_grip",
+        "forearm_point",
+        "head_eat",
+        "head_strain",
+        "head_cold",
+        "head_hot",
+        "head_sick",
+        "leg_seated"
+      ]
+    },
+    {
+      "file": "s29_infected_poses.png",
+      "folder": "characters/enemies",
+      "key": "magenta",
+      "grid": [
+        4,
+        7
+      ],
+      "scaleMode": "rig",
+      "targetPx": 96,
+      "pivot": "bottom_center",
+      "names": [
+        "walker_walk_a",
+        "crawler_walk_a",
+        "spitter_walk_a",
+        "sprinter_walk_a",
+        "bloated_walk_a",
+        "soldier_walk_a",
+        "glowing_walk_a",
+        "walker_walk_b",
+        "crawler_walk_b",
+        "spitter_walk_b",
+        "sprinter_walk_b",
+        "bloated_walk_b",
+        "soldier_walk_b",
+        "glowing_walk_b",
+        "walker_attack",
+        "crawler_attack",
+        "spitter_attack",
+        "sprinter_attack",
+        "bloated_attack",
+        "soldier_attack",
+        "glowing_attack",
+        "walker_hurt",
+        "crawler_hurt",
+        "spitter_hurt",
+        "sprinter_hurt",
+        "bloated_hurt",
+        "soldier_hurt",
+        "glowing_hurt"
+      ]
+    },
+    {
+      "file": "s30_animal_poses.png",
+      "folder": "characters/animals",
+      "key": "magenta",
+      "grid": [
+        3,
+        9
+      ],
+      "scaleMode": "rig",
+      "targetPx": 96,
+      "pivot": "bottom_center",
+      "names": [
+        "dog_run_a",
+        "toad_run_a",
+        "raptor_run_a",
+        "scorpion_run_a",
+        "armored_lizard_run_a",
+        "snow_wolf_run_a",
+        "deer_run_a",
+        "boar_run_a",
+        "hare_run_a",
+        "dog_run_b",
+        "toad_run_b",
+        "raptor_run_b",
+        "scorpion_run_b",
+        "armored_lizard_run_b",
+        "snow_wolf_run_b",
+        "deer_run_b",
+        "boar_run_b",
+        "hare_run_b",
+        "dog_attack",
+        "toad_attack",
+        "raptor_attack",
+        "scorpion_attack",
+        "armored_lizard_attack",
+        "snow_wolf_attack",
+        "deer_attack",
+        "boar_attack",
+        "hare_attack"
+      ]
+    },
+    {
+      "file": "s31_world_extra.png",
+      "folder": "world/common",
+      "key": "magenta",
+      "grid": [
+        4,
+        5
+      ],
+      "scaleMode": "height",
+      "targetPx": 64,
+      "pivot": "bottom_center",
+      "pxScale": 0.33,
+      "overrides": [
+        {
+          "match": "devourer_.*",
+          "pxScale": 0.5
+        },
+        {
+          "match": "frost_.*|zero_tentacle_rubble|arena_hook_rack",
+          "pxScale": 0.4
+        },
+        {
+          "match": "note_world",
+          "pxScale": 0.2
+        }
+      ],
+      "names": [
+        "devourer_hole",
+        "devourer_mound",
+        "queen_egg",
+        "queen_egg_open",
+        "frost_spikes",
+        "frost_crystal",
+        "zero_tentacle_rubble",
+        "arena_hook_rack",
+        "base_core_2",
+        "base_core_3",
+        "note_world",
+        "quest_board",
+        "grave_marker",
+        "signpost",
+        "trophy_shelf",
+        "fuel_barrel",
+        "lamp_post",
+        "map_table",
+        "campfire_spit",
+        "sat_dish_broken"
+      ]
+    },
+    {
+      "file": "s32_effects_extra.png",
+      "folder": "effects",
+      "key": "black",
+      "grid": [
+        5,
+        5
+      ],
+      "scaleMode": "fit_box",
+      "targetPx": 64,
+      "pivot": "center",
+      "names": [
+        "rain_streak",
+        "rain_splash",
+        "snowflake",
+        "snow_puff",
+        "sand_gust",
+        "toxic_haze",
+        "leaf",
+        "bleed_drops",
+        "arc_1",
+        "arc_2",
+        "arc_3",
+        "flame_jet_1",
+        "flame_jet_2",
+        "fire_trap_burst",
+        "saw_blur",
+        "shockwave",
+        "cold_breath",
+        "ice_burst",
+        "heal_plus",
+        "levelup_burst",
+        "poison_bubbles",
+        "tracer_streak",
+        "step_dust",
+        "ripple",
+        "sleep_curls"
+      ]
+    },
+    {
+      "file": "s33_vehicles_extra.png",
+      "folder": "icons/vehicles",
+      "key": "magenta",
+      "grid": [
+        3,
+        7
+      ],
+      "scaleMode": "fit_box",
+      "targetPx": 64,
+      "pivot": "center",
+      "names": [
+        "icon_bicycle",
+        "icon_moped",
+        "icon_quad",
+        "icon_moto_sidecar",
+        "icon_pickup",
+        "icon_buggy",
+        "icon_snowcat",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "file": "s34_ui_kit.png",
+      "folder": "ui/kit",
+      "key": "magenta",
+      "grid": [
+        6,
+        6
+      ],
+      "points": [
+        [
+          125,
+          135
+        ],
+        [
+          325,
+          135
+        ],
+        [
+          525,
+          135
+        ],
+        [
+          728,
+          135
+        ],
+        [
+          928,
+          135
+        ],
+        [
+          1130,
+          135
+        ],
+        [
+          130,
+          320
+        ],
+        [
+          345,
+          320
+        ],
+        [
+          541,
+          320
+        ],
+        [
+          731,
+          320
+        ],
+        [
+          937,
+          320
+        ],
+        [
+          1133,
+          320
+        ],
+        [
+          123,
+          515
+        ],
+        [
+          332,
+          515
+        ],
+        [
+          523,
+          515
+        ],
+        [
+          683,
+          515
+        ],
+        [
+          927,
+          515
+        ],
+        [
+          1162,
+          515
+        ],
+        [
+          164,
+          680
+        ],
+        [
+          436,
+          680
+        ],
+        [
+          677,
+          680
+        ],
+        [
+          904,
+          680
+        ],
+        [
+          1061,
+          680
+        ],
+        [
+          1165,
+          680
+        ],
+        [
+          118,
+          880
+        ],
+        [
+          318,
+          880
+        ],
+        [
+          520,
+          880
+        ],
+        [
+          720,
+          880
+        ],
+        [
+          922,
+          880
+        ],
+        [
+          1133,
+          880
+        ],
+        [
+          100,
+          1070
+        ],
+        [
+          290,
+          1070
+        ],
+        [
+          500,
+          1070
+        ],
+        [
+          722,
+          1070
+        ],
+        [
+          933,
+          1070
+        ],
+        [
+          1137,
+          1070
+        ]
+      ],
+      "scaleMode": "rig",
+      "targetPx": 64,
+      "pivot": "center",
+      "overrides": [
+        {
+          "match": "cursor_.*|btn_round_.*|checkbox_.*|slider_knob|bottlecap",
+          "scaleMode": "fit_box",
+          "targetPx": 64
+        }
+      ],
+      "names": [
+        "btn_normal",
+        "btn_hover",
+        "btn_pressed",
+        "btn_disabled",
+        "btn_primary",
+        "btn_danger",
+        "panel_large",
+        "panel_popup",
+        "tooltip_frame",
+        "title_banner",
+        "notify_plaque",
+        "row_frame",
+        "tab_active",
+        "tab_inactive",
+        "checkbox_off",
+        "checkbox_on",
+        "slider_track",
+        "slider_knob",
+        "bar_frame_long",
+        "bar_fill_green",
+        "bar_fill_gold",
+        "bar_fill_blue",
+        "scroll_track",
+        "scroll_thumb",
+        "btn_round_plus",
+        "btn_round_minus",
+        "btn_round_back",
+        "btn_round_next",
+        "btn_round_ad",
+        "btn_round_home",
+        "cursor_normal",
+        "cursor_active",
+        "cursor_grab",
+        "minimap_frame",
+        "separator",
+        "bottlecap"
       ]
     }
   ]

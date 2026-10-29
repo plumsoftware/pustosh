@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { AssetId } from '../../core/data/schemas';
+import { registry } from '../GameContext';
 import { getAssetInfo } from '../assets/AssetIndex';
 import type { CharacterDef, ResolvedBone } from './RigDef';
 import { EMPTY_POSE, type Pose } from './Pose';
@@ -28,6 +29,12 @@ export interface BoneWorld {
  * Персонаж из частей: Container с картинками костей (порядок по z), иерархия поворотов,
  * поза добавляется к покою. Разворот влево — scaleX = -1 у контейнера.
  */
+/**
+ * Части, нарисованные зеркально к ригу: у рюкзака лямки слева на картинке, а на спине героя (риг смотрит
+ * вправо, рюкзак — слева от торса) они должны прилегать к спине.
+ */
+const MIRRORED_PARTS = new Set(['backpack']);
+
 export class RigInstance {
   readonly container: Phaser.GameObjects.Container;
   private nodes: BoneNode[] = [];
@@ -73,6 +80,7 @@ export class RigInstance {
     if (!info || !this.scene.textures.exists(info.group)) return null;
     const img = this.scene.make.image({ key: info.group, frame: info.frame, add: false });
     img.setOrigin(bone.pivot[0], bone.pivot[1]);
+    if (bone.part && MIRRORED_PARTS.has(bone.part)) img.setFlipX(true);
     if (bone.tint !== undefined) img.setTint(bone.tint);
     return img;
   }
@@ -100,7 +108,10 @@ export class RigInstance {
     if (icon) {
       n.img = this.makeImage(icon, n.bone);
       if (n.img) {
-        const k = (HELD_ITEM_FRAC * this.def.height) / Math.max(n.img.frame.width, n.img.frame.height);
+        const held = heldCfg(icon);
+        if (held.mirror) n.img.setTexture(mirroredTexture(this.scene, icon));
+        const k =
+          ((held.frac ?? HELD_ITEM_FRAC) * this.def.height) / Math.max(n.img.frame.width, n.img.frame.height);
         n.bone = { ...n.bone, scale: k };
       }
     }
@@ -228,4 +239,51 @@ function mulColor(a: number, b: number): number {
   const g = (((a >> 8) & 255) * ((b >> 8) & 255)) / 255;
   const bl = ((a & 255) * (b & 255)) / 255;
   return (Math.round(r) << 16) | (Math.round(g) << 8) | Math.round(bl);
+}
+
+/** combat.json → held: размер предмета в руке и отражённые иконки. */
+interface HeldDef {
+  defaultFrac: number;
+  fracByTool: Record<string, number>;
+  fracById: Record<string, number>;
+  mirror: string[];
+}
+
+/** Настройка предмета в руке по его иконке (предмет — по полю icon в items.json). */
+function heldCfg(icon: AssetId): { frac?: number; mirror: boolean } {
+  let reg;
+  try {
+    reg = registry();
+  } catch {
+    return { mirror: false };
+  }
+  const H = reg.combat['held'] as HeldDef | undefined;
+  const item = reg.items.all.find((i) => i.icon === icon);
+  if (!H || !item) return { frac: H?.defaultFrac, mirror: false };
+  const tool = typeof item['toolType'] === 'string' ? (item['toolType'] as string) : '';
+  return {
+    frac: H.fracById[item.id] ?? H.fracByTool[tool] ?? H.defaultFrac,
+    mirror: H.mirror.includes(item.id),
+  };
+}
+
+/**
+ * Иконка, отражённая вдоль рукояти: зеркально по X и поворот на 90° по часовой — рукоять снова
+ * внизу слева, но рабочая часть (боёк молотка) смотрит вперёд, как лезвие топора. Кэшируется.
+ */
+function mirroredTexture(scene: Phaser.Scene, icon: AssetId): string {
+  const key = `held-mirror:${icon}`;
+  if (scene.textures.exists(key)) return key;
+  const info = getAssetInfo(icon)!;
+  const f = scene.textures.getFrame(info.group, info.frame);
+  const w = f.cutWidth;
+  const h = f.cutHeight;
+  const tex = scene.textures.createCanvas(key, h, w)!;
+  const c = tex.context;
+  c.translate(h / 2, w / 2);
+  c.rotate(Math.PI / 2);
+  c.scale(-1, 1);
+  c.drawImage(f.source.image as CanvasImageSource, f.cutX, f.cutY, w, h, -w / 2, -h / 2, w, h);
+  tex.refresh();
+  return key;
 }

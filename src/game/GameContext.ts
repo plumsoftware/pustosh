@@ -14,7 +14,7 @@ export interface GameContext {
   /** Параметры адреса (?gallery=…, ?scene=stress) для отладки. */
   readonly params: URLSearchParams;
   /** Масштаб рендера: пикселей канваса на CSS-пиксель (1 — как CSS, 2 — физическое разрешение). */
-  readonly renderScale: number;
+  renderScale: number;
   /** Заполняется в PreloadScene. */
   registry: Registry | null;
   /** Сохранения (создаётся в PreloadScene, когда известны правила из данных). */

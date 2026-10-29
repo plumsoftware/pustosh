@@ -181,3 +181,54 @@ export function ripple(scene: Phaser.Scene, x: number, y: number, depth = 0): vo
     onComplete: () => r.destroy(),
   });
 }
+
+export interface BurstOpts {
+  /** Размер по длинной стороне в начале и в конце, px. */
+  from: number;
+  to: number;
+  ms: number;
+  depth: number;
+  /** Сложение цветов (эффекты листа s32 нарисованы на чёрном). */
+  add?: boolean;
+  rotation?: number;
+  /** Сдвиг вверх за время жизни, px. */
+  rise?: number;
+  /** Точка привязки (по умолчанию центр). */
+  origin?: [number, number];
+  alpha?: number;
+}
+
+/**
+ * Вспышка спрайтом: появляется, растёт от from до to и гаснет за ms (ударная волна, всплеск,
+ * шипы из земли). Нет спрайта в атласе — null, вызывающий обходится без него.
+ */
+export function burst(
+  scene: Phaser.Scene,
+  id: string,
+  x: number,
+  y: number,
+  o: BurstOpts,
+): Phaser.GameObjects.Image | null {
+  const info = getAssetInfo(id);
+  if (!info) return null;
+  const img = scene.add
+    .image(x, y, info.group, info.frame)
+    .setOrigin(...(o.origin ?? [0.5, 0.5]))
+    .setDepth(o.depth)
+    .setRotation(o.rotation ?? 0)
+    .setAlpha(o.alpha ?? 1);
+  if (o.add) img.setBlendMode(Phaser.BlendModes.ADD);
+  const side = Math.max(img.frame.width, img.frame.height);
+  img.setScale(o.from / side);
+  scene.tweens.add({
+    targets: img,
+    scale: o.to / side,
+    y: y - (o.rise ?? 0),
+    duration: o.ms,
+    ease: 'Quad.Out',
+    onComplete: () => img.destroy(),
+  });
+  // Гаснет к концу жизни, а не с первого кадра.
+  scene.tweens.add({ targets: img, alpha: 0, duration: o.ms, ease: 'Cubic.In' });
+  return img;
+}

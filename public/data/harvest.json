@@ -16,5 +16,9 @@
   "tree": "wood", "bush": "plant", "grass": "plant", "fence": "wood", "deposit": "stone", "rock": "stone",
   "scrap": "metal", "vehicle_wreck": "metal", "hazard": "metal", "decor": "wood", "furniture": "wood", "loot": "metal"
  },
- "noteObjects": ["specimen_tank", "science_desk"]
+ "noteObjects": ["specimen_tank", "science_desk"],
+ "fishing": {
+  "_note": "Рыбалка удочкой (toolType fishing) у воды: «Собрать» — заброс, через baseSec / (1 + навык «Рыбак») — улов с шансом chance; износ удочки wear за заброс; уйти — отмена",
+  "baseSec": 7, "chance": 0.8, "item": "fish_raw", "waterTiles": ["water_shallow"], "reachTiles": 1.6, "wear": 1, "xp": 4
+ }
 }

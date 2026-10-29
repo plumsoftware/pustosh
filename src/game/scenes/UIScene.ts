@@ -19,10 +19,12 @@ const BAR_SMOOTH_SEC = 0.25;
 const BAR_TAIL_SEC = 0.5;
 const BLINK_MS = 400;
 const PRESS_SCALE = 0.92;
-/** Бег — стик оттянут дальше основания: доля радиуса основания. */
-const STICK_RUN_PULL = 1.4;
+/** Бег — стик оттянут дальше основания: доля радиуса основания (было 1.4, отодвинуто на 30%). */
+const STICK_RUN_PULL = 1.82;
 const PRESS_MS = 120;
 const TOAST_MS = 2000;
+/** Как часто пересчитывать предмет для кнопки «Аптечка», мс. */
+const HEAL_PICK_MS = 500;
 /** Температура, при которой кольцо заполнено (|t|). */
 const TEMP_RING_FULL = 8;
 
@@ -69,6 +71,9 @@ export class UIScene extends Phaser.Scene {
   private actionOverlay: Phaser.GameObjects.Image | null = null;
   private hotbar!: Phaser.GameObjects.Container;
   private hotbarKey = '';
+  /** Что применит кнопка «Аптечка» (пересчёт раз в HEAL_PICK_MS). */
+  private healPick: string | null = null;
+  private healPickAt = 0;
 
   constructor() {
     super(SceneKeys.UI);
@@ -192,6 +197,9 @@ export class UIScene extends Phaser.Scene {
 
   // ------------------------------------------------------------------ здоровье и показатели
 
+  private hpBottom = 0;
+  private statsBottom = 0;
+
   private buildHealth(): void {
     const k = this.k;
     const frame = getAssetInfo('ui.bar_frame')!;
@@ -200,6 +208,8 @@ export class UIScene extends Phaser.Scene {
     const x = 14;
     const y = 14;
     const f = spawnSprite(this, x, y, 'ui.bar_frame', { depth: false }).setOrigin(0).setDisplaySize(w, h);
+    // Низ рамки HP: от него раскладываются статы и значки состояний.
+    this.hpBottom = y + h;
     const fill = getAssetInfo('ui.bar_fill_red')!;
     const fw = (w * fill.size[0]) / frame.size[0];
     const fh = (h * fill.size[1]) / frame.size[1];
@@ -233,7 +243,8 @@ export class UIScene extends Phaser.Scene {
       ['radiation', 'ui.icon_radiation', 0x6aff4a],
     ];
     const size = 40 * k;
-    const y = 14 + 60 * k + size / 2;
+    const y = this.hpBottom + 6 * k + size / 2;
+    this.statsBottom = y + size / 2;
     defs.forEach(([key, icon, color], i) => {
       const x = 14 + size / 2 + i * (size + 8 * k);
       this.add.circle(x, y, size / 2, 0x000000, 0.45);
@@ -273,7 +284,7 @@ export class UIScene extends Phaser.Scene {
     this.condKey = key;
     this.conds.removeAll(true);
     const k = this.k;
-    const y = 14 + 60 * k + 40 * k + 18 * k;
+    const y = this.statsBottom + 18 * k;
     const size = 30 * k;
     list.forEach((name, i) => {
       const x = 14 + size / 2 + i * (size + 6 * k);
@@ -284,7 +295,9 @@ export class UIScene extends Phaser.Scene {
         this.conds.add(icon);
       } else {
         // Запасной вариант без атласа — плашка с названием.
-        const label = this.add.bitmapText(x, y, UI_FONT, t(`cond.${name}`), Math.round(12 * k + 3)).setOrigin(0.5);
+        const label = this.add
+          .bitmapText(x, y, UI_FONT, t(`cond.${name}`), Math.round(12 * k + 3))
+          .setOrigin(0.5);
         this.conds.add(label);
       }
     });
@@ -435,14 +448,23 @@ export class UIScene extends Phaser.Scene {
         .setOrigin(0.5, 1)
         .setDepth(42)
         .setTint(0xffb040);
+      if (getAssetInfo('ui.icon_sprint')) {
+        this.runIcon = spawnSprite(this, 0, 0, 'ui.icon_sprint', { depth: false })
+          .setOrigin(0.5, 1)
+          .setDepth(42);
+        this.runIcon.setScale((30 * this.k) / Math.max(this.runIcon.frame.width, this.runIcon.frame.height));
+      }
     }
     this.runRing.setPosition(x, y).setAlpha(1);
-    this.runText!.setPosition(x, y - this.stickR * STICK_RUN_PULL - 6).setVisible(false);
+    const ry = y - this.stickR * STICK_RUN_PULL - 6;
+    this.runText!.setPosition(x, ry).setVisible(false);
+    this.runIcon?.setPosition(x, ry - this.runText!.height - 2).setVisible(false);
     this.drawRunRing(false);
   }
 
   private runRing: Phaser.GameObjects.Graphics | null = null;
   private runText: Phaser.GameObjects.BitmapText | null = null;
+  private runIcon: Phaser.GameObjects.Image | null = null;
   private stickRunning = false;
   private actionLabel: Phaser.GameObjects.BitmapText | null = null;
   private attackLabel: Phaser.GameObjects.BitmapText | null = null;
@@ -463,6 +485,7 @@ export class UIScene extends Phaser.Scene {
     this.stickKnob?.setTint(run ? 0xffa030 : 0xffffff);
     if (!run) this.stickKnob?.clearTint();
     this.runText?.setVisible(run);
+    this.runIcon?.setVisible(run);
   }
 
   // ------------------------------------------------------------------ пояс и «умная» кнопка
@@ -470,9 +493,14 @@ export class UIScene extends Phaser.Scene {
   /** Пояс 6 слотов снизу по центру (GDD §14) + кнопка рюкзака; перерисовка только при изменении. */
   private updateHotbar(): void {
     const inv = this.world.hero.inv;
+    if (this.time.now >= this.healPickAt) {
+      this.healPickAt = this.time.now + HEAL_PICK_MS;
+      this.healPick = this.world.healItem();
+    }
+    const heal = this.healPick;
     const key =
       inv.hotbar.slots.map((s) => (s ? `${s.id}:${s.count}:${s.durability ?? ''}` : '-')).join('|') +
-      `#${inv.selected}`;
+      `#${inv.selected}#${heal ?? ''}:${heal ? inv.count(heal) : 0}`;
     if (key === this.hotbarKey) return;
     this.hotbarKey = key;
     this.hotbar.removeAll(true);
@@ -524,6 +552,42 @@ export class UIScene extends Phaser.Scene {
         this.add.bitmapText(x - cell / 2 + 4, y - cell / 2 + 2, UI_FONT, String(i + 1), 11).setTint(0xb7a98a),
       );
     }
+    // «Аптечка» слева от пояса (H на ПК): лучшее лекарство или еда для лечения — иконка и сколько есть.
+    const hx = x0 - cell / 2 - 10;
+    const hb = spawnSprite(this, hx, y, 'ui.slot', { depth: false })
+      .setDisplaySize(cell, cell)
+      .setInteractive({ useHandCursor: true });
+    hb.on('pointerdown', () => {
+      this.world.quickHeal();
+      this.healPickAt = 0;
+    });
+    hb.setName('heal');
+    const hIcon = heal ? reg.items.require(heal).icon : 'icons.base.medkit';
+    const hi = spawnSprite(this, hx, y, hIcon, { depth: false });
+    hi.setScale((cell * 0.72) / Math.max(hi.frame.width, hi.frame.height));
+    if (!heal) hi.setAlpha(0.35);
+    this.hotbar.add([hb, hi]);
+    if (heal)
+      this.hotbar.add(
+        this.add
+          .bitmapText(
+            hx + cell / 2 - 4,
+            y + cell / 2 - 2,
+            UI_FONT,
+            String(inv.count(heal)),
+            Math.round(12 * k + 3),
+          )
+          .setOrigin(1, 1),
+      );
+    // Зелёный плюс в углу — знак кнопки (атлас эффектов может ещё грузиться).
+    if (this.textures.exists('effects') && getAssetInfo('effects.heal_plus'))
+      this.hotbar.add(
+        spawnSprite(this, hx - cell / 2 + cell * 0.2, y - cell / 2 + cell * 0.2, 'effects.heal_plus', {
+          depth: false,
+        })
+          .setDisplaySize(cell * 0.32, cell * 0.32)
+          .setAlpha(heal ? 1 : 0.4),
+      );
     // Кнопка рюкзака — инвентарь (Tab / I на ПК).
     const bx = x0 + n * (cell + 4) + cell / 2 + 6;
     const bag = spawnSprite(this, bx, y, 'ui.slot', { depth: false })

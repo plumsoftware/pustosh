@@ -18,6 +18,8 @@
     { "at": [5.4, 2.2], "container": "random" },
     { "at": [1.6, 4.3], "furniture": "random" },
     { "at": [5.4, 4.3], "container": "cardboard_boxes" },
-    { "at": [3.5, 3.4], "furniture": "table" }
+    { "at": [3.5, 3.4], "furniture": "table" },
+    { "at": [5.6, 5.6], "sprite": "assets/world/common/trophy_shelf.png", "kind": "furniture" },
+    { "at": [6.4, 8.6], "sprite": "assets/world/common/fuel_barrel.png", "kind": "furniture" }
   ]
 }

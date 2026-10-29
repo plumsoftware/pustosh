@@ -103,11 +103,15 @@ export class WorldLayout {
     const rng = new Rng(hashSeed(seed, 10));
     this.buildRoads(rng);
     this.computeRoadDist();
-    this.placeRingFences();
+    // Забор и ворота между кольцами — по данным (worldgen.json → ringFences/gates.enabled); выключены — граница мягкая.
+    const fences = this.reg.worldgen.ringFences['enabled'] !== false;
+    if (fences) this.placeRingFences();
     this.placeBunker();
     this.placeArenas(rng);
-    this.placeGates();
-    this.sealRoadsAroundGates();
+    if (fences && this.reg.worldgen.gates['enabled'] !== false) {
+      this.placeGates();
+      this.sealRoadsAroundGates();
+    }
     this.placeRuins(rng);
     this.placeSettlements(rng);
   }

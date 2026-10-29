@@ -1,7 +1,7 @@
 {
   "id": "gate",
   "kind": "gate",
-  "sprite": "assets/replacements/concrete_barrier.png",
+  "sprite": "assets/world/common/road_gate_closed.png",
   "spanExtraTiles": 2,
   "clearRadiusTiles": 3
 }

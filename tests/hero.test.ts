@@ -10,6 +10,8 @@ import {
   targetTemperature,
   type SurvivalEnv,
 } from '../src/core/systems/Survival';
+import { pickHealItem, useItem } from '../src/core/systems/Consumables';
+import { Rng } from '../src/core/util/rng';
 import { readAssetCatalog, readRawData } from '../tools/readGameFiles';
 
 const reg = loadGameData(readRawData(), readAssetCatalog()).registry!;
@@ -68,6 +70,52 @@ describe('Выживание', () => {
     expect(targetTemperature(def, e)).toBeLessThanOrEqual(def.temperature.comfort[1]);
     for (let i = 0; i < 120 / TICK; i++) stepSurvival(v, def, rates, p.hp, e, TICK);
     expect(v.hp).toBe(p.hp);
+  });
+
+  it('погода: холод сверх биома, жажда, радиация — противогаз защищает', () => {
+    const rates = createPlatformConfig(reg.balance, 'yandex', false).survival;
+    const W = reg.worldgen['weather'] as { types: Record<string, { effects?: Record<string, number> }> };
+    // Метель в тундре ночью холоднее, чем без неё.
+    const snow = env({ biome: 5, night: true, day: false, weather: W.types['snow']!.effects });
+    expect(targetTemperature(def, snow)).toBeLessThan(
+      targetTemperature(def, env({ biome: 5, night: true, day: false })),
+    );
+    // Буря: жажда ×1.3.
+    const a = createVitals(p.hp, def);
+    const b = createVitals(p.hp, def);
+    for (let i = 0; i < 60 / TICK; i++) {
+      stepSurvival(a, def, rates, p.hp, env({ biome: 1 }), TICK);
+      stepSurvival(b, def, rates, p.hp, env({ biome: 1, weather: { thirstMul: 1.3 } }), TICK);
+    }
+    expect(100 - b.thirst).toBeCloseTo((100 - a.thirst) * 1.3, 3);
+    // Ядовитая дымка: радиация растёт; противогаз (radRes) режет её.
+    const r1 = createVitals(p.hp, def);
+    const r2 = createVitals(p.hp, def);
+    for (let i = 0; i < 10 / TICK; i++) {
+      stepSurvival(r1, def, rates, p.hp, env({ biome: 1, weather: { radPerSec: 1 } }), TICK);
+      stepSurvival(r2, def, rates, p.hp, env({ biome: 1, radRes: 0.9, weather: { radPerSec: 1 } }), TICK);
+    }
+    expect(r1.radiation).toBeCloseTo(10, 3);
+    expect(r2.radiation).toBeCloseTo(1, 3);
+  });
+
+  it('навыки: «Выносливый желудок» медленнее голод, «Лекарь» сильнее лечит', () => {
+    const rates = createPlatformConfig(reg.balance, 'yandex', false).survival;
+    const a = createVitals(p.hp, def);
+    const b = createVitals(p.hp, def);
+    for (let i = 0; i < 60 / TICK; i++) {
+      stepSurvival(a, def, rates, p.hp, env(), TICK);
+      stepSurvival(b, def, rates, p.hp, env({ needsMul: 0.7 }), TICK);
+    }
+    expect(100 - b.hunger).toBeCloseTo((100 - a.hunger) * 0.7, 3);
+    const v1 = createVitals(p.hp, def);
+    const v2 = createVitals(p.hp, def);
+    v1.hp = 10;
+    v2.hp = 10;
+    const m = createMoveState(p);
+    useItem(reg, 'bandage', v1, m, new Rng(1));
+    useItem(reg, 'bandage', v2, m, new Rng(1), 1.6);
+    expect(v2.hp - 10).toBeCloseTo((v1.hp - 10) * 1.6, 3);
   });
 
   it('голод на нуле отнимает HP, радиация снижает максимум HP', () => {
@@ -185,5 +233,33 @@ describe('Еда и медицина', async () => {
     useItem(reg, 'antirad', v, st, new Rng(1));
     expect(v.radiation).toBe(20);
     expect(useItem(reg, 'wood', v, st, new Rng(1))).toBe('not_usable');
+  });
+});
+
+describe('Кнопка «Аптечка» и еда', () => {
+  const bag = (items: Record<string, number>) => (id: string) => items[id] ?? 0;
+
+  it('хорошая еда лечит больше простой', () => {
+    const hp = (id: string) => Number(reg.items.require(id)['health'] ?? 0);
+    expect(hp('berries')).toBeGreaterThan(0);
+    expect(hp('meat_grilled')).toBeGreaterThan(hp('meat_raw'));
+    expect(hp('ration')).toBeGreaterThan(hp('canned_food'));
+    expect(hp('canned_food')).toBeGreaterThan(hp('berries'));
+  });
+
+  it('сначала лекарство, которого хватает; без лекарств — еда; при полном здоровье — ничего', () => {
+    const v = createVitals(p.hp, def);
+    const have = bag({ bandage: 2, medkit: 1, berries: 5 });
+    expect(pickHealItem(reg, have, v)).toBeNull();
+    v.hp = p.hp - 10;
+    expect(pickHealItem(reg, have, v)).toBe('bandage');
+    v.hp = p.hp - 50;
+    expect(pickHealItem(reg, have, v)).toBe('medkit');
+    expect(pickHealItem(reg, bag({ berries: 5, meat_grilled: 1 }), v)).toBe('meat_grilled');
+    expect(pickHealItem(reg, bag({}), v)).toBeNull();
+    // Кровотечение — то, что его останавливает, даже при полном здоровье.
+    v.hp = p.hp;
+    v.conditions.bleeding = true;
+    expect(pickHealItem(reg, bag({ herbal_poultice: 1, bandage: 1 }), v)).toBe('bandage');
   });
 });

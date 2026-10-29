@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { loadGameData } from '../src/core/data';
 import { makeStack } from '../src/core/inventory';
-import { Enemy, type EnemyCtx, type EnemyEvent } from '../src/core/entities/Enemy';
+import { Enemy, enemyMaxHp, type EnemyCtx, type EnemyEvent } from '../src/core/entities/Enemy';
 import {
   armorReduce,
   autoAim,
@@ -12,7 +12,7 @@ import {
   weaponStats,
 } from '../src/core/systems/Combat';
 import { findPath } from '../src/core/systems/Pathfind';
-import { BloodNight, pickEnemy, SpawnSystem } from '../src/core/systems/Spawn';
+import { BloodNight, pickEnemy, spawnDayMul, SpawnSystem } from '../src/core/systems/Spawn';
 import { Rng } from '../src/core/util/rng';
 import { readAssetCatalog, readRawData } from '../tools/readGameFiles';
 
@@ -39,6 +39,8 @@ function ctx(over: Partial<EnemyCtx> & { hero?: EnemyCtx['hero'] } = {}, walls =
       return walls.has(`${Math.floor(nx)},${Math.floor(ny)}`) ? { x: e.x, y: e.y } : { x: nx, y: ny };
     },
     wallToBreak: () => null,
+    wallBetween: () => false,
+    wallStands: () => false,
     pack: () => [],
     emit: (ev) => events.push(ev),
     ...over,
@@ -116,6 +118,19 @@ describe('Враги: ИИ и особые механики', () => {
     const n = enemy('walker', 9, 0);
     run(n, night.c, 1);
     expect(n.state).toBe('chase'); // ночью видит 10 клеток
+    // Погода (буря, senseMul 0.6): ночью 10 × 0.6 = 6 клеток — в 9 не видит.
+    const storm = ctx({ night: true, senseMul: 0.6 });
+    const s = enemy('walker', 9, 0);
+    run(s, storm.c, 1);
+    expect(s.state).not.toBe('chase');
+  });
+
+  it('«Добивание»: оглушённый получает больше урона', () => {
+    const e = enemy('walker', 3, 0);
+    e.stunUntil = 10;
+    const r1 = e.hurt(10, 0, 0, { melee: false, now: 5, stunnedMul: 2 });
+    const r2 = e.hurt(10, 0, 0, { melee: false, now: 20, stunnedMul: 2 });
+    expect(r1.dmg).toBeCloseTo(r2.dmg * 2, 5);
   });
 
   it('ползун невидим в траве, хватает героя в 3 клетках', () => {
@@ -199,7 +214,11 @@ describe('Враги: ИИ и особые механики', () => {
     // Герой в коробке
     const box = new Set<string>();
     for (let i = -2; i <= 2; i++) for (const k of [`${i},-2`, `${i},2`, `-2,${i}`, `2,${i}`]) box.add(k);
-    const { c, events } = ctx({ wallToBreak: () => ({ tx: 2, ty: 0 }) }, box);
+    // Стена игрока на ребре между клетками 2 и 3 (клетки коробки непроходимы).
+    const { c, events } = ctx(
+      { wallToBreak: () => ({ tx: 3, ty: 0, side: 'w' }), wallStands: () => true },
+      box,
+    );
     const e = enemy('walker', 6, 0.5);
     run(e, c, 8);
     expect(events.some((x) => x.type === 'wall')).toBe(true);
@@ -255,5 +274,50 @@ describe('Спавн и ночи', () => {
     }
     expect(waves).toEqual([1, 2, 3]);
     expect(bn.count(3, 2, 3)).toBeGreaterThan(bn.count(1, 1, 1));
+  });
+});
+
+describe('Баланс ТЗ 8.5', () => {
+  it('HP врага по биому: дальше — крепче; элита ×eliteHpMul', () => {
+    const w = reg.enemies.require('walker');
+    expect(enemyMaxHp(reg, w, 3, false)).toBeGreaterThan(enemyMaxHp(reg, w, 1, false));
+    const cfg = reg.combat['enemyHp'] as { eliteHpMul: number };
+    expect(enemyMaxHp(reg, w, 1, true)).toBeCloseTo(enemyMaxHp(reg, w, 1, false) * cfg.eliteHpMul, -1);
+    // Звери (семейство animal) — со своим hp.
+    expect(enemyMaxHp(reg, reg.enemies.require('hare'), 5, false)).toBe(reg.enemies.require('hare').hp);
+  });
+
+  it('оружие тира биома: обычный враг — 3–6 ударов, элита — 8–12', () => {
+    const bad: string[] = [];
+    for (const b of reg.biomes.all)
+      for (const wDef of reg.items.all.filter(
+        (i) =>
+          i.category === 'weapon' &&
+          i.tier === b.id &&
+          !['throwable', 'flame'].includes(String(i['weaponKind'])),
+      )) {
+        const st = weaponStats(reg, makeStack(reg, wDef.id, 1));
+        const dmg = st.damage * st.pellets;
+        for (const id of b.enemies) {
+          const e = reg.enemies.require(id);
+          if (e.family === 'animal') continue;
+          const n = Math.ceil(enemyMaxHp(reg, e, b.id, false) / dmg);
+          const el = Math.ceil(enemyMaxHp(reg, e, b.id, true) / dmg);
+          if (n < 3 || n > 6 || el < 8 || el > 12) bad.push(`${wDef.id}→${id}@${b.id}: ${n}/${el}`);
+        }
+      }
+    expect(bad).toEqual([]);
+  });
+});
+
+describe('Плотность врагов по дням', () => {
+  it('первые 7 дней меньше, дальше плавно растёт каждые 3 дня, с потолком', () => {
+    const m = (d: number) => spawnDayMul(reg, d);
+    expect(m(0)).toBeLessThan(m(6.9));
+    expect(m(6.9)).toBeLessThan(1);
+    expect(m(10)).toBeGreaterThan(m(7));
+    // Плавно: соседние моменты почти равны, скачков нет.
+    for (let d = 0; d < 40; d += 0.5) expect(Math.abs(m(d + 0.01) - m(d))).toBeLessThan(0.01);
+    expect(m(100)).toBe(m(200));
   });
 });

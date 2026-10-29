@@ -298,6 +298,17 @@ export class Stations {
     this.hands.push({ recipe: recipe.id, left: t, total: t });
   }
 
+  /**
+   * Отменить задание в очереди (рук или станка): убирается из очереди, возвращается рецепт — вызывающий
+   * отдаёт игроку его ингредиенты.
+   */
+  cancelJob(queue: CraftJob[], index: number): RecipeDef | null {
+    const j = queue[index];
+    if (!j) return null;
+    queue.splice(index, 1);
+    return this.reg.recipes.get(j.recipe) ?? null;
+  }
+
   /** Тик крафта руками: готовое — в deliver (остаток вернуть нельзя — кладётся на землю вызывающим). */
   tickHands(dt: number, deliver: (stack: ItemStack) => void): void {
     let left = dt;

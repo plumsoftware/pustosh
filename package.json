@@ -12,8 +12,8 @@
     "build:dev": "tsc --noEmit && vite build --mode dev",
     "build:yandex": "tsc --noEmit && vite build --mode yandex --outDir dist-yandex && tsx tools/zip-dist.ts dist-yandex dist-yandex.zip",
     "build:android": "tsc --noEmit && vite build --mode android --outDir dist-android && tsx tools/patch-android.ts && cap sync android",
-    "android:apk": "npm run build:android && cd android && ./gradlew assembleDebug",
-    "android:release": "npm run build:android && cd android && ./gradlew bundleRelease assembleRelease",
+    "android:apk": "npm run build:android && cd android && ./gradlew assembleRuStoreDebug",
+    "android:release": "npm run build:android && cd android && ./gradlew bundleRuStoreRelease assembleRuStoreRelease",
     "preview:yandex": "vite preview --mode yandex --outDir dist-yandex --host",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -22,6 +22,7 @@
     "typecheck": "tsc --noEmit",
     "pack-assets": "tsx tools/pack-assets.ts",
     "cut-sheets": "tsx tools/cut-sheets.ts",
+    "brand": "tsx tools/brand.ts",
     "validate-data": "tsx tools/validate-data.ts",
     "sync-package": "tsx tools/sync-package.ts",
     "balance-check": "tsx tools/balance-check.ts"

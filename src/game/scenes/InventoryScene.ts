@@ -9,7 +9,6 @@ import { containerInfo, rollLoot, type ContainerInfo } from '../../core/systems/
 import { Rng } from '../../core/util/rng';
 import type { WorldObject } from '../../core/world';
 import { AdsController } from '../AdsController';
-import { getAssetInfo } from '../assets/AssetIndex';
 import { spawnSprite } from '../assets/spawnSprite';
 import { ctx, registry } from '../GameContext';
 import { AnimationPlayer } from '../rig/AnimationPlayer';
@@ -17,6 +16,10 @@ import { humanoidAnims } from '../rig/Animations';
 import { RigInstance } from '../rig/RigInstance';
 import { SceneKeys } from '../SceneKeys';
 import { UI_FONT } from '../ui/BitmapFont';
+import { DEPTH } from '../render/ChunkView';
+import { burst } from '../render/Fx';
+import { TILE } from '../render/GroundTiles';
+import { panel } from '../ui/Styled';
 import { Button } from '../ui/Button';
 import { COLORS, FONT, TEXT_RES, uiScale } from '../ui/layout';
 import { rarityColor, raritySlot } from '../world/rarity';
@@ -56,6 +59,14 @@ let lastDoubleLootAt = -Infinity;
  * Экран инвентаря (TZ 5.6): игрок — манекен со слотами экипировки, сетка, пояс;
  * контейнер — два окна (игрок ↔ контейнер), «Взять всё», «Сложить похожее», «×2 (реклама)».
  */
+/** Сколько держится поза еды/питья, с. */
+const POSE_SEC = 1.2;
+
+/** Ячейки: промежуток, высота подписи над рядом, максимальный размер, px. */
+const GAP = 6;
+const LABEL_H = 20;
+const CELL_MAX = 84;
+
 export class InventoryScene extends Phaser.Scene {
   private mode: 'player' | 'container' = 'player';
   private obj: WorldObject | null = null;
@@ -66,6 +77,8 @@ export class InventoryScene extends Phaser.Scene {
   private k = 1;
   private selected: SlotRef | null = null;
   private details!: Phaser.GameObjects.Container;
+  /** Прямоугольник открытой карточки предмета (тап вне его закрывает карточку). */
+  private detailsRect: { x: number; y: number; w: number; h: number } | null = null;
   private press: { ref: SlotRef; x: number; y: number; at: number; dragging: boolean; long: boolean } | null =
     null;
   private ghost: Phaser.GameObjects.Image | null = null;
@@ -157,15 +170,19 @@ export class InventoryScene extends Phaser.Scene {
     if (info.type === 'storage') items = w.containerContents(o) ?? [];
     else {
       const wasIntact = o.state === 'intact';
-      items = w.openContainer(o, this.world.dayNight.seconds, () =>
-        rollLoot(
-          reg,
-          info.table!,
-          Math.max(1, o.biome),
-          info.slots,
-          new Rng((Math.random() * 2 ** 32) >>> 0),
-        ),
-      );
+      items = w.openContainer(o, this.world.dayNight.seconds, () => {
+        const rng = new Rng((Math.random() * 2 ** 32) >>> 0);
+        const loot = rollLoot(reg, info.table!, Math.max(1, o.biome), info.slots, rng);
+        // «Мародёр»: шанс второй порции лута (сколько влезет в контейнер).
+        if (rng.next() < this.world.progress.effect('doubleLootChance'))
+          loot.push(
+            ...rollLoot(reg, info.table!, Math.max(1, o.biome), info.slots, rng).slice(
+              0,
+              Math.max(0, info.slots - loot.length),
+            ),
+          );
+        return loot;
+      });
       if (wasIntact) this.world.containerOpened(o);
     }
     this.cont = new Inventory(reg, Math.max(info.slots, items.length), items);
@@ -211,20 +228,7 @@ export class InventoryScene extends Phaser.Scene {
     const px = (width - pw) / 2;
     const py = 10;
     this.panel = { x: px, y: py, w: pw, h: ph };
-    const panelInfo = getAssetInfo('ui.panel_9slice')!;
-    const slice = 22;
-    const bg = this.add.nineslice(
-      px + pw / 2,
-      py + ph / 2,
-      panelInfo.group,
-      panelInfo.frame,
-      pw,
-      ph,
-      slice,
-      slice,
-      slice,
-      slice,
-    );
+    const bg = panel(this, px + pw / 2, py + ph / 2, pw, ph);
     this.root.add(bg);
     const close = spawnSprite(this, px + pw - 30 * k, py + 30 * k, 'ui.btn_close', {
       depth: false,
@@ -233,9 +237,8 @@ export class InventoryScene extends Phaser.Scene {
     close.on('pointerup', () => this.close());
     this.root.add(close);
 
-    const cell = Math.round(52 * k);
-    if (this.mode === 'player') this.buildPlayer(px, py, pw, ph, cell);
-    else this.buildContainer(px, py, pw, ph, cell);
+    if (this.mode === 'player') this.buildPlayer(px, py, pw, ph);
+    else this.buildContainer(px, py, pw, ph);
   }
 
   private title(x: number, y: number, text: string): void {
@@ -250,97 +253,139 @@ export class InventoryScene extends Phaser.Scene {
     );
   }
 
-  private buildPlayer(px: number, py: number, pw: number, ph: number, cell: number): void {
+  /** Верх области ячеек (под заголовком) и низ (над кнопками), px. */
+  private areaY(py: number, ph: number): { top: number; bottom: number; bh: number } {
+    const k = this.k;
+    const bh = Math.max(44 * k, 40);
+    return { top: py + Math.max(60 * k, 52), bottom: py + ph - bh - Math.max(20 * k, 14), bh };
+  }
+
+  /**
+   * Ячейки максимального размера, чтобы рюкзак (size) + подпись + пояс (6) влезли в w×h:
+   * перебор числа столбцов, ячейка — по ширине и высоте, не больше CELL_MAX.
+   */
+  private fitGrid(size: number, w: number, h: number, withHotbar = true): { cell: number; cols: number } {
+    let best = { cell: 0, cols: 4 };
+    for (let cols = 4; cols <= 16; cols++) {
+      const rows = Math.ceil(size / cols) + (withHotbar ? Math.ceil(6 / cols) : 0);
+      const labels = withHotbar ? LABEL_H : 0;
+      const byW = (w - (cols - 1) * GAP) / cols;
+      const byH = (h - labels - (rows - 1) * GAP - (withHotbar ? GAP * 2 : 0)) / rows;
+      const cell = Math.floor(Math.min(byW, byH, CELL_MAX));
+      if (cell > best.cell) best = { cell, cols };
+    }
+    return best;
+  }
+
+  private buildPlayer(px: number, py: number, pw: number, ph: number): void {
     const k = this.k;
     this.title(px + 24 * k, py + 16 * k, t('inv.title'));
-    // Манекен героя (риг в позе idle) и слоты экипировки слева.
-    const mx = px + 150 * k;
-    const my = py + ph * 0.62;
-    this.mannequin = new RigInstance(this, this.world.hero.view.def, mx + 30 * k, my);
-    this.mannequin.container.setScale(1.7 * k);
+    const { top, bottom, bh } = this.areaY(py, ph);
+    const H = bottom - top;
+    // Экипировка — 2 столбца × 3 ряда слева, подпись над каждой ячейкой.
+    const ce = Math.floor(Math.min(CELL_MAX, (H - 3 * LABEL_H) / 3 - GAP));
+    const ex = px + Math.max(24 * k, 16);
+    EQUIP_SLOTS.forEach((es, i) => {
+      const x = ex + (i % 2) * (ce + GAP * 2);
+      const y = top + LABEL_H + Math.floor(i / 2) * (ce + LABEL_H + GAP);
+      this.root.add(
+        this.add
+          .bitmapText(x, y - 3, UI_FONT, t(`inv.equip.${es}`), Math.max(14, Math.round(11 * k + 3)))
+          .setOrigin(0, 1)
+          .setTint(0xe6d6b0),
+      );
+      this.addSlot({ inv: 'equip', slot: es }, x + ce / 2, y + ce / 2, ce);
+    });
+    // Манекен героя (риг в позе idle) правее экипировки.
+    const manW = Math.max(90, 110 * k);
+    const mx = ex + 2 * ce + GAP * 2 + manW / 2 + 8;
+    this.mannequin = new RigInstance(this, this.world.hero.view.def, mx, top + H * 0.82);
+    this.mannequin.container.setScale(Math.min((H * 0.75) / 96, 2.2));
     const head = this.pi.equip.head ? registry().items.get(this.pi.equip.head.id)?.heroHead : undefined;
     if (head) this.mannequin.setPart('head', head);
     this.manPlayer = new AnimationPlayer(
       humanoidAnims(registry().rigs.humanoid['animations'] as Record<string, { loopSec?: number }>),
     );
     this.root.add(this.mannequin.container);
-    EQUIP_SLOTS.forEach((es, i) => {
-      const y = py + 70 * k + i * (cell + 18 * k);
-      this.root.add(
-        this.add
-          .bitmapText(px + 24 * k, y - 14 * k, UI_FONT, t(`inv.equip.${es}`), Math.round(11 * k + 3))
-          .setTint(0xb7a98a),
-      );
-      this.addSlot({ inv: 'equip', slot: es }, px + 24 * k + cell / 2, y + cell / 2, cell);
-    });
-    // Сетка рюкзака
-    const gx = px + 300 * k;
-    const gw = pw - (gx - px) - 24 * k;
-    const cols = Math.max(4, Math.floor(gw / (cell + 6)));
-    this.grid('main', this.pi.main, gx, py + 64 * k, cols, cell);
-    // Пояс снизу
+    // Рюкзак и пояс — во всё оставшееся место.
+    const gx = mx + manW / 2 + 12;
+    const gw = px + pw - Math.max(24 * k, 16) - gx;
+    const { cell, cols } = this.fitGrid(this.pi.main.size, gw, H);
+    this.grid('main', this.pi.main, gx, top, cols, cell);
     const rows = Math.ceil(this.pi.main.size / cols);
-    const hy = Math.min(py + ph - cell - 70 * k, py + 64 * k + rows * (cell + 6) + 30 * k);
+    const hy = top + rows * (cell + GAP) + LABEL_H + GAP;
     this.root.add(
       this.add
-        .bitmapText(gx, hy - 18 * k, UI_FONT, t('inv.hotbar'), Math.round(12 * k + 3))
-        .setTint(0xb7a98a),
+        .bitmapText(gx, hy - 3, UI_FONT, t('inv.hotbar'), Math.max(14, Math.round(12 * k + 3)))
+        .setOrigin(0, 1)
+        .setTint(0xe6d6b0),
     );
-    this.grid('hotbar', this.pi.hotbar, gx, hy, 6, cell);
-    const bh = 44 * k;
+    this.grid('hotbar', this.pi.hotbar, gx, hy, Math.min(6, cols), cell);
+    const by = py + ph - bh / 2 - Math.max(12 * k, 8);
+    const rw = Math.max(300 * k, 230);
+    const cw = Math.max(140 * k, 110);
     new Button(
       this,
-      px + pw - 400 * k,
-      py + ph - bh / 2 - 14 * k,
-      t('inv.craft'),
-      () => this.world.openCraft(null),
-      140 * k,
+      px + pw - rw / 2 - 16,
+      by,
+      t('inv.repair_all_ad'),
+      () => void this.repairAll(),
+      rw,
       bh,
     ).setDepth(5);
     new Button(
       this,
-      px + pw - 170 * k,
-      py + ph - bh / 2 - 14 * k,
-      t('inv.repair_all_ad'),
-      () => void this.repairAll(),
-      300 * k,
+      px + pw - rw - cw / 2 - 28,
+      by,
+      t('inv.craft'),
+      () => this.world.openCraft(null),
+      cw,
       bh,
     ).setDepth(5);
   }
 
-  private buildContainer(px: number, py: number, pw: number, ph: number, cell: number): void {
+  private buildContainer(px: number, py: number, pw: number, ph: number): void {
     const k = this.k;
     const half = pw / 2;
     this.title(px + 24 * k, py + 16 * k, t('inv.title'));
     const name = this.storage ? this.storage.title : this.obj ? this.containerName(this.obj) : '';
     this.title(px + half + 16 * k, py + 16 * k, name);
-    const cols = Math.max(4, Math.floor((half - 40 * k) / (cell + 6)));
-    this.grid('main', this.pi.main, px + 24 * k, py + 64 * k, cols, cell);
+    const { top, bottom, bh } = this.areaY(py, ph);
+    const H = bottom - top;
+    const lx = px + Math.max(24 * k, 16);
+    const rx = px + half + Math.max(16 * k, 10);
+    const w = half - Math.max(40 * k, 26);
+    // Одинаковые ячейки слева (рюкзак + пояс) и справа (контейнер).
+    const a = this.fitGrid(this.pi.main.size, w, H);
+    const b = this.cont ? this.fitGrid(this.cont.size, w, H, false) : a;
+    const cell = Math.min(a.cell, b.cell);
+    const cols = Math.max(4, Math.floor((w + GAP) / (cell + GAP)));
+    this.grid('main', this.pi.main, lx, top, cols, cell);
     const rows = Math.ceil(this.pi.main.size / cols);
-    const hy = Math.min(py + ph - cell - 20 * k, py + 64 * k + rows * (cell + 6) + 24 * k);
-    this.grid('hotbar', this.pi.hotbar, px + 24 * k, hy, 6, cell);
-    if (this.cont) this.grid('container', this.cont, px + half + 16 * k, py + 64 * k, cols, cell);
-    const bh = 44 * k;
-    const by = py + ph - bh / 2 - 14 * k;
-    const bx = px + half + 16 * k;
-    new Button(this, bx + 90 * k, by, t('inv.take_all'), () => this.takeAll(), 170 * k, bh).setDepth(5);
+    this.grid('hotbar', this.pi.hotbar, lx, top + rows * (cell + GAP) + LABEL_H, Math.min(6, cols), cell);
+    if (this.cont) this.grid('container', this.cont, rx, top, cols, cell);
+    const by = py + ph - bh / 2 - Math.max(12 * k, 8);
+    const w1 = Math.max(170 * k, 130);
+    const w2 = Math.max(200 * k, 150);
+    const w3 = Math.max(180 * k, 140);
+    new Button(this, rx + w1 / 2, by, t('inv.take_all'), () => this.takeAll(), w1, bh).setDepth(5);
     new Button(
       this,
-      bx + 280 * k,
+      rx + w1 + 10 + w2 / 2,
       by,
       t('inv.stack_similar'),
       () => this.stackSimilar(),
-      200 * k,
+      w2,
       bh,
     ).setDepth(5);
     if (this.info?.type === 'loot')
       new Button(
         this,
-        bx + 475 * k,
+        rx + w1 + w2 + 20 + w3 / 2,
         by,
         t('inv.double_ad'),
         () => void this.doubleLoot(),
-        180 * k,
+        w3,
         bh,
       ).setDepth(5);
   }
@@ -361,8 +406,8 @@ export class InventoryScene extends Phaser.Scene {
     cell: number,
   ): void {
     for (let i = 0; i < data.size; i++) {
-      const cx = x + (i % cols) * (cell + 6) + cell / 2;
-      const cy = y + Math.floor(i / cols) * (cell + 6) + cell / 2;
+      const cx = x + (i % cols) * (cell + GAP) + cell / 2;
+      const cy = y + Math.floor(i / cols) * (cell + GAP) + cell / 2;
       this.addSlot({ inv, index: i }, cx, cy, cell, inv === 'container' && this.stagger ? i : -1);
     }
   }
@@ -505,7 +550,17 @@ export class InventoryScene extends Phaser.Scene {
     const pr = this.press;
     this.press = null;
     this.hover?.setVisible(false);
-    if (!pr) return;
+    if (!pr) {
+      // Тап мимо слотов и карточки — карточка предмета закрывается.
+      const r = this.detailsRect;
+      const onCard = r && p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h;
+      if (this.selected && !onCard) {
+        this.selected = null;
+        this.details.removeAll(true);
+        this.detailsRect = null;
+      }
+      return;
+    }
     if (!pr.dragging) {
       // Тап: выбрать слот (на поясе — взять в руку) и показать карточку предмета.
       if (pr.ref.inv === 'hotbar') this.pi.selected = pr.ref.index;
@@ -593,7 +648,14 @@ export class InventoryScene extends Phaser.Scene {
     if (!def) return;
     const k = this.k;
     const lines: string[] = [t(`inv.cat.${def.category}`), t('inv.tier', { tier: def.tier })];
-    const num = (key: string) => (typeof def[key] === 'number' ? (def[key] as number) : undefined);
+    // Лекарства хранят лечение в effect (бинт, аптечка) — показываем вместе с полями еды.
+    const eff = (def['effect'] ?? {}) as Record<string, unknown>;
+    const num = (key: string) =>
+      typeof def[key] === 'number'
+        ? (def[key] as number)
+        : typeof eff[key] === 'number'
+          ? (eff[key] as number)
+          : undefined;
     for (const key of [
       'damage',
       'hunger',
@@ -622,6 +684,18 @@ export class InventoryScene extends Phaser.Scene {
     if (s.durability !== undefined && def.durability) {
       lines.push(t('inv.durability', { cur: Math.round(s.durability), max: def.durability }));
       if (s.durability === 0) lines.push(t('inv.broken'));
+      // Как починить: ремкомплект (или навык «Мастер» 3) и верстак рядом — с отметкой, что уже есть.
+      if (s.durability < def.durability) {
+        const free = (this.world.skills['engineer_4'] ?? 0) >= 3;
+        const kit = free || this.pi.has({ repair_kit: 1 });
+        const bench = this.nearRepairStation();
+        lines.push(
+          t('inv.repair_how', {
+            kit: t(kit ? 'inv.have' : 'inv.missing'),
+            bench: t(bench ? 'inv.have' : 'inv.missing'),
+          }),
+        );
+      }
     }
     const w = 300 * k;
     const sv = this.slots.find((x) => sameRef(x.ref, ref));
@@ -645,7 +719,8 @@ export class InventoryScene extends Phaser.Scene {
     const actions = this.actionsFor(ref, s);
     const bh = 36 * k;
     const h = 24 + title.height + body.height + actions.length * (bh + 6) + 10;
-    const bg = this.add.rectangle(x, y, w, h, 0x1d1a16, 0.96).setOrigin(0).setStrokeStyle(2, 0x5a4a35);
+    const bg = panel(this, x, y, w, h).setOrigin(0);
+    this.detailsRect = { x, y, w, h };
     this.details.add([bg, title, body]);
     actions.forEach(([label, fn], i) => {
       const b = new Button(
@@ -692,9 +767,35 @@ export class InventoryScene extends Phaser.Scene {
     if (!s) return;
     const hero = this.world.hero;
     if (
-      useItem(registry(), s.id, hero.vitals, hero.move, new Rng((Math.random() * 2 ** 32) >>> 0)) === 'used'
-    )
+      useItem(
+        registry(),
+        s.id,
+        hero.vitals,
+        hero.move,
+        new Rng((Math.random() * 2 ** 32) >>> 0),
+        1 + this.world.progress.effect('healing'),
+      ) === 'used'
+    ) {
+      // Поза героя (лист s28): питьё, если вещь больше утоляет жажду, иначе еда.
+      const def = registry().items.get(s.id);
+      if (def?.category === 'food') {
+        const drink = Number(def['thirst'] ?? 0) > Number(def['hunger'] ?? 0);
+        hero.view.showPose(`characters.hero.hero_pose_${drink ? 'drink' : 'eat'}`, POSE_SEC);
+      }
+      // Лечение — зелёный плюс над героем (s32).
+      if (def?.category === 'medicine') {
+        const p = hero.pos;
+        burst(this.world, 'effects.heal_plus', p.x * TILE, p.y * TILE - 80, {
+          from: 24,
+          to: 34,
+          ms: 900,
+          depth: DEPTH.glow + 2,
+          add: true,
+          rise: 30,
+        });
+      }
       inv.take(ref.index, 1);
+    }
     this.refresh();
   }
 
@@ -726,14 +827,16 @@ export class InventoryScene extends Phaser.Scene {
     const s = this.stackAt(ref);
     const def = s ? reg.items.get(s.id) : undefined;
     if (!s || !def?.durability) return;
-    if (!this.pi.has({ repair_kit: 1 }) || !this.nearRepairStation()) {
+    // «Мастер» 3-го уровня чинит без ремкомплекта.
+    const freeRepair = (this.world.skills['engineer_4'] ?? 0) >= 3;
+    if ((!freeRepair && !this.pi.has({ repair_kit: 1 })) || !this.nearRepairStation()) {
       this.world.game.events.emit(TOAST, t('hint.repair_needs_kit'));
       return;
     }
     const pct =
       (reg.items.require('repair_kit')['effect'] as { repairPercent?: number } | undefined)?.repairPercent ??
       50;
-    this.pi.consume({ repair_kit: 1 });
+    if (!freeRepair) this.pi.consume({ repair_kit: 1 });
     s.durability = Math.min(def.durability, (s.durability ?? 0) + (def.durability * pct) / 100);
     this.world.game.events.emit(TOAST, t('hint.repaired'));
     this.refresh();

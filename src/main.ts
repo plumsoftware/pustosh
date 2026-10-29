@@ -1,4 +1,7 @@
 import './styles.css';
+import { installCursor } from './game/ui/Cursor';
+import { installReadableText } from './game/ui/Styled';
+import { loadFonts, setTextRes } from './game/ui/layout';
 import Phaser from 'phaser';
 import { createPlatformConfig } from './core/config/PlatformConfig';
 import { BalanceDef } from './core/data/schemas';
@@ -25,23 +28,19 @@ import { BuildScene } from './game/scenes/BuildScene';
 import { MenuScene } from './game/scenes/MenuScene';
 import { SettingsScene } from './game/scenes/SettingsScene';
 import { SkillsScene } from './game/scenes/SkillsScene';
+import { StatsScene } from './game/scenes/StatsScene';
 import { JournalScene } from './game/scenes/JournalScene';
 import { MapScene } from './game/scenes/MapScene';
 import { InventoryScene } from './game/scenes/InventoryScene';
 import { WorldOverlayScene } from './game/scenes/WorldOverlayScene';
 import { WorldMapScene } from './game/scenes/WorldMapScene';
 import { AnimationGalleryScene } from './game/scenes/AnimationGalleryScene';
+import { graphicsQuality, installRenderScale, scaleFor } from './game/render/Quality';
 import type { PlatformConfig } from './core/config/PlatformConfig';
 import type { PlatformId, PlatformServices } from './platform/PlatformServices';
 
 const PLATFORM = import.meta.env.VITE_PLATFORM as PlatformId;
 const VERSION = import.meta.env.VITE_APP_VERSION as string;
-/**
- * Потолок масштаба рендера. Замер на слабом Android (docs/PERF_BASELINE.md): rs 1 — 60 FPS,
- * 1.5 — 47, 2 — 30. По умолчанию 1; текст рисуется в разрешении экрана отдельно (ui/layout TEXT_RES).
- */
-const MAX_RENDER_SCALE = 1;
-
 /** Выбор реализации площадки по переменной сборки. Динамический импорт — в сборку попадает только нужная. */
 async function createPlatform(config: PlatformConfig, iap: readonly string[]): Promise<PlatformServices> {
   switch (PLATFORM) {
@@ -54,10 +53,13 @@ async function createPlatform(config: PlatformConfig, iap: readonly string[]): P
   }
 }
 
-/** Масштаб рендера: ?rs=<число> для замеров, иначе devicePixelRatio, не больше 2. */
-function renderScale(params: URLSearchParams): number {
+/**
+ * Масштаб рендера: ?rs=<число> для замеров, иначе по настройке «Качество графики» (render/Quality):
+ * на ПК — по плотности экрана (до 2), на телефоне — «Авто» по замеру FPS.
+ */
+function renderScale(params: URLSearchParams, desktop: boolean): number {
   const fromUrl = Number(params.get('rs'));
-  const v = fromUrl > 0 ? fromUrl : Math.min(window.devicePixelRatio || 1, MAX_RENDER_SCALE);
+  const v = fromUrl > 0 ? fromUrl : scaleFor(graphicsQuality(desktop));
   return Math.max(1, Math.min(v, 3));
 }
 
@@ -76,6 +78,7 @@ async function boot(): Promise<void> {
   const [strings, balanceRaw] = await Promise.all([
     fetchJson<Dict>('i18n/ru.json'),
     fetchJson<unknown>('data/balance.json'),
+    loadFonts(),
   ]);
   setStrings(strings, { debug });
   const balance = BalanceDef.parse(balanceRaw);
@@ -84,17 +87,19 @@ async function boot(): Promise<void> {
   const platform = await createPlatform(config, balance.iap);
   await platform.init();
 
-  const rs = renderScale(params);
+  const rs = renderScale(params, platform.device === 'desktop');
   const context = createContext({ platform, config, version: VERSION, debug, params, renderScale: rs });
 
+  setTextRes(rs);
+  installReadableText();
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent: 'game',
     backgroundColor: '#000000',
-    // Поле растягивается до краёв экрана (требование Яндекса). Канвас — в физических пикселях
-    // (CSS × renderScale), CSS-размер = окну; интерфейс считается от 1280×720 (ui/layout).
+    // Поле растягивается до краёв экрана (требование Яндекса). Канвас — CSS × renderScale, CSS-размер =
+    // окну (размер ведёт installRenderScale, масштаб меняется на лету); интерфейс — от 1280×720 (ui/layout).
     scale: {
-      mode: rs === 1 ? Phaser.Scale.RESIZE : Phaser.Scale.NONE,
+      mode: Phaser.Scale.NONE,
       width: Math.round(innerWidth * rs),
       height: Math.round(innerHeight * rs),
       zoom: 1 / rs,
@@ -123,6 +128,7 @@ async function boot(): Promise<void> {
       MenuScene,
       SettingsScene,
       SkillsScene,
+      StatsScene,
       JournalScene,
       MapScene,
       PauseScene,
@@ -136,12 +142,9 @@ async function boot(): Promise<void> {
   game.events.once(Phaser.Core.Events.READY, () => {
     installLifecycle(game);
     installOrientationGuard();
+    installCursor(game);
   });
-  if (rs !== 1) {
-    window.addEventListener('resize', () =>
-      game.scale.resize(Math.round(innerWidth * rs), Math.round(innerHeight * rs)),
-    );
-  }
+  installRenderScale(game);
   // Доступ из консоли и автотестов браузера — только в отладке.
   if (debug) (window as unknown as { __pustosh: unknown }).__pustosh = { ctx: context, game, AssetLoader };
 }

@@ -3,7 +3,7 @@ import { t } from '../../core/i18n/i18n';
 import { ctx } from '../GameContext';
 import { SceneKeys } from '../SceneKeys';
 import { Button } from '../ui/Button';
-import { COLORS, FONT, uiScale, TEXT_RES } from '../ui/layout';
+import { COLORS, uiScale, TEXT_RES, TITLE_FONT } from '../ui/layout';
 
 /** Меню паузы поверх мира: пока открыто — пауза MENU. */
 export class PauseScene extends Phaser.Scene {
@@ -21,7 +21,9 @@ export class PauseScene extends Phaser.Scene {
     this.add.rectangle(0, 0, width, height, 0x000000, 0.6).setOrigin(0).setInteractive();
     this.add
       .text(width / 2, height * 0.2, t('ui.pause'), {
-        fontFamily: FONT,
+        fontFamily: TITLE_FONT,
+        stroke: '#14100b',
+        strokeThickness: 6,
         resolution: TEXT_RES,
         fontSize: `${Math.round(56 * k)}px`,
         color: COLORS.text,
@@ -35,6 +37,7 @@ export class PauseScene extends Phaser.Scene {
       [t('ui.resume'), () => this.scene.stop()],
       [t('menu.skills'), () => this.open(SceneKeys.Skills), 'ui.icon_skills'],
       [t('menu.journal'), () => this.open(SceneKeys.Journal), 'ui.icon_journal'],
+      [t('menu.stats'), () => this.open(SceneKeys.Stats), 'ui.icon_xp'],
       [t('menu.map'), () => this.open(SceneKeys.Map), 'ui.icon_map'],
       [t('ui.settings'), () => this.scene.launch(SceneKeys.Settings), 'ui.icon_settings'],
       [

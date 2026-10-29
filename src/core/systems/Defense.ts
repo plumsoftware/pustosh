@@ -1,6 +1,6 @@
 import type { Registry } from '../data/Registry';
 import type { DefenseDef } from '../data/schemas';
-import type { WorldObject } from '../world/types';
+import type { EdgeRef, WorldObject } from '../world/types';
 import type { World } from '../world/World';
 
 /** Цель защиты: враг (шаг 8), манекен, герой (только для мин и взрывов). */
@@ -296,7 +296,7 @@ export function explosion(
   defenses: readonly WorldObject[],
 ): {
   targets: { t: Target; damage: number }[];
-  walls: { tx: number; ty: number; result: 'destroyed' | 'damaged' }[];
+  walls: { e: EdgeRef; result: 'destroyed' | 'damaged' }[];
 } {
   const fall = (d: number) => damage * Math.max(0.25, 1 - d / Math.max(0.01, radius));
   const hitTargets: { t: Target; damage: number }[] = [];
@@ -308,13 +308,17 @@ export function explosion(
     const d = Math.hypot(o.x - x, o.y - y);
     if (d > 0.01 && d <= radius) damageDefense(o, fall(d));
   }
-  const walls: { tx: number; ty: number; result: 'destroyed' | 'damaged' }[] = [];
-  for (let ty = Math.floor(y - radius); ty <= Math.floor(y + radius); ty++) {
-    for (let tx = Math.floor(x - radius); tx <= Math.floor(x + radius); tx++) {
-      const d = Math.hypot(tx + 0.5 - x, ty + 0.5 - y);
-      if (d > radius) continue;
-      const r = world.damageWall(tx, ty, fall(d));
-      if (r) walls.push({ tx, ty, result: r });
+  const walls: { e: EdgeRef; result: 'destroyed' | 'damaged' }[] = [];
+  for (let ty = Math.floor(y - radius); ty <= Math.floor(y + radius) + 1; ty++) {
+    for (let tx = Math.floor(x - radius); tx <= Math.floor(x + radius) + 1; tx++) {
+      for (const side of ['n', 'w'] as const) {
+        // Середина ребра: северное — (tx+0.5, ty), западное — (tx, ty+0.5).
+        const d = side === 'n' ? Math.hypot(tx + 0.5 - x, ty - y) : Math.hypot(tx - x, ty + 0.5 - y);
+        if (d > radius) continue;
+        const e = { tx, ty, side };
+        const r = world.damageEdge(e, fall(d));
+        if (r) walls.push({ e, result: r });
+      }
     }
   }
   return { targets: hitTargets, walls };

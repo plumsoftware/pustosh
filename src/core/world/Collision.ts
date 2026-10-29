@@ -1,7 +1,34 @@
-import { WALL_DOOR, WALL_FENCE, type Collider } from './types';
+import {
+  EDGE_GEN,
+  EDGE_KIND,
+  EDGE_LEAF,
+  EDGE_T,
+  WALL_DOOR,
+  WALL_FENCE,
+  type Collider,
+  type Side,
+} from './types';
 import type { World } from './World';
 
-interface Rect {
+/** Полоса стены на ребре клетки (с запасом на половину толщины по длине — углы смыкаются). */
+export function edgeRect(tx: number, ty: number, side: Side): Rect {
+  const h = EDGE_T / 2;
+  return side === 'n'
+    ? { x0: tx - h, y0: ty - h, x1: tx + 1 + h, y1: ty + h }
+    : { x0: tx - h, y0: ty - h, x1: tx + h, y1: ty + 1 + h };
+}
+
+/**
+ * Твёрдая ли стена на ребре (биты Chunk.edgeN/edgeW): пустой проём проходим; дверь герой открывает,
+ * враги — нет (doorsSolid), кроме дверей домов мира.
+ */
+export function edgeSolid(bits: number, doorsSolid: boolean): boolean {
+  if ((bits & EDGE_KIND) !== WALL_DOOR) return true;
+  // Двери домов мира врагов пропускают (как раньше в клеточных стенах).
+  return doorsSolid && (bits & EDGE_LEAF) !== 0 && (bits & EDGE_GEN) === 0;
+}
+
+export interface Rect {
   x0: number;
   y0: number;
   x1: number;
@@ -71,14 +98,19 @@ export function solidsNear(
         }
       }
       const c = world.cell(tx, ty);
-      // Враги не проходят двери игрока (створка закрыта для них всегда).
-      const door = c.wallKind === WALL_DOOR && !(doorsSolid && world.builtAt(tx, ty)?.leaf);
+      // Двери префабов проходимы; двери игрока — на рёбрах (edgeSolid).
+      const door = c.wallKind === WALL_DOOR;
       if (c.wall !== 0 && !door) {
         const below = world.cell(tx, ty + 1);
         const face = below.wall === 0 && c.wallKind !== WALL_FENCE ? faceDepth : 0;
         out.push({ x0: tx, y0: ty, x1: tx + 1, y1: ty + 1 + face });
       } else if (!c.passable && c.wall === 0) {
         out.push({ x0: tx, y0: ty, x1: tx + 1, y1: ty + 1 });
+      }
+      for (const side of ['n', 'w'] as const) {
+        const bits = world.edgeBits(tx, ty, side);
+        if (!bits || !edgeSolid(bits, doorsSolid)) continue;
+        out.push(edgeRect(tx, ty, side));
       }
     }
   }
@@ -121,4 +153,25 @@ export function moveCircle(
     }
   }
   return { x: px, y: py };
+}
+
+/**
+ * Отрезок пересекает стену игрока на ребре (пули, лучи, снаряды): пустой проём пропускает,
+ * окно и дверь со створкой держат.
+ */
+export function segmentHitsEdge(world: World, x0: number, y0: number, x1: number, y1: number): boolean {
+  const stops = (bits: number) => bits !== 0 && edgeSolid(bits, true);
+  const ax = Math.floor(x0);
+  const bx = Math.floor(x1);
+  for (let X = Math.min(ax, bx) + 1; X <= Math.max(ax, bx); X++) {
+    const y = y0 + ((y1 - y0) * (X - x0)) / (x1 - x0);
+    if (stops(world.edgeBits(X, Math.floor(y), 'w'))) return true;
+  }
+  const ay = Math.floor(y0);
+  const by = Math.floor(y1);
+  for (let Y = Math.min(ay, by) + 1; Y <= Math.max(ay, by); Y++) {
+    const x = x0 + ((x1 - x0) * (Y - y0)) / (y1 - y0);
+    if (stops(world.edgeBits(Math.floor(x), Y, 'n'))) return true;
+  }
+  return false;
 }

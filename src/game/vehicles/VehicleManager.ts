@@ -32,6 +32,8 @@ interface View {
   mods: Phaser.GameObjects.Image[];
   shadow: Phaser.GameObjects.Image;
   nextSmoke: number;
+  /** Герой за рулём (лист s28) — только у машины, на которой едут. */
+  driver?: Phaser.GameObjects.Image;
 }
 
 /**
@@ -127,19 +129,23 @@ export class VehicleManager {
     const reg = this.reg;
     const s = this.scene;
     const inv = s.hero.inv;
-    const items: MenuItem[] = [{ label: t('veh.enter'), fn: () => this.enter(v), disabled: v.broken }];
+    const items: MenuItem[] = [
+      { label: t('veh.enter'), fn: () => this.enter(v), disabled: v.broken, icon: 'ui.icon_vehicle_enter' },
+    ];
     if (v.def.trunkSlots > 0 || v.s.trunk.length)
-      items.push({ label: t('veh.trunk'), fn: () => this.openTrunk(v) });
+      items.push({ label: t('veh.trunk'), fn: () => this.openTrunk(v), icon: 'ui.icon_trunk' });
     if (v.needsFuel)
       items.push({
         label: t('veh.refuel'),
         fn: () => this.refuel(v),
+        icon: 'ui.icon_refuel',
         disabled: inv.count('crude_oil') === 0,
       });
     const hasWrench = inv.count('wrench') > 0;
     items.push({
       label: t('veh.repair'),
       fn: () => this.repair(v),
+      icon: 'ui.icon_repair',
       disabled: !hasWrench || v.s.hp >= this.maxHp(v),
     });
     if (v.def.id === 'pickup') {
@@ -322,7 +328,32 @@ export class VehicleManager {
     v.track?.destroy();
     v.mods.forEach((m) => m.destroy());
     v.shadow.destroy();
+    v.driver?.destroy();
     this.views.delete(uid);
+  }
+
+  /** Поза «за рулём» на сиденье из progression.json → vehicles.seats. */
+  private renderDriver(v: Vehicle, view: View, b: Phaser.GameObjects.Image, flip: boolean, y: number): void {
+    const on = v === this.driving;
+    if (!on) {
+      view.driver?.destroy();
+      view.driver = undefined;
+      return;
+    }
+    const V = this.reg.prog.vehicles as { seats?: Record<string, unknown>; seatScale?: number };
+    const seat = V.seats?.[v.def.id] as [number, number, number] | undefined;
+    if (!seat || !getAssetInfo('characters.hero.hero_pose_drive')) return;
+    if (!view.driver) {
+      view.driver = spawnSprite(this.scene, 0, 0, 'characters.hero.hero_pose_drive');
+      view.driver.setScale(view.driver.scaleX * (V.seatScale ?? 1));
+    }
+    const w = b.displayWidth;
+    const fx = flip ? 1 - seat[0] : seat[0];
+    view.driver
+      .setPosition(b.x - w / 2 + fx * w, b.y - b.displayHeight * seat[1])
+      .setFlipX(flip)
+      .setAngle(b.angle)
+      .setDepth(seat[2] ? y - 0.5 : y + 0.3);
   }
 
   render(time: number): void {
@@ -368,6 +399,7 @@ export class VehicleManager {
           .setDepth(y + 0.2),
       );
       view.shadow.setPosition(x, y);
+      this.renderDriver(v, view, b, flip, y);
       // Пыль/брызги/снег из-под колёс по местности.
       if (moving && Math.random() < 0.5) {
         const back = x + (flip ? 1 : -1) * w * 0.35;

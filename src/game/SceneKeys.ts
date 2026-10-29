@@ -12,6 +12,7 @@ export const SceneKeys = {
   Settings: 'Settings',
   Skills: 'Skills',
   Journal: 'Journal',
+  Stats: 'Stats',
   Map: 'Map',
   BossReward: 'BossReward',
   World: 'World',

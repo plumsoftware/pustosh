@@ -264,6 +264,8 @@ export const VehicleDef = z.looseObject({
   name_ru: z.string().min(1),
   tier: z.number().int().min(0),
   body: AssetRef,
+  /** Иконка в инвентаре (лист s33); нет — корпус. */
+  icon: AssetRef.optional(),
   wheel: AssetRef.nullable().optional(),
   track: AssetRef.nullable().optional(),
   speedMul: z.number().positive(),
@@ -640,6 +642,8 @@ export const BuildRulesDef = z.looseObject({
   requiresStationRadiusTiles: z.number().nonnegative(),
   rubbleSec: z.number().nonnegative(),
   damageOverlayFrom: z.number().min(0).max(1),
+  /** С этой доли урона лицо стены игрока — треснувшее (лист s26). */
+  crackedFaceFrom: z.number().min(0).max(1).default(0.5),
   doorOpenRadiusTiles: z.number().positive(),
   roomFillLimit: z.number().int().positive(),
   lineMaxCells: z.number().int().positive(),

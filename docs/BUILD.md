@@ -18,9 +18,10 @@
 | Яндекс | `npm run build:yandex` | `dist-yandex/` + `dist-yandex.zip` (index.html в корне, `/sdk.js` до бандла, пути относительные) |
 | Проверить архив локально | `npm run preview:yandex` → http://localhost:4173 | без SDK в консоли: `Yandex SDK not found, stub mode` |
 | Android (веб + sync) | `npm run build:android` | `dist-android/` → `android/` (`cap sync`); при отсутствии `android/` создаёт его и применяет `tools/patch-android.ts` |
-| Debug APK | `npm run android:apk` | `android/app/build/outputs/apk/debug/app-debug.apk` |
-| Release AAB + APK | `npm run android:release` | `android/app/build/outputs/bundle/release/app-release.aab`, `apk/release/app-release.apk` |
-| Установка | `adb install -r android/app/build/outputs/apk/debug/app-debug.apk` | |
+| Debug APK (RuStore) | `npm run android:apk` | `android/app/build/outputs/apk/ruStore/debug/app-ruStore-debug.apk` |
+| Release AAB + APK (RuStore) | `npm run android:release` | `android/app/build/outputs/bundle/ruStoreRelease/app-ruStore-release.aab`, `apk/ruStore/release/app-ruStore-release.apk` |
+| Другие магазины | `cd android && ./gradlew assembleHuaweiAppGalleryDebug` / `assembleGooglePlayRelease` … | флейворы `huaweiAppGallery`, `googlePlay` (пока без рекламы) |
+| Установка | `adb install -r android/app/build/outputs/apk/ruStore/debug/app-ruStore-debug.apk` | |
 | Атласы | `npm run pack-assets` (`-- --force`, `-- --webp`) | `public/atlases/*`, `docs/ASSET_REPORT.md` |
 | Проверка данных | `npm run validate-data` | код выхода 1 при ошибках |
 | Обновить исходники из пакета ТЗ | `npm run sync-package` | **перезаписывает** `art/` и `public/data/` |
@@ -35,6 +36,8 @@
   RELEASE_KEY_ALIAS=...
   RELEASE_KEY_PASSWORD=...
   ```
+- **Флейворы магазинов** (`tools/patch-android.ts` → `ADS`): `ruStore`, `huaweiAppGallery`, `googlePlay`. Идентификаторы рекламы — `BuildConfig.ADS_INTERSTITIAL_ID` / `ADS_REWARDED_ID` во флейворе; пусто — рекламы нет.
+- **Реклама РСЯ** (только `ruStore`): Yandex Mobile Ads SDK 8.6.0 (`ruStoreImplementation`), плагин `YandexAds` (исходник — `tools/android/YandexAdsPlugin.java`, копируется в `android/app/src/ruStore/java`). RuStore: межстраничная `R-M-20301995-1`, с вознаграждением `R-M-20301995-2`; в debug — демо-блоки `demo-interstitial-yandex`, `demo-rewarded-yandex`. Блок загружается в момент показа (без предзагрузки), ожидание — до 10 с, затем ошибка и игра продолжается; пока грузится — «Загрузка рекламы…». Правила показа (точки, интервал, «без рекламы») — `RuledAds` (`balance.json → ads`).
 - Отладка WebView: `chrome://inspect` (debug-сборка), игра открывается как `https://localhost/`.
 
 ## Отладка

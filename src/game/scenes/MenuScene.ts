@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
-import { getAssetInfo } from '../assets/AssetIndex';
+import { ctx } from '../GameContext';
 import { SceneKeys } from '../SceneKeys';
+import { panel as stylePanel } from '../ui/Styled';
 import { Button } from '../ui/Button';
 import { COLORS, FONT, TEXT_RES, uiScale } from '../ui/layout';
 import type { WorldScene } from './WorldScene';
@@ -9,20 +10,24 @@ export interface MenuItem {
   label: string;
   fn: () => void;
   disabled?: boolean;
+  /** Значок из атласа слева от подписи. */
+  icon?: string;
 }
 
 export interface MenuData {
   title: string;
   subtitle?: string;
   items: MenuItem[];
+  /** Закрывается только кнопками (подсказки): тап мимо окна ничего не делает. */
+  modal?: boolean;
 }
 
 /** Открытие панели (ANIMATIONS §11). */
 const PANEL_MS = 180;
 
 /**
- * Короткое меню действий у объекта (кровать, тотем, аванпост, бочка, ловушка): заголовок и кнопки.
- * Игра не на паузе, ввод героя выключен, пока меню открыто.
+ * Короткое меню действий у объекта (кровать, тотем, аванпост, бочка, ловушка) или подсказка: заголовок
+ * и кнопки. Ввод героя выключен, пока меню открыто; подсказка (modal) ставит мир на паузу.
  */
 export class MenuScene extends Phaser.Scene {
   private data_!: MenuData;
@@ -43,14 +48,25 @@ export class MenuScene extends Phaser.Scene {
     const w = this.world;
     w.controls.clear();
     w.controls.enabled = false;
+    // Подсказку читают спокойно: мир на паузе, пока её не закроют кнопкой.
+    const modal = !!this.data_.modal;
+    if (modal) ctx().clock.pause('DIALOG');
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      if (modal) ctx().clock.resume('DIALOG');
       w.controls.clear();
       w.controls.enabled = true;
     });
     const k = uiScale(this);
     const { width, height } = this.scale;
     const shade = this.add.rectangle(0, 0, width, height, 0x000000, 0.45).setOrigin(0).setInteractive();
-    shade.on('pointerup', () => this.close());
+    // Тап мимо закрывает меню объекта, только если касание началось на затемнении уже после открытия:
+    // отпускание стика или кнопки мыши, которыми играли, окно не закрывает. Подсказки (modal) — только кнопкой.
+    let pressed = false;
+    shade.on('pointerdown', () => (pressed = !this.data_.modal));
+    shade.on('pointerup', () => {
+      if (pressed) this.close();
+      pressed = false;
+    });
     const bw = 360 * k;
     const bh = Math.round(44 * k);
     const title = this.add
@@ -81,9 +97,8 @@ export class MenuScene extends Phaser.Scene {
     const pw = bw + 40 * k;
     const px = width / 2;
     const py = (height - ph) / 2;
-    const info = getAssetInfo('ui.panel_9slice')!;
     const root = this.add.container(0, 0);
-    root.add(this.add.nineslice(px, py + ph / 2, info.group, info.frame, pw, ph, 22, 22, 22, 22));
+    root.add(stylePanel(this, px, py + ph / 2, pw, ph, true));
     title.setPosition(px, py + 14 * k);
     root.add(title);
     if (sub) {
@@ -103,6 +118,7 @@ export class MenuScene extends Phaser.Scene {
         bw,
         bh,
       );
+      if (it.icon) b.setIcon(it.icon);
       if (it.disabled) b.setAlpha(0.45).disableInteractive();
       root.add(b);
     });

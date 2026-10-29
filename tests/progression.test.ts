@@ -106,6 +106,60 @@ describe('Боссы', () => {
   });
 });
 
+describe('Боссы 4–6 (полные)', () => {
+  const evs: BossEvent[] = [];
+  let seed = 7;
+  const rng = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  const run = (b: Boss, hero: { x: number; y: number }, sec: number, from = 0) => {
+    for (let t = from; t < from + sec; t += 0.05)
+      b.tick({ now: t, dt: 0.05, hero: { ...hero, alive: true }, rng, emit: (e) => evs.push(e) });
+  };
+  const attacks = () =>
+    new Set(evs.filter((e) => e.type === 'telegraph').map((e) => (e.type === 'telegraph' ? e.t.attack : '')));
+
+  it('Пожиратель: атаки с поверхности → под землю бугром → выход под героем; в броне урон ×armorMul', () => {
+    evs.length = 0;
+    const b = new Boss(reg, reg.bosses.require('devourer'), 0, -2, { x: 0, y: 0, r: 9 });
+    run(b, { x: 0, y: 1.5 }, 40);
+    const a = attacks();
+    expect(a.has('emerge')).toBe(true);
+    expect(a.has('burrow')).toBe(true);
+    expect(a.has('sweep') || a.has('spit')).toBe(true);
+    // Вне окна уязвимости — броня.
+    const b2 = new Boss(reg, reg.bosses.require('devourer'), 0, 0, { x: 0, y: 0, r: 9 });
+    b2.state = 'fight';
+    const armor = (reg.prog.bosses['devourer'] as Record<string, number>)['armorMul']!;
+    expect(b2.hurt(100, 0, 1, { melee: false, now: 100 }).dmg).toBeCloseTo(100 * armor);
+  });
+
+  it('Мороз: удар в щит — событие blocked; дыхание холодит; во 2-й фазе урон по ядру ×coreDamageMul', () => {
+    evs.length = 0;
+    const b = new Boss(reg, reg.bosses.require('frost'), 0, -2, { x: 0, y: 0, r: 9 });
+    run(b, { x: 0, y: 0.5 }, 0.2);
+    b.hurt(10, 0, 0, { melee: true, now: 0.2 });
+    expect(evs.some((e) => e.type === 'blocked')).toBe(true);
+    run(b, { x: 0, y: 0.5 }, 30, 0.3);
+    expect(attacks().has('stomp')).toBe(true);
+    expect(evs.some((e) => e.type === 'chill')).toBe(true);
+    b.phase = 2;
+    b.shield = false;
+    const mul = (reg.prog.bosses['frost'] as Record<string, number>)['coreDamageMul']!;
+    expect(b.hurt(10, 0, 0, { melee: false, now: 40 }).dmg).toBeCloseTo(10 * mul);
+  });
+
+  it('Пациент Ноль: щупальца из труб по краю арены, сферы оставляют радиацию, сектора — с фазы 2', () => {
+    evs.length = 0;
+    const b = new Boss(reg, reg.bosses.require('zero'), 0, -2, { x: 0, y: 0, r: 9 });
+    run(b, { x: 0, y: 4 }, 25);
+    expect(attacks().has('tentacles')).toBe(true);
+    const tent = evs.find((e) => e.type === 'telegraph' && e.t.attack === 'tentacles');
+    if (tent?.type === 'telegraph' && tent.t.shape.kind === 'line')
+      expect(Math.hypot(tent.t.shape.x0, tent.t.shape.y0)).toBeCloseTo(9, 3);
+    expect(attacks().has('sectors')).toBe(false);
+    expect(evs.some((e) => e.type === 'pools' && e.kind === 'rad')).toBe(true);
+  });
+});
+
 describe('Задания и записки', () => {
   it('3 ежедневных задания в сутки, прогресс по событиям, +1 за рекламу', () => {
     const q = emptyQuests();

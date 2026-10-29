@@ -9,7 +9,8 @@
   "requiresStationRadiusTiles": 12,
   "rubbleSec": 10,
   "damageOverlayFrom": 0.3,
-  "doorOpenRadiusTiles": 1.3,
+  "crackedFaceFrom": 0.5,
+  "doorOpenRadiusTiles": 0.5,
   "roomFillLimit": 400,
   "lineMaxCells": 12,
   "base": {

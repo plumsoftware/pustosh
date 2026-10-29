@@ -155,29 +155,59 @@
     "devourer": {
       "speed": 1.4,
       "emergeRadius": 2.5,
-      "emergeDamage": 35,
+      "emergeDamage": 45,
       "vulnerableSec": 2,
-      "phase2At": 0.5
+      "phase2At": 0.5,
+      "armorMul": 0.2,
+      "armorMulPhase2": 0.5,
+      "sweepDamage": 38,
+      "sweepRange": 3.2,
+      "sweepDeg": 200,
+      "spitDamage": 32,
+      "spitRange": 8,
+      "spitWidth": 1,
+      "moundSpeedMul": 1.6,
+      "undergroundSec": 2.6,
+      "undergroundSecPhase2": 1.6,
+      "phase2Speed": 1.25
     },
     "frost": {
       "speed": 1.1,
-      "shardCount": 7,
-      "shardDamage": 14,
+      "shardCount": 5,
+      "shardDamage": 24,
       "coneRange": 5,
       "coneDeg": 50,
-      "coneDps": 20,
-      "shieldUntil": 0.5
+      "shieldUntil": 0.5,
+      "breathDamage": 30,
+      "chillDeg": 4,
+      "iceSec": 3,
+      "iceDps": 6,
+      "stompRadius": 3,
+      "stompDamage": 36,
+      "coreDamageMul": 2,
+      "phase2Speed": 1.4,
+      "shieldOffSec": 5
     },
     "zero": {
       "speed": 1.2,
       "whipRange": 5,
-      "whipDamage": 25,
-      "sectorDps": 8,
+      "whipDamage": 48,
       "phase2At": 0.66,
       "phase3At": 0.33,
       "summon": {
         "glowing": 2
-      }
+      },
+      "tentacleCount": 2,
+      "tentacleDamage": 42,
+      "orbDamage": 36,
+      "orbRadius": 1.5,
+      "orbRad": 3,
+      "orbSec": 5,
+      "sectorDamage": 22,
+      "sectorRad": 4,
+      "sectorSec": 4,
+      "phase2Speed": 1.15,
+      "phase3Speed": 1.3
     },
     "rewardDoubleMul": 2,
     "reward": {
@@ -208,7 +238,8 @@
         "uranium": 5,
         "circuit_board": 6
       }
-    }
+    },
+    "_noteDamage": "Урон боссов растёт по биомам (с учётом брони героя к этому моменту): удар Тирана 40 → Пожиратель 45 → Мороз 36 + холод → Пациент Ноль 48. Пересчитано 29.10.2026."
   },
   "notes": [
     {
@@ -537,13 +568,99 @@
         },
         "trunkAdd": 8
       }
-    }
+    },
+    "seats": {
+      "_note": "Где сидит герой (лист s28, поза hero_pose_drive): [доля ширины корпуса от задка, доля высоты корпуса от низа, 1 = герой за корпусом]; нет записи — кабина закрыта, героя не видно. Масштаб позы — seatScale",
+      "bicycle": [
+        0.42,
+        0.4,
+        0
+      ],
+      "moped": [
+        0.42,
+        0.36,
+        0
+      ],
+      "quad": [
+        0.45,
+        0.42,
+        0
+      ],
+      "moto_sidecar": [
+        0.5,
+        0.42,
+        0
+      ],
+      "buggy": [
+        0.45,
+        0.3,
+        1
+      ]
+    },
+    "seatScale": 0.85
   },
   "map": {
     "fogRevealTiles": 12,
     "minimapRadiusTiles": 40,
     "markers": {
       "deathMax": 3
+    },
+    "pins": {
+      "_note": "Метки игрока на карте (как в Valheim/BOTW): тип = значок и цвет на мини-карте; max — сколько всего; reachTiles — «пришёл» к отслеживаемой метке",
+      "max": 100,
+      "reachTiles": 3,
+      "types": {
+        "home": {
+          "icon": "ui.kit.btn_round_home",
+          "color": "#ff6a3d",
+          "name_ru": "Дом"
+        },
+        "storage": {
+          "icon": "world.interior.chest_wood",
+          "color": "#d9a861",
+          "name_ru": "Склад"
+        },
+        "ore": {
+          "icon": "icons.base.copper_ore",
+          "color": "#c08050",
+          "name_ru": "Руда"
+        },
+        "wood": {
+          "icon": "icons.base.stone_axe_alt",
+          "color": "#7ac050",
+          "name_ru": "Лес"
+        },
+        "water": {
+          "icon": "icons.base.water_bottle",
+          "color": "#40a8ff",
+          "name_ru": "Вода"
+        },
+        "food": {
+          "icon": "icons.food_medicine.berries",
+          "color": "#e05080",
+          "name_ru": "Еда"
+        },
+        "loot": {
+          "icon": "world.interior.crate_military_closed",
+          "color": "#e0c060",
+          "name_ru": "Лут"
+        },
+        "danger": {
+          "icon": "ui.icon_boss_arena",
+          "color": "#ff3030",
+          "name_ru": "Опасно"
+        },
+        "vehicle": {
+          "icon": "icons.vehicles.icon_pickup",
+          "color": "#9ad0ff",
+          "name_ru": "Транспорт"
+        },
+        "star": {
+          "icon": "ui.icon_level_up",
+          "color": "#ffe060",
+          "name_ru": "Важное"
+        }
+      }
     }
   },
   "audio": {
